@@ -694,3 +694,29 @@ footer .wrap{display:grid;gap:10px;max-width:780px;margin-left:auto;margin-right
 .efx-ans p{font-size:.98rem;line-height:1.6;animation:pop .35s ease}
 .efx-ans .vs-meta{margin:0 -14px -12px}
 .vs-meta dd.mid{color:var(--amber)}
+
+/* Bölüm 15: düşünme örnekleri */
+.th-meta{font:500 .78rem var(--mono);color:var(--violet);border-top:1px dashed var(--line);padding-top:8px;margin-top:2px}
+.il-steps{display:grid;gap:8px}
+.il-row{display:grid;grid-template-columns:7.2em minmax(0,1fr);gap:10px;align-items:start;opacity:.25;transition:opacity .4s}
+.il-row.on{opacity:1}
+.il-chip{font:600 .66rem var(--mono);letter-spacing:.06em;text-transform:uppercase;text-align:center;padding:5px 4px;border-radius:999px;border:1px solid var(--line);color:var(--muted)}
+.il-body{font-size:.9rem;padding:6px 10px;border-radius:10px;border:1px solid var(--line);background:var(--surface-2);min-width:0;transition:box-shadow .3s,border-color .3s}
+.il-body pre{margin:4px 0 0;font:500 .76rem/1.55 var(--mono);white-space:pre-wrap;word-break:break-word;color:var(--muted)}
+.il-row.cur .il-body{border-color:var(--teal);box-shadow:0 0 0 3px color-mix(in srgb,var(--teal) 15%,transparent)}
+.il-row.dusun .il-chip{color:var(--amber);border-color:var(--amber);border-style:dashed}
+.il-row.dusun .il-body{border-style:dashed;border-color:color-mix(in srgb,var(--amber) 55%,var(--line));font-family:var(--mono);font-size:.8rem;color:var(--muted)}
+.il-row.arac .il-chip{color:var(--violet);border-color:var(--violet)}
+.il-row.arac .il-body span{font-family:var(--mono);font-size:.82rem;color:var(--violet);font-weight:600}
+.il-row.arac .il-body pre{color:var(--violet)}
+.il-row.sonuc .il-chip{color:var(--muted)}
+.il-row.cevap .il-chip{color:var(--teal);border-color:var(--teal)}
+.il-row.cevap .il-body{border-color:var(--teal);background:var(--teal-soft)}
+.il-row.kullanici .il-chip{color:var(--ink)}
+@media (max-width:520px){.il-row{grid-template-columns:minmax(0,1fr);gap:4px}.il-chip{justify-self:start;padding:3px 10px}}
+mark.hint{background:var(--amber-soft);color:var(--amber);padding:1px 4px;border-radius:4px;font-weight:600}
+.fa-check{display:grid;gap:6px;font-size:.9rem}
+.fa-check:empty{display:none}
+.fa-check div{display:flex;justify-content:space-between;gap:12px;padding:6px 10px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+.fa-check b{font-family:var(--mono);font-size:.8rem;white-space:nowrap}
+.fa-check b.ok{color:var(--teal)} .fa-check b.no{color:var(--rose)}

@@ -656,28 +656,88 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
 
 /* ---------- 15. Düşünme ---------- */
 (function(){
-  const box=$("#th-box"),fast=$("#th-fast"),slow=$("#th-slow");
-  let gen=0;
-  const lines=["Topa x diyelim.","Sopa toptan 100 TL pahalı → sopa = x + 100","Toplam: x + (x + 100) = 110","2x + 100 = 110  →  2x = 10  →  x = 5","Kontrol: top 5, sopa 105. Toplam 110 ✓  Fark 100 ✓","İlk akla gelen 10 TL'ydi ama tutmuyor (10 + 110 = 120)."];
-  async function typeLine(el,txt,my){if(RM){el.textContent=txt;return;}for(let i=1;i<=txt.length;i++){if(my!==gen)return;el.textContent=txt.slice(0,i);await sleep(16);}}
+  const P=D.dusunme||[];if(!P.length)return;
+  const box=$("#th-box"),fast=$("#th-fast"),slow=$("#th-slow"),qEl=$("#th-q"),row=$("#th-probs");
+  row.innerHTML=P.map((p,i)=>`<button class="btn sm" aria-pressed="${i===0}">${esc(p.ad)}</button>`).join("");
+  const pb=$$("button",row);
+  let gen=0,cur=0;
+  async function typeLine(el,txt,my){if(RM){el.textContent=txt;return;}for(let i=1;i<=txt.length;i++){if(my!==gen)return;el.textContent=txt.slice(0,i);await sleep(14);}}
+  function add(cls,txt){const d=document.createElement("div");d.className=cls;if(txt)d.textContent=txt;box.append(d);return d;}
+  function select(i){
+    cur=i;gen++;
+    pb.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+    qEl.textContent=P[i].soru;
+    fast.setAttribute("aria-pressed","false");slow.setAttribute("aria-pressed","false");
+    box.innerHTML='<span class="lab">bir yöntem seç</span><div class="think-line">Model ne yapacağını bekliyor…</div>';
+  }
+  pb.forEach((b,i)=>b.addEventListener("click",()=>select(i)));
   fast.addEventListener("click",async()=>{
-    const my=++gen;fast.setAttribute("aria-pressed","true");slow.setAttribute("aria-pressed","false");
+    const my=++gen,p=P[cur];fast.setAttribute("aria-pressed","true");slow.setAttribute("aria-pressed","false");
     box.innerHTML='<span class="lab">düşünme yok · doğrudan cevap</span>';
     await sleep(350);if(my!==gen)return;
-    const a=document.createElement("div");a.className="answer bad";box.append(a);
-    await typeLine(a,"Top 10 TL.",my);if(my!==gen)return;
-    const n=document.createElement("div");n.className="small";n.textContent="Akıcı, kendinden emin… ve yanlış. İlk sezgi kontrol edilmedi.";box.append(n);
+    const a=add("answer "+(p.hizli.dogru?"good":"bad"));
+    await typeLine(a,p.hizli.cevap,my);if(my!==gen)return;
+    add("small",p.hizli.not);
   });
   slow.addEventListener("click",async()=>{
-    const my=++gen;slow.setAttribute("aria-pressed","true");fast.setAttribute("aria-pressed","false");
+    const my=++gen,p=P[cur];slow.setAttribute("aria-pressed","true");fast.setAttribute("aria-pressed","false");
     box.innerHTML='<span class="lab">düşünme token’ları (normalde kullanıcıya gösterilmez)</span>';
-    for(const l of lines){if(my!==gen)return;const d=document.createElement("div");d.className="think-line";box.append(d);await typeLine(d,l,my);await sleep(220);}
+    for(const l of p.satirlar){if(my!==gen)return;const d=add("think-line");await typeLine(d,l,my);await sleep(220);}
     if(my!==gen)return;
-    const lab=document.createElement("span");lab.className="lab";lab.style.marginTop="6px";lab.textContent="cevap";box.append(lab);
-    const a=document.createElement("div");a.className="answer good";box.append(a);
-    await typeLine(a,"Top 5 TL.",my);if(my!==gen)return;
-    const n=document.createElement("div");n.className="small";n.textContent="Daha yavaş, daha çok token, ama doğru.";box.append(n);
+    const lab=add("lab","cevap");lab.style.marginTop="6px";
+    const a=add("answer good");
+    await typeLine(a,p.cevap,my);if(my!==gen)return;
+    const n=tokenize(p.satirlar.join(" ")).length;
+    add("th-meta",`≈ ${n} düşünme token’ı · Kullanılan alışkanlık: ${p.aliskanlik}`);
   });
+  select(0);
+})();
+
+/* ---------- 15b. Araçların arasında düşünme ---------- */
+(function(){
+  const S=D.aralikli||[];if(!S.length)return;
+  const el=$("#il-steps"),say=$("#il-say");
+  const lab={kullanici:"Kullanıcı",dusun:"Düşünme",arac:"Araç isteği",sonuc:"Araç sonucu",cevap:"Cevap"};
+  el.innerHTML=S.map(s=>`<div class="il-row on ${s.tur}"><span class="il-chip">${lab[s.tur]}</span><div class="il-body">${s.t?`<span>${esc(s.t)}</span>`:""}${s.p?`<pre>${esc(s.p)}</pre>`:""}</div></div>`).join("");
+  const rows=$$(".il-row",el);
+  const nd=S.filter(s=>s.tur==="dusun").length,na=S.filter(s=>s.tur==="arac").length;
+  const done=`${nd} düşünme bloğu, ${na} araç çağrısı. Model ikinci aracı, ilk aracın sonucunu gördükten ve üzerine düşündükten sonra seçti.`;
+  say.textContent=done;
+  let gen=0,played=false;
+  async function play(){
+    const my=++gen;rows.forEach(r=>r.classList.remove("on","cur"));say.textContent="Oynatılıyor…";
+    for(const r of rows){
+      if(my!==gen)return;
+      rows.forEach(x=>x.classList.remove("cur"));r.classList.add("on","cur");
+      await sleep(r.classList.contains("dusun")?1500:900);
+    }
+    if(my!==gen)return;
+    rows.forEach(x=>x.classList.remove("cur"));say.textContent=done;
+  }
+  $("#il-play").addEventListener("click",play);
+  watch($("#il-bench"),()=>{if(!played&&!RM){played=true;play();}},null,0.3);
+})();
+
+/* ---------- 15c. Düşünce metninin sadakati ---------- */
+(function(){
+  const F=D.sadakat;if(!F)return;
+  const q=$("#fa-q"),lines=$("#fa-lines"),ans=$("#fa-ans"),chk=$("#fa-check"),b0=$("#fa-yok"),b1=$("#fa-var");
+  let gen=0;
+  async function show(hint,instant){
+    const my=++gen,v=hint?F.var:F.yok,w=ms=>instant?Promise.resolve():sleep(ms);
+    b0.setAttribute("aria-pressed",String(!hint));b1.setAttribute("aria-pressed",String(hint));
+    q.innerHTML=esc(F.soru)+(hint?` <mark class="hint">${esc(F.ipucu)}</mark>`:"");
+    lines.innerHTML="";ans.textContent="";ans.className="answer";chk.innerHTML="";
+    for(const l of v.satirlar){await w(550);if(my!==gen)return;const d=document.createElement("div");d.className="think-line";d.textContent=l;lines.append(d);}
+    await w(400);if(my!==gen)return;
+    ans.textContent="Cevap: "+v.cevap;ans.className="answer "+(hint?"bad":"good");
+    chk.innerHTML=hint
+      ?'<div><span>Cevap ipucuna göre değişti mi?</span><b class="no">evet, B → C</b></div><div><span>Düşünce metni ipucundan bahsediyor mu?</span><b class="no">hayır</b></div>'
+      :'<div><span>Cevap doğru mu?</span><b class="ok">evet, 30</b></div><div><span>Gerekçe</span><b class="ok">kontrol edilmiş</b></div>';
+  }
+  b0.addEventListener("click",()=>show(false));
+  b1.addEventListener("click",()=>show(true));
+  show(false,true);
 })();
 
 /* ---------- 16. Efor ---------- */
