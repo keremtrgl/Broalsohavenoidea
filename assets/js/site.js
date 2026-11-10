@@ -797,7 +797,9 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
 
 /* ---------- 17. Araç atölyesi ---------- */
 (function(){
-  const scns=D.araclar||[];if(!scns.length)return;
+  const sira={temel:0,hesap:1,orta:2,zor:3};
+  const scns=(D.araclar||[]).concat(D.araclarEk||[]).map((s,i)=>[s,i]).sort((a,b)=>(sira[a[0].seviye]-sira[b[0].seviye])||a[1]-b[1]).map(x=>x[0]);
+  if(!scns.length)return;
   const tr=$("#transcript"),nodes=$$("#cycle .n"),edges=$$("#cycle .e"),dot=$("#cyc-dot"),bench=$("#tool-bench"),row=$("#scn-btns"),note=$("#scn-note"),toolLabel=$("#cyc-tool");
   row.innerHTML=scns.map((s,i)=>`<button class="btn sm" data-i="${i}" aria-pressed="${i===0}">${esc(s.ad)}<span class="lvl ${s.seviye}">${esc(s.seviye)}</span></button>`).join("");
   const btns=$$("button",row);
