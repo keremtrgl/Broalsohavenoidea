@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kaynaklar ve Dayanaklar</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Yapay zekânın içini anlatan sayfadaki bilgilerin kaynakları; kesin, temsilî ve hesaplanan bilgilerin ayrımı.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html" aria-label="Ana sayfaya dön">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="5" cy="6" r="3" fill="var(--teal)"/><circle cx="17" cy="6" r="3" fill="var(--amber)"/><circle cx="11" cy="17" r="3" fill="var(--teal)"/><path d="M5 6L11 17L17 6" stroke="var(--muted)" stroke-width="1.4" fill="none"/></svg>
+      <span class="bt">Yapay Zekânın İçi</span>
+    </a>
+    <nav class="chips" aria-label="Sayfalar">
+      <a href="index.html">← Ana sayfa</a><a href="sozluk.html">Sözlük</a><a href="kaynaklar.html" class="active" aria-current="page">Kaynaklar</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap subpage">
+  <div class="ch-head">
+    <div class="eyebrow">Alt sayfa · Kaynaklar</div>
+    <h1 class="sub-h1">Bu sayfadaki bilgiler nereden geliyor?</h1>
+    <p class="lede">Ana sayfadaki her bilgi üç gruptan birine giriyor: belgelerle doğrulanabilen kesin bilgiler, yayımlanmış araştırma bulguları ve konuyu anlatmak için hazırlanmış temsilî örnekler. Hangisinin hangisi olduğunu burada ayırdım.</p>
+  </div>
+
+  <div class="src-grid">
+    <section class="src-card ok">
+      <b class="src-k">1 · Kesin bilgiler</b>
+      <h2>Anthropic’in belgeleri (Kasım 2026)</h2>
+      <ul>
+        <li>Model fiyatları: Haiku 5.5 $0,10/$0,50, Sonnet 5.5 $2/$10, Opus 5.5 $4/$20, Fable 5.2 $8/$40 (milyon token başına, girdi/çıktı)</li>
+        <li>Önbellekten okuma fiyatları (Sonnet 5.5 $0,10, Opus 5.5 ve Fable 5.2 $0,20)</li>
+        <li>Çıktı token’ının girdi token’ının 5 katı fiyatlandırılması</li>
+        <li>1 milyon token bağlam, 128 bin token en uzun çıktı</li>
+        <li>Efor seviyeleri (low → max), varsayılanlar ve Fable 5.2 için önerilen başlangıç</li>
+        <li>Fable’da düşünmenin kapatılamaması; ham düşünme metninin gösterilmemesi</li>
+        <li>Yeni modellerde sıcaklık ve top-p ayarlarının kaldırılması</li>
+        <li>Hızlı mod: 2,5 kata kadar hızlı çıktı, Opus 5.5’te 2 kat fiyat</li>
+        <li>Yeni tokenizer’da aynı metnin %35’e kadar fazla token tutabilmesi</li>
+        <li>Güvenlik sınıflandırıcılarının ret durumunu kategoriyle işaretlemesi</li>
+      </ul>
+      <p class="small">Claude model ve sistem kartları: eğitim verisinin kaynakları, tarayıcının robots.txt kurallarına uyması, ödül hilesi raporları.</p>
+    </section>
+    <section class="src-card warn">
+      <b class="src-k">2 · Temsilî örnekler</b>
+      <h2>Anlatmak için hazırlananlar</h2>
+      <ul>
+        <li>Olasılık çubukları, ham puanlar ve dikkat ağırlıkları</li>
+        <li>Efor grafiğindeki başarı oranları, süreler ve maliyet çarpanları</li>
+        <li>Veri hunisi ve veri karışımı oranları</li>
+        <li>Fable ve Sonnet için yazılan örnek cevaplar, süreler ve başarı yüzdeleri</li>
+        <li>Araç atölyesindeki hava durumu, şirket veritabanı ve ekran verileri</li>
+        <li>Katman numaraları ve “not defteri” notları</li>
+        <li>Galata Kulesi, kafiye ve halüsinasyon canlandırmaları (orijinal deneyler İngilizce)</li>
+        <li>Pekiştirme denemelerinin sonuçları ve ödül hilesi eğrileri</li>
+      </ul>
+      <p class="small">Bunların hepsi ana sayfada “temsilî” ya da “canlandırma” etiketiyle işaretli.</p>
+    </section>
+    <section class="src-card calc">
+      <b class="src-k">3 · Hesaplananlar</b>
+      <h2>Kodla doğrulananlar</h2>
+      <ul>
+        <li>Molarite: 5,85 g NaCl / 250 mL → 0,400 M</li>
+        <li>Esneklik: orta nokta yöntemiyle −1,22; gelir 50.000 → 48.000 TL</li>
+        <li>Salı doğumlu erkek sorusu: 196 durum, 27 koşullu, 13 elverişli → 13/27</li>
+        <li>Kayıp formülü: −ln(olasılık)</li>
+        <li>Eğitim hesabı: 6 × parametre × token</li>
+        <li>BPE birleştirmeleri: sayfada gerçek algoritma çalışıyor</li>
+        <li>Önbellek hesabı: belgelerdeki fiyatlarla</li>
+      </ul>
+    </section>
+  </div>
+
+  <section class="refs-wrap">
+    <h2 class="sub-h2">Atıf yapılan araştırmalar</h2>
+    <p class="small">Başlıklarla aranarak bulunabilir. Anthropic çalışmaları ayrıca belirtildi.</p>
+    <ol class="refs">
+    <li><b>Attention Is All You Need</b><span>2017 · Transformer mimarisi ve dikkat mekanizması · <a href="index.html#dikkat">Bölüm 4</a></span></li>
+    <li><b>Neural Machine Translation of Rare Words with Subword Units</b><span>2016 · BPE ile alt kelime token’ları · <a href="index.html#token">Bölüm 2</a></span></li>
+    <li><b>RoFormer: Enhanced Transformer with Rotary Position Embedding</b><span>2021 · Dönme açılarıyla konum kodlaması (RoPE) · <a href="index.html#anlam">Bölüm 3</a></span></li>
+    <li><b>Efficient Streaming Language Models with Attention Sinks</b><span>2023 · Dikkat çukuru: ilk token’a yığılan dikkat · <a href="index.html#dikkat">Bölüm 4</a></span></li>
+    <li><b>Locating and Editing Factual Associations in GPT</b><span>2022 · Gerçek bilgilerin MLP katmanlarında saklanması · <a href="index.html#katman">Bölüm 5</a></span></li>
+    <li><b>Scaling Laws for Neural Language Models</b><span>2020 · Ölçek yasaları · <a href="index.html#olcek">Bölüm 9</a></span></li>
+    <li><b>Training Compute-Optimal Large Language Models</b><span>2022 · “Chinchilla”: parametre başına ~20 token · <a href="index.html#olcek">Bölüm 9</a></span></li>
+    <li><b>Training language models to follow instructions with human feedback</b><span>2022 · İnsan geri bildirimiyle pekiştirme (RLHF) · <a href="index.html#sonegitim">Bölüm 10</a></span></li>
+    <li><b>Constitutional AI: Harmlessness from AI Feedback · Anthropic</b><span>2022 · Anayasal YZ ve yapay zekâ geri bildirimi (RLAIF) · <a href="index.html#sonegitim">Bölüm 10</a></span></li>
+    <li><b>Scaling Laws for Reward Model Overoptimization</b><span>2022 · Ödül modeline aşırı optimizasyon · <a href="index.html#tuzak">Bölüm 11</a></span></li>
+    <li><b>Towards Understanding Sycophancy in Language Models · Anthropic</b><span>2023 · Dalkavukluk · <a href="index.html#tuzak">Bölüm 11</a></span></li>
+    <li><b>Natural emergent misalignment from reward hacking in production RL · Anthropic</b><span>2025 · Ödül hilesinin genellenmesi · <a href="index.html#tuzak">Bölüm 11</a></span></li>
+    <li><b>Sorumlu Ölçekleme Politikası ve ASL-3 korumaları · Anthropic</b><span>2023–2025 · Güvenlik seviyeleri ve yayın öncesi değerlendirme · <a href="index.html#guvenlik">Bölüm 12</a></span></li>
+    <li><b>Fast Inference from Transformers via Speculative Decoding</b><span>2023 · Spekülatif çözme · <a href="index.html#sunum">Bölüm 13</a></span></li>
+    <li><b>Reasoning Models Don’t Always Say What They Think · Anthropic</b><span>2025 · Düşünce metninin sadakati · <a href="index.html#dusunme">Bölüm 15</a></span></li>
+    <li><b>Toy Models of Superposition · Anthropic</b><span>2022 · Süperpozisyon · <a href="index.html#icgozlem">Bölüm 18</a></span></li>
+    <li><b>Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet · Anthropic</b><span>2024 · Özellikler ve “Golden Gate Claude” · <a href="index.html#icgozlem">Bölüm 18</a></span></li>
+    <li><b>On the Biology of a Large Language Model · Anthropic</b><span>2025 · Kafiye planı, iki adımlı akıl yürütme, kafadan toplama, halüsinasyon devresi, çok dillilik · <a href="index.html#icgozlem">Bölüm 18</a></span></li>
+    <li><b>Emergent Introspective Awareness in Large Language Models · Anthropic</b><span>2025 · Modellerin iç gözlem yeteneği · <a href="index.html#icgozlem">Bölüm 18</a></span></li>
+    </ol>
+  </section>
+</main>
+<footer>
+  <div class="wrap">
+    <p><b style="color:var(--ink)">Yapay Zekânın İçi</b> · Kasım 2026 · <a href="index.html">Ana sayfaya dön</a></p>
+  </div>
+</footer>
+</body>
+</html>
