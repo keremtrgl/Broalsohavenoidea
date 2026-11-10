@@ -708,6 +708,33 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
   set(2);
 })();
 
+/* ---------- 16b. Efor örnekleri (kaydırıcıya bağlı) ---------- */
+(function(){
+  const T=D.efor||[];if(!T.length)return;
+  const L=["low","medium","high","xhigh","max"];
+  const r=$("#ef-range"),tb=$("#efx-tasks"),strip=$("#efx-strip");
+  let t=0;
+  tb.innerHTML=T.map((x,i)=>`<button class="btn sm" aria-pressed="${i===0}">${esc(x.ad)}</button>`).join("");
+  const tbtns=$$("button",tb);
+  const icon=s=>s==="ok"?"✓":s==="no"?"✗":"~";
+  function anim(el){el.style.animation="none";void el.offsetWidth;el.style.animation="";}
+  function render(){
+    const task=T[t],i=+r.value,lv=task.seviyeler[i];
+    tbtns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===t)));
+    $("#efx-req").textContent=task.istek;
+    const mx=Math.max(...task.seviyeler.map(s=>s.token));
+    strip.innerHTML=task.seviyeler.map((s,j)=>`<button class="efc${j===i?" on":""}" data-i="${j}" aria-pressed="${j===i}" aria-label="${L[j]}: ${esc(s.meta[s.meta.length-1][1])}"><span class="efc-l">${L[j]}</span><span class="efc-b"><i style="height:${Math.max(5,s.token/mx*100).toFixed(1)}%"></i></span><span class="efc-r ${s.sonuc}">${icon(s.sonuc)}</span></button>`).join("");
+    $$(".efc",strip).forEach(b=>b.addEventListener("click",()=>{r.value=b.dataset.i;r.dispatchEvent(new Event("input"));}));
+    $("#efx-lvl").textContent=L[i];
+    const th=$("#efx-think"),an=$("#efx-ans");th.textContent=lv.dusunce;an.textContent=lv.cevap;anim(th);anim(an);
+    $("#efx-meta").innerHTML=lv.meta.map(([k,v])=>{const c=/^✓/.test(v)?"ok":/^✗/.test(v)?"no":/^~ /.test(v)?"mid":"";return `<dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd>`;}).join("");
+    $("#efx-verdict").textContent=task.karar;
+  }
+  tbtns.forEach((b,j)=>b.addEventListener("click",()=>{t=j;render();}));
+  r.addEventListener("input",render);
+  render();
+})();
+
 /* ---------- 17. Araç atölyesi ---------- */
 (function(){
   const scns=D.araclar||[];if(!scns.length)return;
