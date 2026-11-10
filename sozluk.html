@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekâ Sözlüğü</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Yapay zekânın içini anlatan sayfada geçen terimlerin aranabilir, sade tanımları.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="index.html" aria-label="Ana sayfaya dön">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="5" cy="6" r="3" fill="var(--teal)"/><circle cx="17" cy="6" r="3" fill="var(--amber)"/><circle cx="11" cy="17" r="3" fill="var(--teal)"/><path d="M5 6L11 17L17 6" stroke="var(--muted)" stroke-width="1.4" fill="none"/></svg>
+      <span class="bt">Yapay Zekânın İçi</span>
+    </a>
+    <nav class="chips" aria-label="Sayfalar">
+      <a href="index.html">← Ana sayfa</a><a href="sozluk.html" class="active" aria-current="page">Sözlük</a><a href="kaynaklar.html">Kaynaklar</a>
+    </nav>
+  </div>
+</header>
+<main class="wrap subpage">
+  <div class="ch-head">
+    <div class="eyebrow">Alt sayfa · Cep sözlüğü</div>
+    <h1 class="sub-h1">Yapay zekâ sözlüğü</h1>
+    <p class="lede">Ana sayfada geçen 50 terimin kısa tanımları. Her terimin yanındaki bağlantı, o kavramın anlatıldığı bölüme götürür.</p>
+  </div>
+  <div class="gl-search"><label class="small" for="gl-q">Sözlükte ara</label><input type="search" id="gl-q" placeholder="ör. önbellek, token, ödül…" autocomplete="off"><span class="small" id="gl-count"></span></div>
+  <dl class="gloss" id="gloss">
+      <div><dt>Ajan</dt><dd>Araçları döngü içinde kullanarak çok adımlı bir işi kendi başına yürüten model. <a href="index.html#arac">Bölüm 17</a></dd></div>
+      <div><dt>Anayasal YZ</dt><dd>Anthropic’in, yazılı ilkelere göre modelin kendini eleştirip düzelttiği eğitim yöntemi. <a href="index.html#sonegitim">Bölüm 10</a></dd></div>
+      <div><dt>Araç (tool)</dt><dd>Modelin istek yazıp senin programına çalıştırttığı dış yetenek. <a href="index.html#arac">Bölüm 17</a></dd></div>
+      <div><dt>Artık akış</dt><dd>Her katmanın okuyup yazdığı ortak not defteri. <a href="index.html#katman">Bölüm 5</a></dd></div>
+      <div><dt>ASL</dt><dd>Anthropic’in yapay zekâ güvenlik seviyeleri; yetenek arttıkça daha sıkı önlem gerektirir. <a href="index.html#guvenlik">Bölüm 12</a></dd></div>
+      <div><dt>Bağlam penceresi</dt><dd>Modelin tek seferde görebildiği metnin üst sınırı. <a href="index.html#baglam">Bölüm 14</a></dd></div>
+      <div><dt>Bilgi kesim tarihi</dt><dd>Eğitim verisinin dondurulduğu tarih; model sonrasını bilmez. <a href="index.html#veri">Bölüm 7</a></dd></div>
+      <div><dt>BPE</dt><dd>Sık yan yana gelen parçaları birleştirerek token sözlüğünü veriden çıkaran algoritma. <a href="index.html#token">Bölüm 2</a></dd></div>
+      <div><dt>Çoklu kafa</dt><dd>Her katmanda paralel çalışan, her biri farklı ilişkilere bakan çok sayıda dikkat birimi. <a href="index.html#dikkat">Bölüm 4</a></dd></div>
+      <div><dt>Dalkavukluk</dt><dd>Doğru olanı değil, kullanıcının duymak istediğini söyleme eğilimi. <a href="index.html#tuzak">Bölüm 11</a></dd></div>
+      <div><dt>Damıtma</dt><dd>Büyük bir öğretmen modelin bilgisini küçük bir öğrenci modele aktarma. <a href="index.html#modeller">Bölüm 19</a></dd></div>
+      <div><dt>Dikkat</dt><dd>Her token’ın diğerlerine “benim için ne kadar önemlisin?” diye sorduğu mekanizma. <a href="index.html#dikkat">Bölüm 4</a></dd></div>
+      <div><dt>Dikkat çukuru</dt><dd>Dikkat kafalarının işi yokken ilk token’a yönelmesi; bir tür park yeri. <a href="index.html#dikkat">Bölüm 4</a></dd></div>
+      <div><dt>Doğrulanabilir ödül</dt><dd>Cevabı bir test ya da kontrol programının otomatik puanladığı eğitim sinyali. <a href="index.html#sonegitim">Bölüm 10</a></dd></div>
+      <div><dt>Düşünme token’ları</dt><dd>Modelin cevaptan önce yazdığı, kullanıcıya gösterilmeyen müsvedde. <a href="index.html#dusunme">Bölüm 15</a></dd></div>
+      <div><dt>Efor</dt><dd>Modelin bir iş için ne kadar düşünüp ne kadar uğraşacağını belirleyen ayar. <a href="index.html#efor">Bölüm 16</a></dd></div>
+      <div><dt>Geri yayılım</dt><dd>Hatanın suçunu katmanlar boyunca geriye dağıtıp her düğmenin yönünü hesaplayan yöntem. <a href="index.html#onegitim">Bölüm 8</a></dd></div>
+      <div><dt>Gömme (embedding)</dt><dd>Bir token’ın anlam haritasındaki adresi: binlerce sayıdan oluşan bir liste. <a href="index.html#anlam">Bölüm 3</a></dd></div>
+      <div><dt>Halüsinasyon</dt><dd>Akla yatkın görünen ama yanlış bilgi üretmek. <a href="index.html#icgozlem">Bölüm 18</a></dd></div>
+      <div><dt>Hızlı mod</dt><dd>Aynı modeli daha yüksek fiyata, daha hızlı çıktı üretecek şekilde çalıştıran seçenek. <a href="index.html#sunum">Bölüm 13</a></dd></div>
+      <div><dt>İstem enjeksiyonu</dt><dd>Modelin okuduğu bir belgenin içine gizlenmiş kötü niyetli talimat. <a href="index.html#arac">Bölüm 17</a></dd></div>
+      <div><dt>İstem önbelleği</dt><dd>Tekrar eden metin başlangıcının hesabını saklayıp ucuza yeniden kullanma. <a href="index.html#baglam">Bölüm 14</a></dd></div>
+      <div><dt>Kayıp (loss)</dt><dd>Modelin doğru cevaba ne kadar şaşırdığının ölçüsü. Eğitim bunu düşürmeye çalışır. <a href="index.html#onegitim">Bölüm 8</a></dd></div>
+      <div><dt>Kırmızı takım</dt><dd>Modeli bilerek kötüye kullanmaya çalışıp açıklarını bulan uzman ekip. <a href="index.html#guvenlik">Bölüm 12</a></dd></div>
+      <div><dt>Kısıtlı çözümleme</dt><dd>Şemaya uymayan token’ları silerek çıktının geçerli olmasını garanti etme. <a href="index.html#arac">Bölüm 17</a></dd></div>
+      <div><dt>KL cezası</dt><dd>Pekiştirme sırasında modelin başlangıç hâlinden fazla uzaklaşmasını engelleyen “tasma”. <a href="index.html#sonegitim">Bölüm 10</a></dd></div>
+      <div><dt>Konum kodlaması</dt><dd>Kelimelerin sırasını modele bildiren ek bilgi; birçok modelde dönme açılarıyla. <a href="index.html#anlam">Bölüm 3</a></dd></div>
+      <div><dt>Kum havuzu (sandbox)</dt><dd>Kodun ya da ajanın, gerçek sistemlere zarar veremeyeceği yalıtılmış ortam. <a href="index.html#arac">Bölüm 17</a></dd></div>
+      <div><dt>KV önbelleği</dt><dd>Önceki token’ların dikkat anahtarları ve değerlerinin saklandığı bellek. <a href="index.html#sunum">Bölüm 13</a></dd></div>
+      <div><dt>Logit</dt><dd>Her aday token için çıkan ham puan; softmax ile yüzdeye çevrilir. <a href="index.html#cikti">Bölüm 6</a></dd></div>
+      <div><dt>MCP</dt><dd>Araçları farklı yapay zekâ uygulamalarına takmak için ortak protokol. <a href="index.html#arac">Bölüm 17</a></dd></div>
+      <div><dt>Nedensel maske</dt><dd>Bir token’ın kendinden sonra gelenlere bakmasını engelleyen kural. <a href="index.html#dikkat">Bölüm 4</a></dd></div>
+      <div><dt>Ödül hilesi</dt><dd>Modelin, hakemin kör noktalarını kullanarak puanı yükseltip gerçek kaliteyi düşürmesi. <a href="index.html#tuzak">Bölüm 11</a></dd></div>
+      <div><dt>Öğrenme oranı</dt><dd>Her eğitim adımında düğmelerin ne kadar çevrileceği. <a href="index.html#onegitim">Bölüm 8</a></dd></div>
+      <div><dt>Ölçek yasaları</dt><dd>Hesap, veri ve boyut arttıkça kaybın tahmin edilebilir biçimde düşmesi. <a href="index.html#olcek">Bölüm 9</a></dd></div>
+      <div><dt>Özellik (feature)</dt><dd>Modelin içinde belirli bir kavrama karşılık gelen yön. <a href="index.html#icgozlem">Bölüm 18</a></dd></div>
+      <div><dt>Parametre</dt><dd>Modelin içindeki ayarlanabilir sayılar. Eğitim bunları düzeltmekten ibarettir. <a href="index.html#katman">Bölüm 5</a></dd></div>
+      <div><dt>Prefill / decode</dt><dd>Girdinin paralel okunduğu hızlı aşama ve çıktının tek tek yazıldığı yavaş aşama. <a href="index.html#sunum">Bölüm 13</a></dd></div>
+      <div><dt>RLHF</dt><dd>İnsan tercihleriyle eğitilmiş bir ödül modeline göre yapılan pekiştirmeli öğrenme. <a href="index.html#sonegitim">Bölüm 10</a></dd></div>
+      <div><dt>Sıcaklık / top-p</dt><dd>Seçimin ne kadar maceracı olacağını belirleyen örnekleme ayarları. <a href="index.html#cikti">Bölüm 6</a></dd></div>
+      <div><dt>Sıkıştırma</dt><dd>Konuşma bağlam sınırına yaklaşınca eski kısmın özetlenip özetle devam edilmesi. <a href="index.html#baglam">Bölüm 14</a></dd></div>
+      <div><dt>Sistem kartı</dt><dd>Bir model yayımlanırken paylaşılan test, risk ve önlem raporu. <a href="index.html#guvenlik">Bölüm 12</a></dd></div>
+      <div><dt>Sistem talimatı</dt><dd>Uygulamanın, senin görmediğin şekilde konuşmanın başına koyduğu yönergeler. <a href="index.html#baglam">Bölüm 14</a></dd></div>
+      <div><dt>Spekülatif çözme</dt><dd>Küçük bir taslak modelin önerdiği token’ları büyük modelin tek seferde onaylayarak hızlanma tekniği. <a href="index.html#sunum">Bölüm 13</a></dd></div>
+      <div><dt>Süperpozisyon</dt><dd>Modelin, nöron sayısından fazla kavramı aynı boşluğa üst üste sıkıştırması. <a href="index.html#icgozlem">Bölüm 18</a></dd></div>
+      <div><dt>Temel model</dt><dd>Ön eğitimden çıkmış, henüz asistan olmayı öğrenmemiş metin tamamlayıcı. <a href="index.html#onegitim">Bölüm 8</a></dd></div>
+      <div><dt>Test zamanı hesabı</dt><dd>Eğitimde değil, cevap anında daha fazla hesap (düşünme token’ı) harcayarak daha iyi sonuç almak. <a href="index.html#dusunme">Bölüm 15</a></dd></div>
+      <div><dt>Token</dt><dd>Modelin okuduğu ve yazdığı en küçük metin parçası. Ücret ve hafıza bununla ölçülür. <a href="index.html#token">Bölüm 2</a></dd></div>
+      <div><dt>Transformer</dt><dd>Dikkat ve MLP bloklarını katman katman dizen, bugünkü dil modellerinin temel yapısı. <a href="index.html#dikkat">Bölüm 4</a></dd></div>
+      <div><dt>Uyarlanabilir düşünme</dt><dd>Modelin bir soru için ne kadar düşüneceğine kendisinin karar vermesi. <a href="index.html#dusunme">Bölüm 15</a></dd></div>
+  </dl>
+  <p class="small" id="gl-none" hidden>Bu aramayla eşleşen terim yok.</p>
+</main>
+<footer>
+  <div class="wrap">
+    <p><b style="color:var(--ink)">Yapay Zekânın İçi</b> · Kasım 2026 · <a href="index.html">Ana sayfaya dön</a></p>
+  </div>
+</footer>
+<script src="assets/js/sozluk.js"></script>
+</body>
+</html>
