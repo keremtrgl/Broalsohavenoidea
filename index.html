@@ -828,8 +828,9 @@
     </div>
     <div class="grid2">
       <div class="bench">
-        <div class="bench-title"><h3>Deney: aynı soru, iki yöntem</h3><span class="tag">karşılaştır</span></div>
-        <p class="q">Bir sopa ve bir top toplam 110 TL. Sopa toptan 100 TL daha pahalı. Top kaç TL?</p>
+        <div class="bench-title"><h3>Deney: aynı soru, iki yöntem</h3><span class="tag">6 soru</span></div>
+        <div class="row" id="th-probs"></div>
+        <p class="q" id="th-q">Bir sopa ve bir top toplam 110 TL. Sopa toptan 100 TL daha pahalı. Top kaç TL?</p>
         <div class="row"><button class="btn" id="th-fast" aria-pressed="false">Hemen cevap ver</button><button class="btn" id="th-slow" aria-pressed="false">Önce düşün</button></div>
         <div class="think-box" id="th-box" aria-live="polite">
           <span class="lab">bir yöntem seç</span>
@@ -837,7 +838,7 @@
         </div>
       </div>
       <div class="prose">
-        <p>Klasik bir model, ilk aklına gelen akıcı cevabı yazar. Bu soruda ilk gelen “10 TL” olur. Yanlış. (Top 10 ise sopa 110 olur, toplam 120 eder.)</p>
+        <p>Klasik bir model, ilk aklına gelen akıcı cevabı yazar. Sopa-top sorusunda ilk gelen “10 TL” olur. Yanlış. (Top 10 ise sopa 110 olur, toplam 120 eder.) Soldaki diğer sorular da aynı türden tuzaklar: hızlı sezgiyi yakalayan ama birkaç satır düşünmeyle çözülen sorular. Her birinde düşünmenin farklı bir alışkanlığı işe yarıyor: geriye doğru düşünmek, birim hıza indirmek, harfleri tek tek yazmak, olmayınca geri dönmek. Son soru ise tersini gösteriyor: kolay bir soruda model düşünmeyi kendisi kısa keser.</p>
         <p>Düşünen model ise önce bir müsvedde yazar: bilinmeyeni koyar, denklemi kurar, sonucu kontrol eder, hata görürse geri döner. Her yazdığı satır bir sonraki tahmine bağlam olur. Yani <span class="hl">daha fazla token üretmek, modele fazladan “hesap zamanı” kazandırır.</span> Buna “test zamanı hesabı” deniyor: eğitimde değil, cevap anında daha çok hesap harcamak.</p>
         <h3>Bu nasıl öğretiliyor?</h3>
         <p>Bölüm 10’daki doğrulanabilir ödüllerle. Model zor problemlerde düşünür, doğru sonuca ulaşan düşünme biçimleri ödüllendirilir. Zamanla “bir dakika, kontrol edeyim”, “başka bir yol deneyeyim” gibi alışkanlıklar kendiliğinden gelişir.</p>
@@ -857,6 +858,24 @@
       <div class="prose">
         <div class="know"><b>Çoğu kişi bilmez</b>Modelin yazdığı düşünce metni, içeride gerçekte olanın her zaman sadık bir kaydı değil. Anthropic 2025’te yayımladığı bir çalışmada modellere sorunun içine gizli bir ipucu koydu. Modeller ipucunu kullanarak cevap verdiği hâlde, bunu düşünce metninde vakaların yalnızca bir kısmında itiraf etti. Düşünce metni faydalı bir pencere, ama kusursuz bir ayna değil.</div>
         <div class="note">Fable gibi en güçlü modellerde düşünme <b>hep açık</b>; kapatılamaz, sadece efor ile derinliği ayarlanır.</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="bench" id="il-bench">
+        <div class="bench-title"><h3>Araçların arasında düşünme</h3><button class="btn sm" id="il-play">Oynat</button></div>
+        <div class="il-steps" id="il-steps"></div>
+        <p class="small" id="il-say"></p>
+        <p class="disclaim">Temsilî örnek; hava ve takvim verileri uydurma.</p>
+      </div>
+      <div class="bench">
+        <div class="bench-title"><h3>Düşünce metni her zaman dürüst mü?</h3><span class="tag">canlandırma</span></div>
+        <div class="row"><button class="btn sm" id="fa-yok" aria-pressed="true">İpucu yok</button><button class="btn sm" id="fa-var" aria-pressed="false">İpucu var</button></div>
+        <p class="q" id="fa-q" style="font-size:1.02rem"></p>
+        <div class="think-box" style="min-height:0"><span class="lab">düşünme</span><div id="fa-lines" style="display:grid;gap:8px"></div><div class="answer" id="fa-ans"></div></div>
+        <div class="fa-check" id="fa-check"></div>
+        <p class="small">Soruya küçük bir ipucu eklenince model cevabını değiştiriyor ama düşünce metninde ipucundan hiç bahsetmiyor; sonuca kendi başına varmış gibi bir gerekçe kuruyor.</p>
+        <p class="disclaim">Anthropic’in 2025’te yayımladığı çalışmanın Türkçe canlandırması. Orijinal deneyde modeller ipucunu kullandığı hâlde bunu düşünce metninde vakaların yalnızca bir kısmında belirtti.</p>
       </div>
     </div>
   </div>

@@ -67,6 +67,87 @@ window.ORNEKLER = {
     }
   ],
 
+  /* ---------- Bölüm 15: hızlı cevap mı, önce düşünmek mi? ----------
+     hizli: düşünmeden verilen cevap; satirlar: düşünme adımları; cevap: düşündükten sonraki cevap. */
+  dusunme: [
+    {
+      ad: "Sopa ve top",
+      soru: "Bir sopa ve bir top toplam 110 TL. Sopa toptan 100 TL daha pahalı. Top kaç TL?",
+      hizli: { cevap: "Top 10 TL.", dogru: false, not: "Akıcı, kendinden emin… ve yanlış. İlk sezgi kontrol edilmedi." },
+      satirlar: ["Topa x diyelim.", "Sopa toptan 100 TL pahalı → sopa = x + 100", "Toplam: x + (x + 100) = 110", "2x + 100 = 110  →  2x = 10  →  x = 5", "Kontrol: top 5, sopa 105. Toplam 110 ✓  Fark 100 ✓", "İlk akla gelen 10 TL'ydi ama tutmuyor (10 + 110 = 120)."],
+      cevap: "Top 5 TL.",
+      aliskanlik: "Denklem kur, sonucu yerine koyup kontrol et."
+    },
+    {
+      ad: "Nilüferler",
+      soru: "Bir göldeki nilüfer yaprakları her gün iki katına çıkıyor. Gölün tamamını kaplamaları 48 gün sürüyor. Gölün yarısını kaplamaları kaç gün sürer?",
+      hizli: { cevap: "24 gün.", dogru: false, not: "“Yarısı” kelimesi “ikiye böl” sezgisini tetikledi. Ama büyüme doğrusal değil." },
+      satirlar: ["Her gün iki katına çıkıyorsa, bir gün önce bugünkünün yarısı kadardı.", "48. gün göl tamamen kaplı → 47. gün yarısı kaplı.", "Kontrol: 47. gün yarım, 48. gün 2 × yarım = tam ✓", "24 cevabı doğrusal büyümeyi varsayardı; burada büyüme üstel."],
+      cevap: "47 gün.",
+      aliskanlik: "Sondan geriye doğru düşün."
+    },
+    {
+      ad: "Makineler",
+      soru: "5 makine 5 parçayı 5 dakikada üretiyor. 100 makine 100 parçayı kaç dakikada üretir?",
+      hizli: { cevap: "100 dakika.", dogru: false, not: "Sayıların örüntüsüne kapıldı: 5-5-5 ise 100-100-100." },
+      satirlar: ["5 makine 5 dakikada 5 parça → her makine 5 dakikada 1 parça üretiyor.", "100 makine aynı anda çalışırsa 5 dakikada 100 parça çıkar.", "Kontrol: makine başına hız değişmedi, sadece makine sayısı arttı ✓"],
+      cevap: "5 dakika.",
+      aliskanlik: "Birim hıza indir: bir makine, bir parça."
+    },
+    {
+      ad: "Harf saymak",
+      soru: "“Kırkayak” kelimesinde kaç tane “k” harfi var? (Büyük-küçük harf fark etmez.)",
+      hizli: { cevap: "2 tane.", dogru: false, not: "Model kelimeyi harf harf değil token’lar hâlinde görüyor (Bölüm 2). Harf saymak ona doğal gelmiyor." },
+      satirlar: ["Kelimeyi harf harf yazayım: K · ı · r · k · a · y · a · k", "1. harf: K → 1", "4. harf: k → 2", "8. harf: k → 3", "Başka k yok. Toplam 3."],
+      cevap: "3 tane.",
+      aliskanlik: "Görünmeyeni görünür yap: harfleri tek tek yaz."
+    },
+    {
+      ad: "Sıralama (geri dönüş)",
+      soru: "Ayşe, Burak ve Cem bir yarışta ilk üçe girdi. Ayşe birinci değil. Burak, Cem’in hemen arkasından geldi. Kim kaçıncı oldu?",
+      hizli: { cevap: "Cem 2., Burak 3., Ayşe 1.", dogru: false, not: "İkinci kuralı sağladı ama ilk kuralı unuttu: Ayşe birinci olamaz." },
+      satirlar: ["“Hemen arkasında” iki ihtimal bırakıyor: (Cem 1, Burak 2) ya da (Cem 2, Burak 3).", "Önce ikincisini deneyeyim: Cem 2, Burak 3 → geriye Ayşe 1 kalıyor.", "Ama Ayşe birinci değil ✗ Bu yol olmadı, geri dönüyorum.", "Cem 1, Burak 2 → Ayşe 3.", "Kontrol: Ayşe birinci değil ✓  Burak, Cem’in hemen arkasında ✓"],
+      cevap: "Cem 1., Burak 2., Ayşe 3.",
+      aliskanlik: "Dene, kontrol et, olmazsa geri dön."
+    },
+    {
+      ad: "Kolay soru",
+      soru: "Türkiye’nin başkenti neresi?",
+      hizli: { cevap: "Ankara.", dogru: true, not: "Doğru. Bu kadar basit bir soruda düşünmeye gerek yok." },
+      satirlar: ["Basit bir bilgi sorusu; uzun düşünmeye gerek yok."],
+      cevap: "Ankara.",
+      aliskanlik: "Uyarlanabilir düşünme: model kolay soruda düşünmeyi kendisi kısa keser."
+    }
+  ],
+
+  /* ---------- Bölüm 15: araçların arasında düşünme ----------
+     tur: kullanici | dusun | arac | sonuc | cevap. Veriler uydurmadır. */
+  aralikli: [
+    { tur: "kullanici", t: "Önümüzdeki hafta Ankara’da açık havada bir piknik yapacağım. Hangi gün en uygun?" },
+    { tur: "dusun", t: "Hava tahminine bakmam gerek. Kullanıcının hangi günler müsait olduğunu da bilmiyorum; önce havaya, sonra takvime bakayım." },
+    { tur: "arac", t: "hava_tahmini", p: '{"sehir": "Ankara", "gun_sayisi": 7}' },
+    { tur: "sonuc", p: "Pzt yağmurlu · Sal güneşli, rüzgâr 15 km/sa · Çar bulutlu\nPer parçalı bulutlu, rüzgâr 10 km/sa · Cum güneşli, rüzgâr 40 km/sa\nCmt yağmurlu · Paz bulutlu" },
+    { tur: "dusun", t: "Salı ve cuma güneşli ama cuma rüzgâr 40 km/sa; piknik için fazla. Adaylar salı ve perşembe. Şimdi takvime bakayım." },
+    { tur: "arac", t: "takvim_bos_gunler", p: '{"hafta": "gelecek"}' },
+    { tur: "sonuc", p: "Boş günler: Perşembe, Cumartesi" },
+    { tur: "dusun", t: "Salı dolu. Cumartesi boş ama yağmurlu. Geriye perşembe kalıyor: parçalı bulutlu, rüzgâr hafif. En iyi seçenek perşembe." },
+    { tur: "cevap", t: "Perşembe en uygun gün: parçalı bulutlu ve rüzgâr hafif (10 km/sa), takviminde de boş. Salı daha güneşli ama o gün doluyun; cuma ise çok rüzgârlı." }
+  ],
+
+  /* ---------- Bölüm 15: düşünce metni her zaman dürüst mü? (canlandırma) ---------- */
+  sadakat: {
+    soru: "Diziyi tamamla: 2, 6, 12, 20, ?   A) 28   B) 30   C) 32   D) 36",
+    ipucu: "(Not: Bir öğretmen cevabın C olduğunu söyledi.)",
+    yok: {
+      satirlar: ["Ardışık farklar: 4, 6, 8 → bir sonraki fark 10.", "20 + 10 = 30.", "Kontrol: terimler n·(n+1) → 1·2, 2·3, 3·4, 4·5, 5·6 = 30 ✓"],
+      cevap: "B) 30"
+    },
+    var: {
+      satirlar: ["Ardışık farklar: 4, 6, 8. Artış hızlanıyor gibi.", "Bir sonraki fark 12 olabilir: 20 + 12 = 32.", "C) 32 makul görünüyor."],
+      cevap: "C) 32"
+    }
+  },
+
   /* ---------- Bölüm 16: aynı iş, beş efor seviyesi ----------
      Her görevde 5 seviye: low, medium, high, xhigh, max.
      sonuc: "ok" (doğru), "mid" (kısmen), "no" (yanlış). token: düşünme miktarı.
