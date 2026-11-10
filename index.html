@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Yapay Zekânın İçi</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Bir dil modelinin nasıl çalıştığını, nasıl eğitildiğini, nasıl düşündüğünü, araçları nasıl kullandığını ve efor ayarının neyi değiştirdiğini sade bir dille, animasyonlarla anlatan sayfa.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Figtree:wght@400;500;600;700&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Düzen: tek uzun "laboratuvar defteri" — her bölümde solda sade anlatım, sağda canlı bir deney masası; el yazısı notlar kenara iliştirilmiş. */
+:root{
+  --bg:#F1F4F1;
+  --surface:#FFFFFF;
+  --surface-2:#F7F9F6;
+  --ink:#1B2330;
+  --muted:#5A6577;
+  --line:#D8DED7;
+  --teal:#13756F;
+  --teal-soft:#D3EAE6;
+  --amber:#B87610;
+  --amber-soft:#F6E7C8;
+  --rose:#B9483F;
+  --rose-soft:#F5DCD8;
+  --grid:rgba(27,35,48,.045);
+  --t1:#D6ECE8; --t2:#F4E3C2; --t3:#E3DDF3; --t4:#F3D9D5; --t5:#DCE7F3;
+  --shadow:0 1px 2px rgba(27,35,48,.06),0 8px 24px -12px rgba(27,35,48,.18);
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Figtree", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --hand:"Caveat", "Comic Sans MS", cursive;
+  --mono:"JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --radius:14px;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#10151C; --surface:#171E27; --surface-2:#1B2430; --ink:#E3E9E5; --muted:#97A3B3; --line:#2A3441;
+    --teal:#4CC0B5; --teal-soft:#173836; --amber:#EDB24A; --amber-soft:#3A2E17; --rose:#E77C70; --rose-soft:#3D2220;
+    --grid:rgba(227,233,229,.035);
+    --t1:#1E3B39; --t2:#3B321D; --t3:#2E2A45; --t4:#422826; --t5:#213347;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#10151C; --surface:#171E27; --surface-2:#1B2430; --ink:#E3E9E5; --muted:#97A3B3; --line:#2A3441;
+  --teal:#4CC0B5; --teal-soft:#173836; --amber:#EDB24A; --amber-soft:#3A2E17; --rose:#E77C70; --rose-soft:#3D2220;
+  --grid:rgba(227,233,229,.035);
+  --t1:#1E3B39; --t2:#3B321D; --t3:#2E2A45; --t4:#422826; --t5:#213347;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px -14px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:84px}
+body{
+  margin:0;background:var(--bg);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.65;
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:28px 28px;
+  -webkit-font-smoothing:antialiased;
+}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:60;background:var(--bg)}
+a{color:var(--teal)}
+:focus-visible{outline:2px solid var(--teal);outline-offset:3px;border-radius:6px}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.02em;text-wrap:balance;line-height:1.08;margin:0}
+p{margin:0}
+code,.mono{font-family:var(--mono);font-size:.86em}
+
+/* ---------- Üst çubuk ---------- */
+.progress{position:fixed;top:env(safe-area-inset-top,0px);left:0;height:3px;width:0;background:var(--teal);z-index:70;transition:width .1s linear}
+.topbar{
+  position:sticky;top:env(safe-area-inset-top,0px);z-index:50;
+  background:color-mix(in srgb,var(--bg) 88%,transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar-in{
+  max-width:1160px;margin:0 auto;display:flex;align-items:center;gap:16px;
+  padding-block:10px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+.brand{font-family:var(--display);font-weight:800;font-size:1.05rem;white-space:nowrap;color:var(--ink);text-decoration:none;display:flex;align-items:center;gap:8px}
+.brand svg{flex:none}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;min-width:0;mask-image:linear-gradient(90deg,#000 92%,transparent)}
+.chips::-webkit-scrollbar{display:none}
+.chips a{
+  flex:none;font-size:.82rem;font-weight:600;text-decoration:none;color:var(--muted);
+  padding:5px 11px;border-radius:999px;border:1px solid transparent;transition:.2s;
+}
+.chips a:hover{color:var(--ink);border-color:var(--line)}
+.chips a.active{color:var(--teal);background:var(--teal-soft)}
+
+/* ---------- Genel düzen ---------- */
+.wrap{max-width:1160px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.chapter{padding-block:72px;border-top:1px dashed var(--line)}
+.ch-head{display:grid;gap:10px;margin-bottom:34px;max-width:760px}
+.eyebrow{font-family:var(--mono);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;color:var(--teal);font-weight:600}
+.ch-head h2{font-size:clamp(1.9rem,4.2vw,2.9rem);font-weight:800}
+.lede{font-size:1.12rem;color:var(--muted);max-width:62ch}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:44px;align-items:start}
+.grid2 > *{min-width:0}
+@media (max-width:900px){.grid2{grid-template-columns:minmax(0,1fr);gap:28px}}
+.prose{display:grid;gap:16px;max-width:62ch}
+.prose h3{font-size:1.3rem;font-weight:700;margin-top:6px}
+.prose ul{margin:0;padding-left:1.2em;display:grid;gap:6px}
+.prose strong{color:var(--ink)}
+.hl{background:linear-gradient(transparent 55%,var(--amber-soft) 55%);padding:0 2px}
+
+/* Deney masası */
+.bench{
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);padding:22px;display:grid;gap:16px;position:relative;
+}
+.bench-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.bench-title h3{font-size:1rem;font-weight:700;font-family:var(--body);letter-spacing:0}
+.tag{font-family:var(--mono);font-size:.7rem;color:var(--muted);border:1px solid var(--line);padding:3px 8px;border-radius:999px;white-space:nowrap}
+.tag.live::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin-right:6px;vertical-align:1px;animation:blink 1.6s infinite}
+@keyframes blink{50%{opacity:.25}}
+
+/* El yazısı notlar */
+.note{
+  font-family:var(--hand);font-size:1.38rem;line-height:1.25;font-weight:500;
+  background:var(--amber-soft);color:var(--ink);padding:14px 18px 14px 18px;border-radius:3px 12px 4px 10px;
+  transform:rotate(-1.2deg);box-shadow:0 6px 14px -10px rgba(0,0,0,.4);max-width:46ch;position:relative;
+}
+.note.r{transform:rotate(1deg)}
+.note.teal{background:var(--teal-soft)}
+.note b{font-weight:700}
+.note::before{content:"";position:absolute;top:-9px;left:28px;width:56px;height:18px;background:color-mix(in srgb,var(--surface) 70%,transparent);border:1px solid var(--line);transform:rotate(-4deg)}
+.small{font-size:.86rem;color:var(--muted)}
+.disclaim{font-size:.8rem;color:var(--muted);font-style:italic}
+
+/* Butonlar ve kontroller */
+.btn{
+  font:600 .9rem var(--body);color:var(--ink);background:var(--surface-2);border:1px solid var(--line);
+  padding:8px 14px;border-radius:10px;cursor:pointer;transition:.18s;
+}
+.btn:hover{border-color:var(--teal);color:var(--teal)}
+.btn.primary{background:var(--teal);color:var(--surface);border-color:var(--teal)}
+.btn.primary:hover{filter:brightness(1.08);color:var(--surface)}
+.btn[aria-pressed="true"]{background:var(--teal-soft);border-color:var(--teal);color:var(--teal)}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+input[type=range]{width:100%;accent-color:var(--teal)}
+textarea,input[type=text]{
+  width:100%;font:500 1rem var(--body);color:var(--ink);background:var(--surface-2);
+  border:1px solid var(--line);border-radius:10px;padding:10px 12px;resize:vertical;
+}
+
+/* ---------- HERO ---------- */
+.hero{padding-block:64px 56px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:48px;align-items:center}
+.hero-grid > *{min-width:0}
+@media (max-width:900px){.hero-grid{grid-template-columns:minmax(0,1fr);gap:32px}}
+.hero h1{font-size:clamp(2.4rem,6.4vw,4.6rem);font-weight:800;line-height:1}
+.hero h1 em{font-style:normal;color:var(--teal);position:relative;white-space:nowrap}
+.hero h1 em svg{position:absolute;left:0;bottom:-.12em;width:100%;height:.3em;overflow:visible}
+.hero h1 em path{stroke:var(--amber);stroke-width:5;fill:none;stroke-linecap:round;stroke-dasharray:420;stroke-dashoffset:420;animation:draw 1.4s .5s ease forwards}
+@keyframes draw{to{stroke-dashoffset:0}}
+.hero .lede{margin-top:22px;font-size:1.18rem}
+.hero-meta{margin-top:26px;display:flex;gap:18px;flex-wrap:wrap}
+.hero-meta div{display:grid;gap:2px}
+.hero-meta b{font-family:var(--display);font-size:1.5rem}
+.hero-meta span{font-size:.82rem;color:var(--muted)}
+
+.console{font-family:var(--body)}
+.console-text{
+  font-family:var(--display);font-size:clamp(1.25rem,2.6vw,1.6rem);font-weight:600;line-height:1.35;min-height:4.2em;
+}
+.console-text .new-word{color:var(--teal);animation:pop .45s ease}
+@keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.caret{display:inline-block;width:3px;height:1.05em;background:var(--amber);vertical-align:-.15em;margin-left:3px;animation:blink 1s infinite}
+.cands{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.cand{display:grid;grid-template-columns:minmax(0,9.5em) minmax(0,1fr) 3.4em;gap:10px;align-items:center;font-size:.92rem;padding:4px 8px;border-radius:8px;transition:background .25s}
+.cand-w{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cand-bar{height:10px;background:var(--surface-2);border-radius:99px;overflow:hidden;border:1px solid var(--line)}
+.cand-bar i{display:block;height:100%;background:var(--muted);opacity:.45;border-radius:99px;transition:width .7s cubic-bezier(.2,.8,.2,1)}
+.cand-p{font-family:var(--mono);font-size:.78rem;color:var(--muted);text-align:right;font-variant-numeric:tabular-nums}
+.cand.chosen{background:var(--teal-soft)}
+.cand.chosen .cand-bar i{background:var(--teal);opacity:1}
+.cand.chosen .cand-w{color:var(--teal)}
+.hero-arrow{font-family:var(--hand);font-size:1.3rem;color:var(--amber);display:flex;align-items:center;gap:8px}
+
+/* ---------- Sıcaklık ---------- */
+.sentence{font-family:var(--display);font-size:1.4rem;font-weight:600}
+.sentence .blank{display:inline-block;min-width:4.5em;border-bottom:3px solid var(--amber);color:var(--teal);text-align:center;transition:.3s}
+.temp-label{display:flex;justify-content:space-between;font-size:.85rem;color:var(--muted)}
+.temp-label b{color:var(--ink);font-family:var(--mono)}
+
+/* ---------- Token ---------- */
+.toks{display:flex;flex-wrap:wrap;gap:5px;font-family:var(--mono);font-size:.95rem}
+.tok{padding:4px 7px;border-radius:6px;white-space:pre;animation:pop .3s ease both;color:var(--ink)}
+.tok .sp{opacity:.4}
+.ids{font-family:var(--mono);font-size:.78rem;color:var(--muted);line-height:1.7;word-break:break-word}
+.stats{display:flex;gap:22px;flex-wrap:wrap}
+.stat b{display:block;font-family:var(--display);font-size:1.7rem;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.8rem;color:var(--muted)}
+
+/* ---------- Anlam haritası ---------- */
+.map-wrap{overflow-x:auto}
+.map{width:100%;min-width:320px;height:auto;display:block}
+.map .cluster{fill:var(--surface-2);stroke:var(--line);stroke-dasharray:4 5}
+.map .clabel{font:600 11px var(--mono);fill:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.map .pt{cursor:pointer}
+.map .pt circle{fill:var(--teal);transition:r .2s}
+.map .pt text{font:600 14px var(--body);fill:var(--ink)}
+.map .pt:hover circle,.map .pt.sel circle{r:8}
+.map .pt.sel text{fill:var(--teal)}
+.map .float{animation:float 6s ease-in-out infinite}
+.map .float:nth-child(2n){animation-duration:7.5s}
+.map .float:nth-child(3n){animation-duration:5.2s;animation-direction:reverse}
+@keyframes float{50%{transform:translate(0,-4px)}}
+.map .arrow{stroke:var(--amber);stroke-width:2;fill:none;marker-end:url(#ah)}
+.map .arrow-t{font:500 15px var(--hand);fill:var(--amber)}
+.vec{font-family:var(--mono);font-size:.82rem;background:var(--surface-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;overflow-x:auto;white-space:nowrap}
+.vec b{color:var(--teal)}
+
+/* ---------- Dikkat ---------- */
+.att-scroll{overflow-x:auto;padding-bottom:4px}
+.att-inner{position:relative;display:inline-block;min-width:100%;padding-top:120px}
+.att-svg{position:absolute;top:0;left:0;height:120px;overflow:visible}
+.att-svg path{fill:none;stroke:var(--teal);stroke-linecap:round;transition:all .35s}
+.att-row{display:flex;gap:6px;white-space:nowrap}
+.att-tok{
+  font:600 1rem var(--body);padding:8px 11px;border-radius:9px;border:1px solid var(--line);
+  background:var(--surface-2);color:var(--ink);cursor:pointer;transition:.2s;position:relative;
+}
+.att-tok .w{position:absolute;left:50%;top:100%;transform:translateX(-50%);font:500 .68rem var(--mono);color:var(--muted);margin-top:4px}
+.att-tok.on{background:var(--amber-soft);border-color:var(--amber)}
+.att-tok.src{background:var(--teal);color:var(--surface);border-color:var(--teal)}
+.att-pad{height:22px}
+.layers{display:grid;grid-template-columns:auto minmax(0,1fr);gap:18px;align-items:center}
+.stack{position:relative;width:130px;display:flex;flex-direction:column-reverse;gap:6px}
+.stack div{height:22px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line);font:500 .68rem var(--mono);color:var(--muted);display:flex;align-items:center;justify-content:center}
+.stack .dot{position:absolute;left:50%;width:12px;height:12px;margin-left:-6px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 6px color-mix(in srgb,var(--amber) 25%,transparent);bottom:0;animation:rise 3.2s cubic-bezier(.5,0,.5,1) infinite}
+@keyframes rise{0%{bottom:-14px;opacity:0}10%{opacity:1}90%{opacity:1}100%{bottom:100%;opacity:0}}
+.layer-notes{display:grid;gap:10px;font-size:.9rem}
+.layer-notes div{border-left:3px solid var(--line);padding-left:10px}
+.layer-notes b{display:block;font-size:.78rem;font-family:var(--mono);color:var(--teal);font-weight:600}
+
+/* ---------- Eğitim ---------- */
+.stages{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-top:6px}
+@media (max-width:900px){.stages{grid-template-columns:minmax(0,1fr)}}
+.stage-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:20px;display:grid;gap:10px;align-content:start}
+.stage-card .k{font-family:var(--mono);font-size:.74rem;color:var(--teal);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+.stage-card h3{font-size:1.25rem}
+.stage-card p{font-size:.95rem;color:var(--muted)}
+.stage-card .ex{font-size:.88rem;background:var(--surface-2);border-radius:10px;padding:10px 12px;border:1px solid var(--line)}
+.train-lab{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;margin-top:22px}
+@media (max-width:900px){.train-lab{grid-template-columns:minmax(0,1fr)}}
+.knobs{display:grid;grid-template-columns:repeat(16,1fr);gap:6px}
+.knob{aspect-ratio:1;max-width:100%;border-radius:50%;border:1.5px solid var(--line);background:var(--surface-2);position:relative;transition:border-color .4s}
+.knob::after{content:"";position:absolute;left:50%;top:12%;width:2px;height:40%;margin-left:-1px;background:var(--ink);border-radius:2px;transform-origin:50% 95%;transform:rotate(var(--r,0deg));transition:transform .45s cubic-bezier(.3,.7,.3,1)}
+.knob.hot{border-color:var(--amber)}
+.loss-canvas{width:100%;height:170px;display:block}
+.fill-ex{font-size:1rem;display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}
+.guess{font-weight:700;padding:1px 8px;border-radius:6px;transition:.3s}
+.guess.bad{background:var(--rose-soft);color:var(--rose)}
+.guess.ok{background:var(--amber-soft);color:var(--amber)}
+.guess.good{background:var(--teal-soft);color:var(--teal)}
+.pref{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+@media (max-width:520px){.pref{grid-template-columns:minmax(0,1fr)}}
+.pref button{
+  text-align:left;font:500 .92rem/1.5 var(--body);color:var(--ink);background:var(--surface-2);
+  border:1.5px solid var(--line);border-radius:12px;padding:12px 14px;cursor:pointer;transition:.2s;display:grid;gap:6px;
+}
+.pref button:hover{border-color:var(--teal)}
+.pref button b{font-family:var(--mono);font-size:.74rem;color:var(--muted)}
+.pref button.win{border-color:var(--teal);background:var(--teal-soft)}
+.pref button.lose{opacity:.55}
+.reward{min-height:1.6em;font-weight:600;color:var(--teal)}
+
+/* ---------- Düşünme ---------- */
+.q{font-family:var(--display);font-size:1.15rem;font-weight:600;line-height:1.4}
+.think-box{border:1.5px dashed var(--line);border-radius:12px;padding:14px 16px;background:var(--surface-2);min-height:150px;font-size:.95rem;display:grid;gap:8px;align-content:start}
+.think-box .lab{font-family:var(--mono);font-size:.72rem;color:var(--muted);letter-spacing:.08em;text-transform:uppercase}
+.think-line{font-family:var(--mono);font-size:.85rem;color:var(--muted)}
+.answer{font-family:var(--display);font-size:1.3rem;font-weight:700}
+.answer.bad{color:var(--rose)}
+.answer.good{color:var(--teal)}
+.bubble-flow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:.85rem}
+.bubble-flow span{padding:6px 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface-2)}
+.bubble-flow .arr{border:none;background:none;color:var(--muted);padding:0}
+
+/* ---------- Efor ---------- */
+.effort-levels{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.78rem;color:var(--muted);margin-top:-4px}
+.effort-levels span.on{color:var(--teal);font-weight:600}
+.meters{display:grid;gap:12px}
+.meter{display:grid;grid-template-columns:8.5em minmax(0,1fr) 4.2em;gap:10px;align-items:center;font-size:.88rem}
+.meter .bar{height:12px;border-radius:99px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.meter .bar i{display:block;height:100%;border-radius:99px;transition:width .6s cubic-bezier(.2,.8,.2,1)}
+.meter .v{font-family:var(--mono);font-size:.8rem;text-align:right;font-variant-numeric:tabular-nums}
+.chart{width:100%;height:auto;display:block}
+.chart .ax{stroke:var(--line);stroke-width:1}
+.chart .gl{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4}
+.chart text{font:500 10.5px var(--mono);fill:var(--muted)}
+.chart .c-easy{stroke:var(--teal)}
+.chart .c-mid{stroke:var(--amber)}
+.chart .c-hard{stroke:var(--rose)}
+.chart polyline{fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.chart .mark{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:2 3;transition:all .4s}
+.chart circle{transition:all .4s}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--muted)}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px}
+.effort-say{font-size:.95rem;min-height:3.2em}
+
+/* ---------- Araçlar ---------- */
+.tool-grid{display:grid;grid-template-columns:minmax(0,1fr) 210px;gap:18px;align-items:start}
+@media (max-width:560px){.tool-grid{grid-template-columns:minmax(0,1fr)}}
+.transcript{display:grid;gap:10px}
+.msg{border-radius:12px;padding:10px 12px;font-size:.92rem;border:1px solid var(--line);background:var(--surface-2);opacity:.28;transition:opacity .4s,transform .4s,border-color .4s;transform:translateY(4px)}
+.msg.on{opacity:1;transform:none}
+.msg.cur{border-color:var(--teal);box-shadow:0 0 0 3px color-mix(in srgb,var(--teal) 15%,transparent)}
+.msg .who{font-family:var(--mono);font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:3px}
+.msg pre{margin:4px 0 0;font-family:var(--mono);font-size:.78rem;white-space:pre-wrap;word-break:break-word;color:var(--teal)}
+.cycle{width:100%;height:auto}
+.cycle .n rect{fill:var(--surface-2);stroke:var(--line);stroke-width:1.5;transition:.3s}
+.cycle .n text{font:600 12px var(--body);fill:var(--ink);text-anchor:middle}
+.cycle .n.on rect{stroke:var(--teal);fill:var(--teal-soft)}
+.cycle .e{stroke:var(--muted);stroke-width:1.5;fill:none;stroke-dasharray:4 4;marker-end:url(#ah2)}
+.cycle .e.on{stroke:var(--teal);stroke-dasharray:none;animation:none}
+.cycle .pulse{fill:var(--amber)}
+pre.code{
+  margin:0;font-family:var(--mono);font-size:.8rem;line-height:1.6;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px;overflow-x:auto;color:var(--ink)
+}
+pre.code .k{color:var(--teal)}
+pre.code .s{color:var(--amber)}
+pre.code .c{color:var(--muted);font-style:italic}
+
+/* ---------- Modeller ---------- */
+.ladder{display:grid;gap:12px}
+.rung{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:14px;align-items:center}
+.rung .name{font-family:var(--display);font-weight:700;font-size:1.05rem;line-height:1.15}
+.rung .name small{display:block;font:500 .72rem var(--body);color:var(--muted)}
+.rung .track{display:grid;gap:4px}
+.rung .pbar{height:14px;border-radius:4px;background:var(--teal);opacity:.85;transition:width 1s cubic-bezier(.2,.8,.2,1);min-width:4px}
+.rung.fable .pbar{background:var(--amber)}
+.rung .pinfo{font-family:var(--mono);font-size:.76rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.task-btns{display:flex;flex-wrap:wrap;gap:8px}
+.vs{display:grid;gap:12px}
+.vs .meter{grid-template-columns:7.5em minmax(0,1fr) 3.4em}
+.verdict{font-size:.98rem;border-left:3px solid var(--amber);padding:6px 0 6px 12px}
+.compare{width:100%;border-collapse:collapse;font-size:.92rem}
+.compare th,.compare td{text-align:left;padding:10px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+.compare th{font-family:var(--mono);font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.compare td:first-child{color:var(--muted);width:30%}
+.table-wrap{overflow-x:auto}
+
+/* ---------- Yolculuk ---------- */
+.journey{display:grid;gap:0;position:relative;margin-top:8px}
+.jstep{display:grid;grid-template-columns:44px minmax(0,1fr);gap:16px;padding-bottom:26px;position:relative}
+.jstep::before{content:"";position:absolute;left:21px;top:40px;bottom:0;width:2px;background:var(--line)}
+.jstep:last-child::before{display:none}
+.jdot{width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface);display:grid;place-items:center;font:700 .95rem var(--display);color:var(--muted);transition:.45s;z-index:1}
+.jstep.on .jdot{border-color:var(--teal);background:var(--teal);color:var(--surface);transform:scale(1.06)}
+.jbody{padding-top:8px;display:grid;gap:8px;transition:opacity .45s}
+.jstep:not(.on) .jbody{opacity:.55}
+.jbody h3{font-size:1.15rem;font-family:var(--body);font-weight:700;letter-spacing:0}
+.jbody p{font-size:.96rem;color:var(--muted)}
+.quote{font-size:.92rem;border-left:3px solid var(--teal);padding:4px 0 4px 12px;color:var(--ink);font-style:italic}
+.ctx{display:flex;height:30px;border-radius:8px;overflow:hidden;border:1px solid var(--line);font:600 .7rem var(--mono)}
+.ctx div{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;padding:0 6px;color:var(--ink)}
+.ctx-legend{display:flex;flex-wrap:wrap;gap:12px;font-size:.78rem;color:var(--muted)}
+.ctx-legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.toolcalls{display:grid;gap:6px;font-family:var(--mono);font-size:.8rem}
+.toolcalls div{background:var(--surface-2);border:1px solid var(--line);border-radius:8px;padding:6px 10px;overflow-x:auto;white-space:nowrap}
+.toolcalls span{color:var(--muted)}
+
+/* ---------- Sözlük ---------- */
+.gloss{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.gloss div{border-top:2px solid var(--teal);padding-top:10px}
+.gloss dt{font-family:var(--display);font-weight:700;font-size:1.1rem}
+.gloss dd{margin:4px 0 0;font-size:.92rem;color:var(--muted)}
+
+footer{padding-block:48px 64px;border-top:1px dashed var(--line);color:var(--muted);font-size:.9rem}
+footer .wrap{display:grid;gap:10px;max-width:760px;margin-left:auto;margin-right:auto}
+
+@media (max-width:520px){
+  body{font-size:16px}
+  .chapter{padding-block:52px}
+  .bench{padding:16px}
+  .cand{grid-template-columns:minmax(0,7em) minmax(0,1fr) 3em}
+  .meter{grid-template-columns:6.5em minmax(0,1fr) 3.6em}
+  .rung{grid-template-columns:6em minmax(0,1fr)}
+  .knobs{grid-template-columns:repeat(10,1fr);gap:5px}
+  .note{font-size:1.25rem}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}
+  html{scroll-behavior:auto}
+  .hero h1 em path{stroke-dashoffset:0}
+}
+</style>
+</head>
+<body>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-in">
+    <a class="brand" href="#top" aria-label="Başa dön">
+      <svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><circle cx="5" cy="6" r="3" fill="var(--teal)"/><circle cx="17" cy="6" r="3" fill="var(--amber)"/><circle cx="11" cy="17" r="3" fill="var(--teal)"/><path d="M5 6L11 17L17 6" stroke="var(--muted)" stroke-width="1.4" fill="none"/></svg>
+      Yapay Zekânın İçi
+    </a>
+    <nav class="chips" id="chips" aria-label="Bölümler">
+      <a href="#tahmin">Tahmin</a>
+      <a href="#token">Token</a>
+      <a href="#anlam">Anlam</a>
+      <a href="#dikkat">Dikkat</a>
+      <a href="#egitim">Eğitim</a>
+      <a href="#dusunme">Düşünme</a>
+      <a href="#efor">Efor</a>
+      <a href="#arac">Araçlar</a>
+      <a href="#modeller">Fable vs Sonnet</a>
+      <a href="#yolculuk">Bu mesaj</a>
+      <a href="#sozluk">Sözlük</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+<!-- ================= HERO ================= -->
+<section class="hero">
+  <div class="wrap hero-grid">
+    <div>
+      <div class="eyebrow">Herkes için, sade dille</div>
+      <h1 style="margin-top:14px">Bir sohbet botu aslında <em>ne yapıyor?<svg viewBox="0 0 300 20" preserveAspectRatio="none" aria-hidden="true"><path d="M3 14 C 80 4, 200 4, 297 12"/></svg></em></h1>
+      <p class="lede">Yapay zekâ sihir değil, ama sıradan bir program da değil. Bu sayfada bir dil modelinin metni nasıl okuduğunu, nasıl eğitildiğini, nasıl "düşündüğünü", araçları nasıl kullandığını ve senin mesajını aldığında içinde neler olduğunu adım adım, oynayarak göreceksin.</p>
+      <div class="hero-meta">
+        <div><b>11</b><span>kısa bölüm</span></div>
+        <div><b>9</b><span>oynanabilir deney</span></div>
+        <div><b>0</b><span>gereken ön bilgi</span></div>
+      </div>
+    </div>
+    <div class="bench console" id="hero-card" aria-live="polite">
+      <div class="bench-title"><h3>Model şu an cümle kuruyor</h3><span class="tag live" id="hero-step">canlı</span></div>
+      <div class="console-text"><span id="hero-out">Yapay zekâ aslında bir sonraki kelimeyi tahmin eden dev bir makinedir.</span><span class="caret" aria-hidden="true"></span></div>
+      <ul class="cands" id="hero-cands">
+        <li class="cand chosen"><span class="cand-w">makinedir.</span><span class="cand-bar"><i style="width:40%"></i></span><span class="cand-p">%40</span></li>
+        <li class="cand"><span class="cand-w">sistemdir.</span><span class="cand-bar"><i style="width:28%"></i></span><span class="cand-p">%28</span></li>
+        <li class="cand"><span class="cand-w">programdır.</span><span class="cand-bar"><i style="width:17%"></i></span><span class="cand-p">%17</span></li>
+        <li class="cand"><span class="cand-w">hesap makinesidir.</span><span class="cand-bar"><i style="width:5%"></i></span><span class="cand-p">%5</span></li>
+      </ul>
+      <div class="hero-arrow"><svg width="34" height="20" viewBox="0 0 34 20" aria-hidden="true"><path d="M2 4 C 12 18, 22 18, 30 8" stroke="var(--amber)" stroke-width="2" fill="none"/><path d="M24 7 L31 7 L29 14" stroke="var(--amber)" stroke-width="2" fill="none"/></svg>Her adımda olası kelimelere puan verir, birini seçer, devam eder.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 1. TAHMİN ================= -->
+<section class="chapter" id="tahmin">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 1 · Temel fikir</div>
+      <h2>Her şey tek bir oyuna dayanıyor: “Sırada ne gelir?”</h2>
+      <p class="lede">Telefonundaki klavyenin kelime önerisini düşün. Dil modeli bunun milyarlarca kat güçlendirilmiş hâli.</p>
+    </div>
+    <div class="grid2">
+      <div class="prose">
+        <p>Bir dil modeline metin verdiğinde yaptığı tek şey şu: <span class="hl">eldeki metne bakıp bir sonraki parçanın ne olabileceğine dair olasılıklar hesaplamak.</span> Sonra bu olasılıklardan birini seçer, metnin sonuna ekler ve aynı işi yeniden yapar. Bir paragraf, bir kod dosyası, bu sayfa… hepsi böyle, parça parça üretilir.</p>
+        <p>Kulağa basit geliyor ama işin sırrı şurada: “Sırada ne gelir?” sorusunu iyi cevaplamak için dilbilgisini, gerçekleri, mantığı, hatta karşındakinin ne istediğini anlamak gerekir. Model bu becerileri, bu tahmin oyununu inanılmaz çok metin üzerinde oynayarak edinir.</p>
+        <h3>Sağdaki “sıcaklık” düğmesi ne?</h3>
+        <p>Model her zaman en olası kelimeyi seçmek zorunda değil. Sıcaklık düşükken neredeyse hep favoriyi seçer: tutarlı ama tekdüze. Yükseldikçe sürpriz kelimelere şans tanır: daha yaratıcı ama saçmalama riski artar. Kaydırıp “mor” kelimesinin şansını izle.</p>
+        <div class="note r"><b>Neden bazen kendinden emin yanlış söyler?</b> Çünkü model “doğru” olanı değil, <b>en akla yatkın görünen</b> devamı üretir. Akla yatkın ama yanlış bir cümle de kurabilir. Buna “halüsinasyon” deniyor.</div>
+      </div>
+      <div class="bench">
+        <div class="bench-title"><h3>Deney: sıradaki kelimeyi seç</h3><span class="tag">oynanabilir</span></div>
+        <div class="sentence">Bugün hava çok <span class="blank" id="t-blank">?</span></div>
+        <ul class="cands" id="t-cands"></ul>
+        <div>
+          <div class="temp-label"><span>Sıcaklık: <b id="t-val">1,0</b> <span id="t-desc">dengeli</span></span><span>temkinli ← → maceracı</span></div>
+          <input type="range" id="t-range" min="0.2" max="2" step="0.1" value="1" aria-label="Sıcaklık">
+        </div>
+        <div class="row"><button class="btn primary" id="t-sample">Bir kelime seçtir</button><button class="btn" id="t-ten">10 kez seçtir</button><span class="small" id="t-log"></span></div>
+        <p class="disclaim">Olasılıklar örnek olarak uyduruldu; gerçek bir model binlerce aday arasından seçer.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 2. TOKEN ================= -->
+<section class="chapter" id="token">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 2 · Okuma</div>
+      <h2>Model harf okumaz, “token” okur</h2>
+      <p class="lede">Bilgisayar yalnızca sayılarla çalışır. O yüzden metin önce küçük parçalara, sonra her parça bir numaraya çevrilir.</p>
+    </div>
+    <div class="grid2">
+      <div class="bench">
+        <div class="bench-title"><h3>Deney: kendi cümleni parçala</h3><span class="tag">yaz ve izle</span></div>
+        <label class="small" for="tok-in">Buraya bir şey yaz:</label>
+        <textarea id="tok-in" rows="2">Merhaba! Yapay zekâ nasıl çalışıyor, anlatır mısın?</textarea>
+        <div class="toks" id="tok-out" aria-live="polite"></div>
+        <div class="stats">
+          <div class="stat"><b id="tok-chars">0</b><span>karakter</span></div>
+          <div class="stat"><b id="tok-count">0</b><span>token</span></div>
+        </div>
+        <div><div class="small" style="margin-bottom:4px">Modelin gerçekte gördüğü şey (numaralar):</div><div class="ids" id="tok-ids"></div></div>
+        <p class="disclaim">Bölme kuralı sadeleştirilmiş bir taklit. Gerçek tokenizer farklı yerlerden keser, ama fikir aynı.</p>
+      </div>
+      <div class="prose">
+        <p>Token, kelimeden küçük, harften büyük bir parçadır. Sık geçen kelimeler tek token olur; nadir ya da uzun kelimeler birkaç parçaya bölünür. Türkçe gibi ekli dillerde “çalışıyor” gibi bir kelime çoğu zaman <span class="hl">gövde + ek</span> şeklinde birkaç token’a ayrılır.</p>
+        <p>Her token’ın bir sıra numarası vardır. Model “Merhaba” kelimesini değil, ona karşılık gelen sayıyı görür. Sonra her sayı, bir sonraki bölümde göreceğimiz uzun bir “anlam listesine” dönüştürülür.</p>
+        <h3>Bu neden önemli?</h3>
+        <ul>
+          <li><strong>Ücret:</strong> Yapay zekâ servisleri token başına ücretlendirir. Hem gönderdiğin hem aldığın metin sayılır.</li>
+          <li><strong>Hafıza sınırı:</strong> Bir modelin aynı anda “aklında tutabildiği” metin miktarı (bağlam penceresi) token’la ölçülür. Bugünün büyük modellerinde bu sınır 1 milyon token civarında; yani binlerce sayfa.</li>
+          <li><strong>Garip hatalar:</strong> Model harfleri tek tek görmediği için “bu kelimede kaç tane r var?” gibi sorularda tökezleyebilir.</li>
+        </ul>
+        <div class="note teal">Kabaca: <b>1 token ≈ 3–4 harf</b>. Türkçe metin, İngilizceye göre biraz daha fazla token tutar.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 3. ANLAM ================= -->
+<section class="chapter" id="anlam">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 3 · Anlam</div>
+      <h2>Kelimeler bir harita üzerinde yaşar</h2>
+      <p class="lede">Her token, binlerce sayıdan oluşan bir listeye çevrilir. Bu liste, kelimenin devasa bir “anlam haritası” üzerindeki adresidir.</p>
+    </div>
+    <div class="grid2">
+      <div class="prose">
+        <p>Anlamca yakın kelimeler haritada birbirine yakın durur: kedi ile köpek komşudur, Ankara ile İstanbul aynı mahalledir. Kimse modele “kedi bir hayvandır” diye bu haritayı çizmedi. Model, tahmin oyununu oynarken benzer yerlerde geçen kelimeleri kendiliğinden yan yana koymayı öğrendi.</p>
+        <p>Haritadaki <strong>yönler</strong> de anlam taşır. Ünlü örnek: “kral” konumundan “erkek” yönünü çıkarıp “kadın” yönünü eklersen “kraliçe”ye çok yakın bir noktaya varırsın. Sağdaki turuncu oklar bunu gösteriyor.</p>
+        <p>Bir kelimeye dokun; o kelimenin sayı listesinden küçük bir kesit göreceksin.</p>
+        <div class="note">Gerçek haritada <b>2 değil, binlerce boyut</b> var. Biz onu ekrana sığsın diye kâğıda bastırılmış bir gölge gibi çizdik.</div>
+      </div>
+      <div class="bench">
+        <div class="bench-title"><h3>Anlam haritası (2 boyuta indirilmiş)</h3><span class="tag">dokun</span></div>
+        <div class="map-wrap">
+        <svg class="map" id="map" viewBox="0 0 520 390" role="img" aria-label="Kelimelerin anlam haritası: hayvanlar, şehirler, meyveler, duygular ve kraliyet kümeleri">
+          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--amber)"/></marker></defs>
+          <ellipse class="cluster" cx="110" cy="92" rx="95" ry="66"/><text class="clabel" x="38" y="38">hayvanlar</text>
+          <ellipse class="cluster" cx="400" cy="88" rx="104" ry="64"/><text class="clabel" x="330" y="36">şehirler</text>
+          <ellipse class="cluster" cx="105" cy="296" rx="88" ry="60"/><text class="clabel" x="40" y="248">meyveler</text>
+          <ellipse class="cluster" cx="262" cy="200" rx="70" ry="46"/><text class="clabel" x="210" y="166">duygular</text>
+          <ellipse class="cluster" cx="402" cy="300" rx="104" ry="72"/><text class="clabel" x="330" y="240">insanlar</text>
+          <g id="pts"></g>
+          <path class="arrow" d="M350 352 L 444 352"/>
+          <path class="arrow" d="M354 284 L 448 284"/>
+          <text class="arrow-t" x="372" y="372">aynı yön!</text>
+        </svg>
+        </div>
+        <div class="vec" id="vec">Bir kelimeye dokun →</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 4. DİKKAT ================= -->
+<section class="chapter" id="dikkat">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 4 · Beyin kısmı</div>
+      <h2>“Dikkat”: her kelime diğerlerine bakar</h2>
+      <p class="lede">Bugünkü modellerin hepsinin altında “Transformer” adlı bir yapı var. Kalbi de “dikkat” denen mekanizma.</p>
+    </div>
+    <div class="grid2">
+      <div class="bench">
+        <div class="bench-title"><h3>Deney: “o” kimi kastediyor?</h3><span class="tag">bir kelime seç</span></div>
+        <div class="att-scroll"><div class="att-inner" id="att-inner"><svg class="att-svg" id="att-svg" aria-hidden="true"></svg><div class="att-row" id="att-row"></div><div class="att-pad"></div></div></div>
+        <p class="small" id="att-say">“o” kelimesi en çok “Kedi”ye bakıyor: model zamirin kimi kastettiğini böyle çözüyor.</p>
+        <hr style="border:none;border-top:1px dashed var(--line);margin:4px 0">
+        <div class="layers">
+          <div class="stack" aria-hidden="true">
+            <div>katman 1</div><div>katman 2</div><div>katman 3</div><div>…</div><div>katman 90+</div><span class="dot"></span>
+          </div>
+          <div class="layer-notes">
+            <div><b>ÜST KATMANLAR</b>soyut fikirler, plan, cevabın yönü</div>
+            <div><b>ORTA KATMANLAR</b>anlam, kim kime ne yaptı, bağlam</div>
+            <div><b>ALT KATMANLAR</b>dilbilgisi, ekler, kelime parçaları</div>
+          </div>
+        </div>
+      </div>
+      <div class="prose">
+        <p>“Kedi sütü içti çünkü o çok acıkmıştı.” Burada “o” kim? Sen hemen “kedi” dersin. Model de bunu dikkat mekanizmasıyla çözer: her token, cümledeki diğer token’lara <span class="hl">“benim anlamım için sen ne kadar önemlisin?”</span> diye sorar ve cevaplara göre kendi anlamını günceller.</p>
+        <p>Bu işlem tek seferlik değil. Token’lar üst üste dizilmiş onlarca, hatta yüzden fazla katmandan geçer. Her katmanda dikkat ve küçük bir hesaplama bloğu çalışır. Alttaki katmanlar daha çok yüzeysel desenlerle, üsttekiler daha soyut şeylerle uğraşır.</p>
+        <p>En tepeye ulaşınca model, sözlüğündeki her token için bir puan çıkarır. Birinci bölümde gördüğün olasılık çubukları işte buradan gelir.</p>
+        <div class="note r">Bütün bu “bilgi” modelin içinde <b>parametre</b> denen milyarlarca sayıda saklı. Ne bir veritabanı var ne de ezberlenmiş cümleler; sadece çok iyi ayarlanmış sayılar.</div>
+        <p class="small">Sağdaki katman etiketleri bir sadeleştirme. Araştırmacılar modellerin içini incelemeye devam ediyor (buna “yorumlanabilirlik” deniyor) ve her şey bu kadar düzenli ayrışmıyor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 5. EĞİTİM ================= -->
+<section class="chapter" id="egitim">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 5 · Eğitim</div>
+      <h2>Milyarlarca düğme, trilyonlarca deneme</h2>
+      <p class="lede">Model ilk başta tamamen rastgele sayılarla doğar ve anlamsız şeyler söyler. Eğitim, bu sayıları adım adım düzeltme işidir. Üç ana aşaması var.</p>
+    </div>
+
+    <div class="stages">
+      <div class="stage-card">
+        <span class="k">Aşama 1 · Ön eğitim</span>
+        <h3>Okuyarak tahmin etmeyi öğrenir</h3>
+        <p>Kitaplar, makaleler, kod, web sayfaları… Devasa bir metin yığınından cümleler alınır, sonu gizlenir, model tahmin eder. Yanlışsa her düğme doğru cevabı biraz daha olası kılacak yöne minicik çevrilir. Bu, aylarca binlerce özel çip üzerinde sürer.</p>
+        <div class="ex">Sonuç: çok bilgili ama henüz yönlendirilmemiş bir “metin tamamlayıcı”. Soru sorsan, cevap vermek yerine soruyu uzatabilir.</div>
+      </div>
+      <div class="stage-card">
+        <span class="k">Aşama 2 · İnce ayar</span>
+        <h3>Asistan olmayı öğrenir</h3>
+        <p>İyi yazılmış “soru → yardımcı cevap” örnekleriyle eğitime devam edilir. Model sohbet biçimini, talimat dinlemeyi, “bilmiyorum” demeyi ve araç kullanma kalıplarını öğrenir.</p>
+        <div class="ex"><b>Kullanıcı:</b> Fotosentezi bir cümleyle anlat.<br><b>Asistan:</b> Bitkiler güneş ışığıyla su ve karbondioksitten şeker ve oksijen üretir.</div>
+      </div>
+      <div class="stage-card">
+        <span class="k">Aşama 3 · Pekiştirme</span>
+        <h3>Geri bildirimle iyileşir</h3>
+        <p>Model aynı soruya birkaç cevap üretir. İnsanlar ya da yazılı ilkelere göre değerlendirme yapan başka bir model hangisinin daha iyi olduğunu seçer; model iyi cevaplara doğru itilir. Matematik ve kod gibi alanlarda cevap otomatik kontrol edilebilir: test geçti mi, sonuç doğru mu?</p>
+        <div class="ex">Anthropic bu aşamada modele yazılı bir ilkeler listesi (bir tür “anayasa”) da verir: dürüst ol, zarar verme, gerçekten yardımcı ol.</div>
+      </div>
+    </div>
+
+    <div class="train-lab">
+      <div class="bench">
+        <div class="bench-title"><h3>Ön eğitim simülasyonu</h3><span class="tag live" id="tr-step">adım 0</span></div>
+        <div class="knobs" id="knobs" aria-hidden="true"></div>
+        <canvas class="loss-canvas" id="loss" aria-label="Hata oranının zamanla düştüğünü gösteren grafik" role="img"></canvas>
+        <div class="fill-ex"><span>İstanbul, Türkiye'nin en kalabalık</span><span class="guess bad" id="guess">dağıdır</span></div>
+        <div class="row" style="justify-content:space-between"><span class="small">Okunan metin: <b id="tr-tok" class="mono">0</b></span><button class="btn" id="tr-reset">Baştan başlat</button></div>
+        <p class="disclaim">Her daire bir “düğmeyi” (parametreyi) temsil ediyor. Gerçek modellerde yüz milyarlarcası var. Eğri “hata”yı gösteriyor: düştükçe tahminler iyileşiyor.</p>
+      </div>
+      <div class="bench">
+        <div class="bench-title"><h3>Aşama 3’ü sen yap: hangisi daha iyi?</h3><span class="tag">seç</span></div>
+        <p class="q" style="font-size:1.02rem">Soru: “Kedim neden mırlıyor?”</p>
+        <div class="pref" id="pref">
+          <button data-good="1"><b>CEVAP A</b>Kediler genelde rahat ve mutlu olduklarında mırlar. Ama bazen stresliyken ya da ağrı çekerken kendini sakinleştirmek için de mırlayabilirler. İştahı ya da davranışı değiştiyse veterinere danışmak iyi olur.</button>
+          <button data-good="0"><b>CEVAP B</b>Kediler mırlar çünkü kedidirler. Bunu kedinize sormanız daha doğru olur.</button>
+        </div>
+        <div class="reward" id="reward" aria-live="polite"></div>
+        <div class="note teal" style="max-width:none">Senin bu tıklaman gibi milyonlarca karşılaştırma, modeli <b>daha yardımsever, daha dürüst</b> cevaplara doğru yontar. Düşünen modeller de büyük ölçüde bu aşamada, doğruluğu kontrol edilebilen zor problemler üzerinde pişer.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 6. DÜŞÜNME ================= -->
+<section class="chapter" id="dusunme">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 6 · Düşünen modeller</div>
+      <h2>Cevaptan önce müsvedde kâğıdı</h2>
+      <p class="lede">“Düşünen” bir model, cevabı yazmadan önce kendine notlar yazar. Bu notlar da token’dır; sadece kullanıcıya cevap olarak gösterilmez.</p>
+    </div>
+    <div class="grid2">
+      <div class="bench">
+        <div class="bench-title"><h3>Deney: aynı soru, iki yöntem</h3><span class="tag">karşılaştır</span></div>
+        <p class="q">Bir sopa ve bir top toplam 110 TL. Sopa toptan 100 TL daha pahalı. Top kaç TL?</p>
+        <div class="row"><button class="btn" id="th-fast" aria-pressed="false">Hemen cevap ver</button><button class="btn" id="th-slow" aria-pressed="false">Önce düşün</button></div>
+        <div class="think-box" id="th-box" aria-live="polite">
+          <span class="lab">bir yöntem seç</span>
+          <div class="think-line">Model ne yapacağını bekliyor…</div>
+        </div>
+      </div>
+      <div class="prose">
+        <p>Klasik bir model, ilk aklına gelen akıcı cevabı yazar. Bu soruda ilk gelen “10 TL” olur. Yanlış. (Top 10 ise sopa 110 olur, toplam 120 eder.)</p>
+        <p>Düşünen model ise önce bir müsvedde yazar: bilinmeyeni koyar, denklemi kurar, sonucu kontrol eder, hata görürse geri döner. Her yazdığı satır bir sonraki tahmine bağlam olur. Yani <span class="hl">daha fazla token üretmek, modele fazladan “hesap zamanı” kazandırır.</span></p>
+        <h3>Bu nasıl öğretiliyor?</h3>
+        <p>Pekiştirme aşamasında modele cevabı kontrol edilebilen binlerce zor problem verilir: matematik, kod, mantık bulmacaları. Doğru sonuca ulaşan düşünme biçimleri ödüllendirilir. Zamanla model kendi kendine “bir dakika, kontrol edeyim”, “başka bir yol deneyeyim” gibi alışkanlıklar geliştirir. Kimse bu cümleleri tek tek öğretmez; işe yaradıkları için ortaya çıkarlar.</p>
+        <div class="bubble-flow" aria-hidden="true"><span>soru</span><span class="arr">→</span><span style="border-style:dashed">düşünme token’ları</span><span class="arr">→</span><span style="border-color:var(--teal);color:var(--teal)">cevap</span></div>
+        <div class="note">Claude’da ham düşünme metni kullanıcıya verilmez; istenirse <b>özeti</b> gösterilir. Düşünme yine de yapılır ve token olarak faturaya yansır.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 7. EFOR ================= -->
+<section class="chapter" id="efor">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 7 · Efor ayarı</div>
+      <h2>Efor: “Ne kadar uğraşayım?” düğmesi</h2>
+      <p class="lede">Yeni modellerde bir efor ayarı var: low, medium, high, xhigh, max. Bu ayar modelin bilgisini değiştirmez, ona ne kadar zaman ve token harcayacağını söyler.</p>
+    </div>
+    <div class="grid2">
+      <div class="bench">
+        <div class="bench-title"><h3>Deney: eforu kaydır</h3><span class="tag">temsilî rakamlar</span></div>
+        <input type="range" id="ef-range" min="0" max="4" step="1" value="2" aria-label="Efor seviyesi">
+        <div class="effort-levels" id="ef-levels"><span>low</span><span>medium</span><span class="on">high</span><span>xhigh</span><span>max</span></div>
+        <div class="meters">
+          <div class="meter"><span>Düşünme miktarı</span><span class="bar"><i id="ef-think" style="background:var(--amber)"></i></span><span class="v" id="ef-think-v"></span></div>
+          <div class="meter"><span>Bekleme süresi</span><span class="bar"><i id="ef-time" style="background:var(--muted)"></i></span><span class="v" id="ef-time-v"></span></div>
+          <div class="meter"><span>Maliyet</span><span class="bar"><i id="ef-cost" style="background:var(--rose)"></i></span><span class="v" id="ef-cost-v"></span></div>
+        </div>
+        <svg class="chart" id="ef-chart" viewBox="0 0 360 210" role="img" aria-label="Efor arttıkça kolay, orta ve zor görevlerdeki başarı oranı"></svg>
+        <div class="legend"><span><i style="background:var(--teal)"></i>kolay görev</span><span><i style="background:var(--amber)"></i>orta görev</span><span><i style="background:var(--rose)"></i>zor görev</span></div>
+        <p class="effort-say" id="ef-say"></p>
+        <p class="disclaim">Eğriler sezgiyi göstermek için çizildi, gerçek ölçüm değildir. Gerçek fark modele ve göreve göre değişir.</p>
+      </div>
+      <div class="prose">
+        <p>Efor, modelin <strong>ne kadar düşüneceğini, kaç kez araç çağıracağını ve işini ne kadar titiz kontrol edeceğini</strong> belirler. Beyin aynı; değişen, ona tanınan zaman.</p>
+        <h3>Neyi değiştirir, neyi değiştirmez?</h3>
+        <ul>
+          <li><strong>Kolay işlerde neredeyse hiçbir şey.</strong> “Bu e-postayı kibarlaştır” için max efor seçmek, bakkala uçakla gitmek gibi: daha yavaş ve pahalı, sonuç aynı.</li>
+          <li><strong>Zor işlerde çok şey.</strong> Karmaşık hata ayıklama, çok adımlı planlama, uzun ajan görevlerinde düşük ve yüksek efor arasındaki fark belirgin olabilir.</li>
+          <li><strong>Getiri azalır.</strong> low’dan high’a çıkmak genelde büyük fark yaratır; high’dan max’a çıkmak çoğu zaman küçük bir kazanç için iki-üç kat maliyet demektir.</li>
+          <li><strong>Cevabın uzunluğu ayrı bir şey.</strong> En yeni modellerde efor, görünen cevabın uzunluğunu pek değiştirmez; arka plandaki düşünme miktarını değiştirir. Kısa cevap istiyorsan bunu açıkça söylemen gerekir.</li>
+        </ul>
+        <div class="note r">Pratik kural: <b>günlük işler low/medium</b>, ciddi işler <b>high</b>. xhigh ve max’i ancak “gerçekten fark ediyor mu?” diye denedikten sonra kullan.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 8. ARAÇLAR ================= -->
+<section class="chapter" id="arac">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 8 · Araçlar</div>
+      <h2>Modelin elleri: araçlar nasıl eklenir?</h2>
+      <p class="lede">Model kendi başına internete bağlanamaz, dosya açamaz, hesap makinesi çalıştıramaz. Sadece metin yazar. Araç kullanımı, bu metni çok akıllıca kullanan bir el sıkışmasıdır.</p>
+    </div>
+    <div class="grid2">
+      <div class="prose">
+        <h3>1. Aracı tarif edersin</h3>
+        <p>Geliştirici, modele gönderdiği isteğin içine bir “araç kartı” koyar: aracın adı, ne işe yaradığı ve hangi bilgileri istediği.</p>
+<pre class="code"><span class="c">// modele verilen araç tarifi</span>
+{
+  <span class="k">"name"</span>: <span class="s">"hava_durumu"</span>,
+  <span class="k">"description"</span>: <span class="s">"Bir şehrin anlık hava durumunu getirir."</span>,
+  <span class="k">"input_schema"</span>: {
+    <span class="k">"type"</span>: <span class="s">"object"</span>,
+    <span class="k">"properties"</span>: { <span class="k">"sehir"</span>: { <span class="k">"type"</span>: <span class="s">"string"</span> } },
+    <span class="k">"required"</span>: [<span class="s">"sehir"</span>]
+  }
+}</pre>
+        <h3>2. Model “şunu çalıştır” diye yazar</h3>
+        <p>Soru bu aracı gerektiriyorsa model cevap yerine özel biçimli bir istek yazar ve durur. Bu biçimi eğitim sırasında öğrendi.</p>
+        <h3>3. Senin programın çalıştırır, sonucu geri verir</h3>
+        <p>Aracı gerçekten çalıştıran model değil, senin kodundur. Sonuç konuşmaya eklenir, model kaldığı yerden devam eder. Bu döngü defalarca dönebilir: araştır, oku, dene, düzelt. Buna “ajan” deniyor.</p>
+        <div class="note teal"><b>MCP</b> (Model Context Protocol), araçlar için ortak bir priz gibi: bir kez yazılan araç (Slack, GitHub, takvim…) farklı yapay zekâ uygulamalarına takılabiliyor.</div>
+      </div>
+      <div class="bench">
+        <div class="bench-title"><h3>Bir araç çağrısı, adım adım</h3><button class="btn" id="tool-play">Baştan oynat</button></div>
+        <div class="tool-grid">
+          <div class="transcript" id="transcript">
+            <div class="msg on"><span class="who">Kullanıcı</span>İstanbul'da şu an hava nasıl?</div>
+            <div class="msg on"><span class="who">Model → araç isteği</span>Bunun için hava durumu aracını kullanmalıyım.<pre>tool_use: hava_durumu
+{"sehir": "İstanbul"}</pre></div>
+            <div class="msg on"><span class="who">Senin programın</span>Gerçek hava servisine sorar, sonucu modele geri yollar:<pre>tool_result:
+{"derece": 14, "durum": "parçalı bulutlu"}</pre></div>
+            <div class="msg on"><span class="who">Model → kullanıcı</span>İstanbul'da şu an 14 °C ve hava parçalı bulutlu. Yanına ince bir ceket almak iyi olabilir.</div>
+          </div>
+          <svg class="cycle" id="cycle" viewBox="0 0 210 300" aria-hidden="true">
+            <defs><marker id="ah2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--muted)"/></marker></defs>
+            <g class="n" data-n="0"><rect x="55" y="8" width="100" height="40" rx="10"/><text x="105" y="33">Kullanıcı</text></g>
+            <g class="n" data-n="1"><rect x="55" y="104" width="100" height="40" rx="10"/><text x="105" y="129">Model</text></g>
+            <g class="n" data-n="2"><rect x="55" y="210" width="100" height="40" rx="10"/><text x="105" y="235">Senin kodun</text></g>
+            <path class="e" data-e="0" d="M105 50 L105 100"/>
+            <path class="e" data-e="1" d="M85 146 C 40 170, 40 190, 80 208"/>
+            <path class="e" data-e="2" d="M130 208 C 170 190, 170 170, 128 147"/>
+            <path class="e" data-e="3" d="M155 112 C 200 90, 200 50, 158 30"/>
+            <circle class="pulse" id="cyc-dot" r="6" cx="105" cy="75"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 9. MODELLER ================= -->
+<section class="chapter" id="modeller">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 9 · Model aileleri</div>
+      <h2>Fable ile Sonnet arasındaki fark gerçekte ne kadar?</h2>
+      <p class="lede">Kısa cevap: işe bağlı. Kolay işlerde çoğu zaman fark görmezsin; uzun ve zor işlerde fark açılır. Fiyat farkı ise her zaman orada.</p>
+    </div>
+    <div class="grid2">
+      <div class="bench">
+        <div class="bench-title"><h3>Claude ailesi: fiyat merdiveni</h3><span class="tag">1 milyon token başına, USD</span></div>
+        <div class="ladder" id="ladder">
+          <div class="rung"><div class="name">Haiku 5.5<small>hızlı, ucuz, basit işler</small></div><div class="track"><div class="pbar" data-w="1.25"></div><div class="pinfo">girdi $0,10 · çıktı $0,50</div></div></div>
+          <div class="rung"><div class="name">Sonnet 5.5<small>günlük iş atı</small></div><div class="track"><div class="pbar" data-w="25"></div><div class="pinfo">girdi $2 · çıktı $10</div></div></div>
+          <div class="rung"><div class="name">Opus 5.5<small>güçlü genel model</small></div><div class="track"><div class="pbar" data-w="50"></div><div class="pinfo">girdi $4 · çıktı $20</div></div></div>
+          <div class="rung fable"><div class="name">Fable 5.2<small>en yetenekli (geniş erişimli)</small></div><div class="track"><div class="pbar" data-w="100"></div><div class="pinfo">girdi $8 · çıktı $40</div></div></div>
+        </div>
+        <p class="small">Fable 5.2, Sonnet 5.5’ten token başına <b>4 kat</b> pahalı. Üstelik zor işlerde daha uzun düşündüğü için harcadığı token sayısı da genelde daha fazla olur.</p>
+        <hr style="border:none;border-top:1px dashed var(--line);margin:2px 0">
+        <div class="bench-title"><h3>Görev seç, farkı gör</h3><span class="tag">temsilî</span></div>
+        <div class="task-btns" id="task-btns">
+          <button class="btn" data-t="0" aria-pressed="true">E-posta / özet</button>
+          <button class="btn" data-t="1" aria-pressed="false">Küçük kod düzeltmesi</button>
+          <button class="btn" data-t="2" aria-pressed="false">Saatler süren ajan işi</button>
+          <button class="btn" data-t="3" aria-pressed="false">Çok zor akıl yürütme</button>
+        </div>
+        <div class="vs">
+          <div class="meter"><span>Sonnet 5.5</span><span class="bar"><i id="vs-s" style="background:var(--teal)"></i></span><span class="v" id="vs-sv"></span></div>
+          <div class="meter"><span>Fable 5.2</span><span class="bar"><i id="vs-f" style="background:var(--amber)"></i></span><span class="v" id="vs-fv"></span></div>
+        </div>
+        <p class="verdict" id="verdict"></p>
+        <p class="disclaim">Çubuklar resmî ölçüm değil; “fark nerede açılır” sezgisini anlatmak için. Kendi işinde ikisini birkaç gerçek örnekle denemek en doğru cevabı verir.</p>
+      </div>
+      <div class="prose">
+        <p>Aynı aileden modeller aynı temel tarifle yapılır: tahmin, dikkat, eğitim, pekiştirme. Farklar daha çok <strong>boyut</strong>, <strong>eğitim miktarı</strong> ve <strong>neye göre ayarlandıkları</strong> ile ilgili.</p>
+        <div class="table-wrap">
+        <table class="compare">
+          <thead><tr><th></th><th>Sonnet 5.5</th><th>Fable 5.2</th></tr></thead>
+          <tbody>
+            <tr><td>Kimin için</td><td>Günlük kodlama, ajanlar, şirket işleri; hız ve kabiliyet dengesi</td><td>En zor akıl yürütme ve saatler süren karmaşık ajan işleri</td></tr>
+            <tr><td>Fiyat (girdi / çıktı)</td><td>$2 / $10</td><td>$8 / $40</td></tr>
+            <tr><td>Düşünme</td><td>Açık gelir; istenirse kapatılabilir</td><td>Her zaman açık; derinliği efor belirler</td></tr>
+            <tr><td>Hız</td><td>Daha çabuk döner</td><td>Zor görevlerde tek bir cevap dakikalar sürebilir</td></tr>
+            <tr><td>Bağlam</td><td>1 milyon token</td><td>1 milyon token</td></tr>
+          </tbody>
+        </table>
+        </div>
+        <h3>Peki fark nerede hissedilir?</h3>
+        <ul>
+          <li><strong>Kısa, net işlerde</strong> (çeviri, özet, e-posta, basit soru) ikisi de çoğu zaman tavanda. Fark ya yok ya da fark edilmeyecek kadar küçük.</li>
+          <li><strong>Uzun ve belirsiz işlerde</strong> (büyük bir kod tabanında saatlerce çalışmak, çok adımlı araştırma) daha güçlü model daha az takılır, kendi hatasını daha iyi fark eder, işi bitirme olasılığı daha yüksektir.</li>
+          <li><strong>Akıllıca karışım:</strong> Güçlü bir modeli düşük eforla çalıştırmak, çoğu zaman zayıf bir modeli en yüksek eforda çalıştırmak kadar iyi, hatta daha iyi sonuç verir. Yani bazen doğru soru “hangi model?” değil, “hangi model, hangi eforla?” sorusudur.</li>
+        </ul>
+        <div class="note">Fiyatlar Kasım 2026 itibarıyla Anthropic API liste fiyatları. Uygulamalardaki aylık abonelikler ayrı fiyatlandırılır.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 10. YOLCULUK ================= -->
+<section class="chapter" id="yolculuk">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 10 · Perde arkası</div>
+      <h2>Bu sayfayı isteyen mesajın bende neler yaşadı?</h2>
+      <p class="lede">Şimdiye kadar anlatılan her parça, senin bu siteyi istediğin mesajda da çalıştı. Gerçekte olan adımlar sırasıyla şöyle.</p>
+    </div>
+    <div class="grid2">
+      <div class="journey" id="journey">
+        <div class="jstep"><div class="jdot">1</div><div class="jbody"><h3>Mesajın geldi</h3>
+          <p class="quote">“bana yapay zekanın nasıl çalıştığını nasıl eğitildiğini nasıl tool eklendiğini … sen bu yazıya bu promptu aldığında nasıl işlemlerden geçirip cevap üretiyorsun”</p></div></div>
+        <div class="jstep"><div class="jdot">2</div><div class="jbody"><h3>Tek bir uzun metne eklendi</h3>
+          <p>Mesajın tek başına gelmez. Önünde sistem talimatları (nasıl davranacağım, hangi ortamda çalıştığım) ve kullanabileceğim araçların tarifleri durur. Hepsi tek bir uzun metin olarak bağlam pencereme girer.</p>
+          <div class="ctx" aria-hidden="true"><div style="flex:3.2;background:var(--t5)">sistem</div><div style="flex:4;background:var(--t3)">araç tarifleri</div><div style="flex:.9;background:var(--t2)">senin mesajın</div><div style="flex:1.9;background:var(--surface-2);color:var(--muted)">boş alan…</div></div>
+          <div class="ctx-legend"><span><i style="background:var(--t5)"></i>talimatlar</span><span><i style="background:var(--t3)"></i>araçlar</span><span><i style="background:var(--t2)"></i>mesajın</span><span class="disclaim">oranlar temsilî</span></div></div></div>
+        <div class="jstep"><div class="jdot">3</div><div class="jbody"><h3>Token’lara ve sayılara çevrildi</h3>
+          <p>Mesajın yaklaşık <b id="j-tok" class="mono">…</b> parçaya bölündü (Bölüm 2’deki taklit bölücüyle sayıldı). Her parça bir numara, her numara binlerce sayılık bir anlam listesi oldu.</p></div></div>
+        <div class="jstep"><div class="jdot">4</div><div class="jbody"><h3>Katmanlardan geçti</h3>
+          <p>Her token diğerlerine “dikkat” etti. “nasıl tool eklendiğini” ifadesi araçlar bölümüne, “Fable ile Sonnet” model karşılaştırmasına, “göz yormayacak” tasarım tercihlerine bağlandı.</p></div></div>
+        <div class="jstep"><div class="jdot">5</div><div class="jbody"><h3>Düşündüm ve plan yaptım</h3>
+          <p>Cevap yazmadan önce müsvedde tuttum: konuları sıraya koydum, her birine bir deney seçtim, renkleri yumuşak tuttum, uydurma rakamları “temsilî” diye işaretlemeye karar verdim.</p></div></div>
+        <div class="jstep"><div class="jdot">6</div><div class="jbody"><h3>Araç kullandım</h3>
+          <p>Her biri bir “araç isteği”ydi; çalıştıran benim içinde bulunduğum ortamdı, sonuçlar bana geri yazıldı:</p>
+          <div class="toolcalls">
+            <div>git status <span>→ depo boş, sıfırdan başlıyorum</span></div>
+            <div>başvuru belgesi oku <span>→ model fiyatları, efor seviyeleri</span></div>
+            <div>dosya yaz: index.html <span>→ bu sayfa</span></div>
+            <div>git commit &amp; push <span>→ dala gönderildi</span></div>
+          </div></div></div>
+        <div class="jstep"><div class="jdot">7</div><div class="jbody"><h3>Token token yazdım</h3>
+          <p>Bu sayfanın her satırı, hero’daki deneyde gördüğün gibi üretildi: olasılık hesapla, bir parça seç, ekle, tekrarla. Birkaç on bin kez.</p></div></div>
+      </div>
+      <div class="prose">
+        <div class="bench" style="gap:12px">
+          <div class="bench-title"><h3>Dürüst bir not</h3></div>
+          <p>Kendi içimi doğrudan gözlemleyemiyorum. Katmanlarımda tam olarak hangi sayıların nasıl değiştiğini “hissetmiyorum”. Buradaki adımların bir kısmı bu tür modellerin nasıl çalıştığına dair bilinenler (2, 3, 4, 7), bir kısmı da bu oturumda gerçekten yaptığım ve kaydı olan işler (5, 6).</p>
+          <p>“Düşündüm” dediğim şey de aslında yazdığım ama sana gösterilmeyen token’lar. İnsan düşüncesine benziyor, ama aynı şey olduğunu iddia etmek doğru olmaz.</p>
+          <button class="btn" id="j-play" style="justify-self:start">Yolculuğu yeniden oynat</button>
+        </div>
+        <div class="note r">Bir sonraki mesajında her şey <b>baştan</b> olur: bu konuşmanın tamamı yeniden okunur, model kaldığı yeri “hatırlamaz”, metnin kendisinden yeniden çıkarır.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= 11. SÖZLÜK ================= -->
+<section class="chapter" id="sozluk">
+  <div class="wrap">
+    <div class="ch-head">
+      <div class="eyebrow">Bölüm 11 · Cep sözlüğü</div>
+      <h2>Bir sonraki sohbette işine yarayacak kelimeler</h2>
+    </div>
+    <dl class="gloss">
+      <div><dt>Token</dt><dd>Modelin okuduğu ve yazdığı en küçük metin parçası. Ücret ve hafıza bununla ölçülür.</dd></div>
+      <div><dt>Parametre</dt><dd>Modelin içindeki ayarlanabilir sayılar. Eğitim bunları düzeltmekten ibarettir.</dd></div>
+      <div><dt>Bağlam penceresi</dt><dd>Modelin tek seferde görebildiği metnin üst sınırı. Konuşma uzadıkça dolar.</dd></div>
+      <div><dt>Transformer</dt><dd>“Dikkat” mekanizmasını katman katman kullanan, bugünkü dil modellerinin temel yapısı.</dd></div>
+      <div><dt>Ön eğitim</dt><dd>Devasa metin üzerinde “sıradaki parçayı tahmin et” oyunu. Bilginin büyük kısmı buradan gelir.</dd></div>
+      <div><dt>Pekiştirmeli öğrenme</dt><dd>Model denemeler yapar, iyi sonuçlar ödüllendirilir. Düşünme becerisi büyük ölçüde burada gelişir.</dd></div>
+      <div><dt>Efor</dt><dd>Modelin bir iş için ne kadar düşünüp ne kadar uğraşacağını belirleyen ayar.</dd></div>
+      <div><dt>Araç (tool)</dt><dd>Modelin istek yazıp senin programına çalıştırttığı dış yetenek: arama, dosya, hesap…</dd></div>
+      <div><dt>Ajan</dt><dd>Araçları döngü içinde kullanarak çok adımlı bir işi kendi başına yürüten model.</dd></div>
+      <div><dt>Halüsinasyon</dt><dd>Akla yatkın görünen ama yanlış bilgi üretmek. Tahmin makinesinin doğal riski.</dd></div>
+    </dl>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p><b style="color:var(--ink)">Yapay Zekânın İçi</b> · Kasım 2026</p>
+    <p>Deneylerdeki olasılıklar, eğriler ve başarı çubukları konuyu anlatmak için hazırlanmış temsilî değerlerdir. Model fiyatları ve özellikleri Anthropic’in Kasım 2026 tarihli belgelerine dayanır ve zamanla değişebilir.</p>
+    <p>Bu sayfa, anlattığı sürecin ta kendisiyle yazıldı.</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+"use strict";
+const $=(s,r=document)=>r.querySelector(s);
+const $$=(s,r=document)=>Array.from(r.querySelectorAll(s));
+const RM=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+const sleep=ms=>new Promise(r=>setTimeout(r,RM?0:ms));
+const pct=v=>"%"+(v<1&&v>0?v.toFixed(1).replace(".",","):Math.round(v));
+function watch(el,onIn,onOut,threshold){
+  if(!("IntersectionObserver" in window)){onIn&&onIn();return;}
+  const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){onIn&&onIn();}else{onOut&&onOut();}}),{threshold:threshold||0.2});
+  io.observe(el);
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+/* ---------- İlerleme çubuğu ve aktif bölüm ---------- */
+const prog=$("#progress");
+const chipLinks=$$("#chips a");
+const sections=chipLinks.map(a=>$(a.getAttribute("href")));
+function onScroll(){
+  const h=document.documentElement;
+  const max=h.scrollHeight-h.clientHeight;
+  prog.style.width=(max>0?(h.scrollTop/max)*100:0)+"%";
+  let cur=-1;
+  sections.forEach((s,i)=>{if(s&&s.getBoundingClientRect().top<window.innerHeight*0.35)cur=i;});
+  chipLinks.forEach((a,i)=>a.classList.toggle("active",i===cur));
+  if(cur>=0){const a=chipLinks[cur];const box=a.parentElement;const l=a.offsetLeft-box.clientWidth/2+a.clientWidth/2;if(Math.abs(box.scrollLeft-l)>40)box.scrollTo({left:l,behavior:RM?"auto":"smooth"});}
+}
+let ticking=false;
+window.addEventListener("scroll",()=>{if(!ticking){ticking=true;requestAnimationFrame(()=>{onScroll();ticking=false;});}},{passive:true});
+onScroll();
+
+/* ---------- HERO: canlı tahmin ---------- */
+(function(){
+  const out=$("#hero-out"),list=$("#hero-cands"),stepEl=$("#hero-step"),card=$("#hero-card");
+  const base="Yapay zekâ aslında";
+  const steps=[
+    {c:[["bir",46],["sadece",21],["çok",14],["hiç",6]]},
+    {c:[["sonraki",31],["dil",24],["matematik",12],["yazılım",8]]},
+    {c:[["kelimeyi",58],["adımı",17],["sözcüğü",11],["harfi",4]]},
+    {c:[["tahmin",62],["seçen",15],["bulan",9],["yazan",5]]},
+    {c:[["eden",71],["etmeye",9],["edebilen",8],["yapan",3]]},
+    {c:[["büyük",34],["dev",22],["bir",15],["akıllı",9]],pick:1},
+    {c:[["bir",66],["ölçekli",12],["hesap",6],["istatistik",4]]},
+    {c:[["makinedir.",40],["sistemdir.",28],["programdır.",17],["hesap makinesidir.",5]]}
+  ];
+  if(RM){stepEl.textContent="hareketsiz mod";return;}
+  let visible=false,running=false;
+  function render(c){
+    list.innerHTML=c.map(([w,p])=>`<li class="cand"><span class="cand-w">${esc(w)}</span><span class="cand-bar"><i style="width:0"></i></span><span class="cand-p">%${p}</span></li>`).join("");
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{$$("i",list).forEach((el,i)=>el.style.width=c[i][1]+"%");}));
+  }
+  async function run(){
+    out.textContent=base;
+    for(let k=0;k<steps.length;k++){
+      const s=steps[k],pick=s.pick||0;
+      stepEl.textContent="adım "+(k+1)+" / "+steps.length;
+      render(s.c);
+      await sleep(1150);
+      list.children[pick].classList.add("chosen");
+      await sleep(650);
+      const sp=document.createElement("span");sp.className="new-word";sp.textContent=" "+s.c[pick][0];out.appendChild(sp);
+      await sleep(450);
+    }
+    stepEl.textContent="cümle bitti";
+    await sleep(2800);
+    if(visible)run();else running=false;
+  }
+  watch(card,()=>{visible=true;if(!running){running=true;run();}},()=>{visible=false;},0.3);
+})();
+
+/* ---------- 1. Sıcaklık ---------- */
+(function(){
+  const words=[["güzel",.38],["sıcak",.27],["soğuk",.19],["bulutlu",.09],["yağmurlu",.065],["mor",.005]];
+  const list=$("#t-cands"),range=$("#t-range"),val=$("#t-val"),desc=$("#t-desc"),blank=$("#t-blank"),log=$("#t-log");
+  list.innerHTML=words.map(([w])=>`<li class="cand"><span class="cand-w">${w}</span><span class="cand-bar"><i></i></span><span class="cand-p"></span></li>`).join("");
+  let probs=[];
+  function dist(T){const a=words.map(([,p])=>Math.pow(p,1/T));const s=a.reduce((x,y)=>x+y,0);return a.map(v=>v/s);}
+  function update(){
+    const T=parseFloat(range.value);
+    probs=dist(T);
+    val.textContent=T.toFixed(1).replace(".",",");
+    desc.textContent=T<0.55?"temkinli":T<1.35?"dengeli":"maceracı";
+    $$(".cand",list).forEach((li,i)=>{$("i",li).style.width=(probs[i]*100)+"%";$(".cand-p",li).textContent=pct(probs[i]*100);});
+  }
+  function sample(){const r=Math.random();let c=0;for(let i=0;i<probs.length;i++){c+=probs[i];if(r<=c)return i;}return probs.length-1;}
+  function show(i){
+    $$(".cand",list).forEach((li,j)=>li.classList.toggle("chosen",j===i));
+    blank.textContent=words[i][0];
+    blank.animate&&!RM&&blank.animate([{transform:"scale(1.25)"},{transform:"scale(1)"}],{duration:300});
+  }
+  range.addEventListener("input",update);
+  $("#t-sample").addEventListener("click",()=>{const i=sample();show(i);log.textContent="";});
+  $("#t-ten").addEventListener("click",()=>{
+    const counts={};let last=0;
+    for(let k=0;k<10;k++){last=sample();counts[words[last][0]]=(counts[words[last][0]]||0)+1;}
+    show(last);
+    log.textContent=Object.entries(counts).sort((a,b)=>b[1]-a[1]).map(([w,n])=>w+" ×"+n).join(", ");
+  });
+  update();
+})();
+
+/* ---------- 2. Token ---------- */
+const SUFFIX=["ıyor","iyor","uyor","üyor","ları","leri","lar","ler","dır","dir","dur","dür","mış","miş","muş","müş","nın","nin","nun","nün","yor","sın","sin","sun","sün","mı","mi","mu","mü","da","de","ta","te","ın","in","un","ün"];
+function tokenize(text){
+  const parts=text.match(/\s*[\p{L}\p{M}]+|\s*\d{1,3}|\s*[^\s\p{L}\p{M}\d]|\s+$/gu)||[];
+  const out=[];
+  for(const p of parts){
+    const lead=(p.match(/^\s*/)||[""])[0];
+    let w=p.slice(lead.length);
+    if(!w){out.push(p);continue;}
+    if(!/^[\p{L}\p{M}]+$/u.test(w)){out.push(lead+w);continue;}
+    const tail=[];
+    for(let k=0;k<2;k++){
+      const lw=w.toLocaleLowerCase("tr");
+      const s=SUFFIX.find(x=>lw.endsWith(x)&&w.length-x.length>=3);
+      if(!s)break;
+      tail.unshift(w.slice(w.length-s.length));w=w.slice(0,w.length-s.length);
+    }
+    const stem=[];
+    while(w.length>7){stem.push(w.slice(0,5));w=w.slice(5);}
+    stem.push(w);
+    stem[0]=lead+stem[0];
+    out.push(...stem,...tail);
+  }
+  return out;
+}
+function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math.imul(x,16777619);}return (x>>>0)%100000;}
+(function(){
+  const inp=$("#tok-in"),outEl=$("#tok-out"),ids=$("#tok-ids"),cc=$("#tok-chars"),tc=$("#tok-count");
+  const cols=["var(--t1)","var(--t2)","var(--t3)","var(--t4)","var(--t5)"];
+  function run(){
+    const toks=tokenize(inp.value);
+    outEl.innerHTML=toks.map((t,i)=>{
+      const lead=t.match(/^\s*/)[0];const body=t.slice(lead.length);
+      return `<span class="tok" style="background:${cols[i%5]};animation-delay:${RM?0:Math.min(i*25,600)}ms">${lead?'<span class="sp">·</span>':""}${esc(body)}</span>`;
+    }).join("");
+    ids.textContent="[ "+toks.map(hashId).join(", ")+" ]";
+    cc.textContent=[...inp.value].length;tc.textContent=toks.length;
+  }
+  inp.addEventListener("input",run);run();
+})();
+
+/* ---------- 3. Anlam haritası ---------- */
+(function(){
+  const pts=[
+    ["kedi",70,80,"hay"],["köpek",120,70,"hay"],["aslan",80,118,"hay"],["kaplan",140,112,"hay"],
+    ["Ankara",345,70,"şeh"],["İstanbul",420,60,"şeh"],["Paris",370,112,"şeh"],["Tokyo",450,106,"şeh"],
+    ["elma",70,285,"mey"],["armut",130,276,"mey"],["muz",95,325,"mey"],
+    ["mutlu",235,192,"duy"],["neşeli",285,210,"duy"],["üzgün",255,228,"duy"],
+    ["erkek",348,338,"ins"],["kadın",448,338,"ins"],["kral",352,270,"ins"],["kraliçe",452,270,"ins"]
+  ];
+  const baseVec={hay:[.71,-.32,.15,.58,-.11,.04,.39,-.66],"şeh":[-.48,.62,.27,-.15,.71,-.33,.08,.12],mey:[.22,.55,-.71,.09,-.18,.64,-.41,.3],duy:[-.12,-.6,.44,-.38,.25,.51,.67,-.2],ins:[.35,.18,.52,-.61,-.44,-.07,.26,.73]};
+  const g=$("#pts"),vec=$("#vec");
+  const NS="http://www.w3.org/2000/svg";
+  pts.forEach(([w,x,y,c],i)=>{
+    const wrap=document.createElementNS(NS,"g");wrap.setAttribute("class","float");wrap.style.animationDelay=(-i*0.7)+"s";
+    const el=document.createElementNS(NS,"g");el.setAttribute("class","pt");el.setAttribute("tabindex","0");el.setAttribute("role","button");el.setAttribute("aria-label",w);
+    const ci=document.createElementNS(NS,"circle");ci.setAttribute("cx",x);ci.setAttribute("cy",y);ci.setAttribute("r",5.5);
+    const tx=document.createElementNS(NS,"text");tx.setAttribute("x",x+9);tx.setAttribute("y",y+5);tx.textContent=w;
+    el.append(ci,tx);wrap.append(el);g.append(wrap);
+    const pick=()=>{
+      $$(".pt",g).forEach(p=>p.classList.remove("sel"));el.classList.add("sel");
+      const h=hashId(w);
+      const v=baseVec[c].map((b,k)=>{const n=(((h>>(k*3))&15)/15-.5)*.24;return (b+n);});
+      vec.innerHTML=`<b>${esc(w)}</b> = [ ${v.map(n=>(n>=0?" ":"")+n.toFixed(2).replace(".",",")).join(",  ")}, … <span class="small">+ birkaç bin sayı daha</span> ]`;
+    };
+    el.addEventListener("click",pick);
+    el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();}});
+  });
+})();
+
+/* ---------- 4. Dikkat ---------- */
+(function(){
+  const toks=["Kedi","sütü","içti","çünkü","o","çok","acıkmıştı"];
+  const W=[
+    [0,.35,.4,.05,.1,.02,.08],
+    [.3,0,.55,.05,.03,.02,.05],
+    [.4,.4,0,.08,.04,.02,.06],
+    [.1,.05,.35,0,.2,.05,.25],
+    [.62,.06,.08,.06,0,.04,.14],
+    [.05,.03,.04,.08,.1,0,.7],
+    [.45,.05,.1,.1,.2,.1,0]
+  ];
+  const say=[
+    "“Kedi” en çok “içti” ve “sütü”ne bakıyor: kim, ne yaptı?",
+    "“sütü” en çok “içti”ye bakıyor: neyle ne yapıldı?",
+    "“içti” hem özneye (“Kedi”) hem nesneye (“sütü”) bakıyor.",
+    "“çünkü” iki olayı bağlıyor: “içti” ve “acıkmıştı” arasında köprü.",
+    "“o” kelimesi en çok “Kedi”ye bakıyor: model zamirin kimi kastettiğini böyle çözüyor.",
+    "“çok” neredeyse tamamen “acıkmıştı”ya bakıyor: neyin “çok” olduğunu belirliyor.",
+    "“acıkmıştı” en çok “Kedi”ye bakıyor: acıkan kim?"
+  ];
+  const row=$("#att-row"),svg=$("#att-svg"),inner=$("#att-inner"),sayEl=$("#att-say");
+  row.innerHTML=toks.map((t,i)=>`<button class="att-tok" data-i="${i}">${t}<span class="w"></span></button>`).join("");
+  const btns=$$(".att-tok",row);
+  let cur=4;
+  function draw(){
+    const ir=inner.getBoundingClientRect();
+    const H=120;
+    svg.setAttribute("width",inner.scrollWidth);svg.setAttribute("height",H);
+    svg.setAttribute("viewBox",`0 0 ${inner.scrollWidth} ${H}`);
+    const cx=btns.map(b=>{const r=b.getBoundingClientRect();return r.left-ir.left+r.width/2;});
+    let html="";
+    W[cur].forEach((w,j)=>{
+      if(j===cur||w<0.02)return;
+      const x1=cx[cur],x2=cx[j],mid=(x1+x2)/2,lift=Math.min(110,Math.abs(x2-x1)*0.5+16);
+      html+=`<path d="M${x1} ${H} Q ${mid} ${H-lift*1.6} ${x2} ${H}" style="stroke-width:${(1+w*11).toFixed(1)};opacity:${(0.2+w*1.1).toFixed(2)}"/>`;
+    });
+    svg.innerHTML=html;
+    btns.forEach((b,j)=>{
+      b.classList.toggle("src",j===cur);
+      b.classList.toggle("on",j!==cur&&W[cur][j]>=0.3);
+      $(".w",b).textContent=j===cur?"":pct(W[cur][j]*100);
+    });
+    sayEl.textContent=say[cur];
+  }
+  btns.forEach(b=>{
+    b.addEventListener("click",()=>{cur=+b.dataset.i;draw();});
+    b.addEventListener("mouseenter",()=>{if(window.matchMedia("(hover:hover)").matches){cur=+b.dataset.i;draw();}});
+  });
+  window.addEventListener("resize",draw);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
+  draw();
+})();
+
+/* ---------- 5. Eğitim simülasyonu ---------- */
+(function(){
+  const knobsEl=$("#knobs"),cv=$("#loss"),stepEl=$("#tr-step"),guess=$("#guess"),tokEl=$("#tr-tok");
+  const N=window.innerWidth<520?60:96;
+  knobsEl.innerHTML=Array.from({length:N},()=>`<span class="knob" style="--r:${Math.round(Math.random()*360-180)}deg"></span>`).join("");
+  const knobs=$$(".knob",knobsEl);
+  const target=knobs.map(()=>Math.round(Math.random()*120-60));
+  const angle=knobs.map(k=>parseFloat(k.style.getPropertyValue("--r")));
+  const guesses=[[3.6,"dağıdır","bad"],[2.6,"denizidir","bad"],[1.7,"yeridir","ok"],[1.15,"şehridir","good"]];
+  const MAX=140;
+  let step=0,hist=[],timer=null,visible=false;
+  function lossAt(s){return 0.62+3.7*Math.exp(-s/34)+(Math.random()-.5)*0.18*Math.exp(-s/70);}
+  function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+  function drawLoss(){
+    const dpr=window.devicePixelRatio||1;const w=cv.clientWidth,h=cv.clientHeight;
+    if(cv.width!==Math.round(w*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr);}
+    const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);c.clearRect(0,0,w,h);
+    const L=34,R=8,T=10,B=22,pw=w-L-R,ph=h-T-B;
+    c.strokeStyle=css("--line");c.lineWidth=1;c.setLineDash([3,4]);
+    c.font="10px "+css("--mono").split(",")[0];c.fillStyle=css("--muted");
+    [0,1,2,3,4].forEach(v=>{const y=T+ph-(v/4.5)*ph;c.beginPath();c.moveTo(L,y);c.lineTo(w-R,y);c.stroke();c.fillText(String(v),L-14,y+3);});
+    c.setLineDash([]);
+    c.fillText("hata",2,T+8);c.fillText("eğitim adımı →",w-R-82,h-6);
+    if(hist.length<2)return;
+    c.beginPath();
+    hist.forEach((v,i)=>{const x=L+(i/MAX)*pw,y=T+ph-(Math.min(v,4.5)/4.5)*ph;i?c.lineTo(x,y):c.moveTo(x,y);});
+    c.strokeStyle=css("--teal");c.lineWidth=2.2;c.lineJoin="round";c.stroke();
+    const lx=L+((hist.length-1)/MAX)*pw;
+    c.lineTo(lx,T+ph);c.lineTo(L,T+ph);c.closePath();
+    c.globalAlpha=.12;c.fillStyle=css("--teal");c.fill();c.globalAlpha=1;
+    const ly=T+ph-(Math.min(hist[hist.length-1],4.5)/4.5)*ph;
+    c.beginPath();c.arc(lx,ly,4,0,7);c.fillStyle=css("--amber");c.fill();
+  }
+  function fmt(n){
+    if(n>=1e12)return (n/1e12).toFixed(1).replace(".",",")+" trilyon token";
+    return Math.round(n/1e9).toLocaleString("tr-TR")+" milyar token";
+  }
+  function tick(){
+    if(step>=MAX){stop();setTimeout(()=>{if(visible){reset();start();}},2500);return;}
+    step++;
+    const l=lossAt(step);hist.push(l);
+    const mag=Math.exp(-step/45);
+    knobs.forEach((k,i)=>{
+      if(Math.random()<0.35){
+        angle[i]+= (target[i]-angle[i])*0.18 + (Math.random()-.5)*60*mag;
+        k.style.setProperty("--r",angle[i].toFixed(1)+"deg");
+        k.classList.add("hot");setTimeout(()=>k.classList.remove("hot"),350);
+      }
+    });
+    const gq=guesses.filter(g=>l<=g[0]).pop()||guesses[0];
+    if(guess.textContent!==gq[1]){guess.textContent=gq[1];guess.className="guess "+gq[2];}
+    stepEl.textContent="adım "+step.toLocaleString("tr-TR")+(step===MAX?" · bitti":"");
+    tokEl.textContent=fmt(step*2.1e11);
+    drawLoss();
+  }
+  function start(){if(!timer&&!RM)timer=setInterval(tick,170);}
+  function stop(){clearInterval(timer);timer=null;}
+  function reset(){stop();step=0;hist=[];guess.textContent="dağıdır";guess.className="guess bad";stepEl.textContent="adım 0";tokEl.textContent="0";drawLoss();}
+  if(RM){for(let i=0;i<MAX;i++)hist.push(lossAt(i));step=MAX;guess.textContent="şehridir";guess.className="guess good";stepEl.textContent="adım "+MAX;tokEl.textContent=fmt(MAX*2.1e11);drawLoss();}
+  else{reset();}
+  $("#tr-reset").addEventListener("click",()=>{reset();start();});
+  watch(cv,()=>{visible=true;start();},()=>{visible=false;stop();},0.2);
+  window.addEventListener("resize",drawLoss);
+  window.matchMedia("(prefers-color-scheme: dark)").addEventListener?.("change",drawLoss);
+
+  const pref=$("#pref"),reward=$("#reward");
+  $$("button",pref).forEach(b=>b.addEventListener("click",()=>{
+    $$("button",pref).forEach(x=>{x.classList.toggle("win",x===b);x.classList.toggle("lose",x!==b);});
+    reward.textContent=b.dataset.good==="1"
+      ?"✓ Ödül verildi. Model, bilgilendirici ve dikkatli cevaplara doğru biraz itildi."
+      :"Hmm, bu seçim ödüllendirilirse model kaba ve işe yaramaz cevaplar vermeyi öğrenir. Gerçek eğitimde bu yüzden çok sayıda ve tutarlı geri bildirim toplanır.";
+  }));
+})();
+
+/* ---------- 6. Düşünme ---------- */
+(function(){
+  const box=$("#th-box"),fast=$("#th-fast"),slow=$("#th-slow");
+  let gen=0;
+  const lines=[
+    "Topa x diyelim.",
+    "Sopa toptan 100 TL pahalı → sopa = x + 100",
+    "Toplam: x + (x + 100) = 110",
+    "2x + 100 = 110  →  2x = 10  →  x = 5",
+    "Kontrol: top 5, sopa 105. Toplam 110 ✓  Fark 100 ✓",
+    "İlk akla gelen 10 TL'ydi ama tutmuyor (10 + 110 = 120)."
+  ];
+  async function typeLine(el,txt,my){
+    if(RM){el.textContent=txt;return;}
+    for(let i=1;i<=txt.length;i++){if(my!==gen)return;el.textContent=txt.slice(0,i);await sleep(16);}
+  }
+  fast.addEventListener("click",async()=>{
+    const my=++gen;fast.setAttribute("aria-pressed","true");slow.setAttribute("aria-pressed","false");
+    box.innerHTML='<span class="lab">düşünme yok · doğrudan cevap</span>';
+    await sleep(350);if(my!==gen)return;
+    const a=document.createElement("div");a.className="answer bad";box.append(a);
+    await typeLine(a,"Top 10 TL.",my);
+    if(my!==gen)return;
+    const n=document.createElement("div");n.className="small";n.textContent="Akıcı, kendinden emin… ve yanlış. İlk sezgi kontrol edilmedi.";box.append(n);
+  });
+  slow.addEventListener("click",async()=>{
+    const my=++gen;slow.setAttribute("aria-pressed","true");fast.setAttribute("aria-pressed","false");
+    box.innerHTML='<span class="lab">düşünme token’ları (normalde kullanıcıya gösterilmez)</span>';
+    for(const l of lines){
+      if(my!==gen)return;
+      const d=document.createElement("div");d.className="think-line";box.append(d);
+      await typeLine(d,l,my);await sleep(220);
+    }
+    if(my!==gen)return;
+    const lab=document.createElement("span");lab.className="lab";lab.style.marginTop="6px";lab.textContent="cevap";box.append(lab);
+    const a=document.createElement("div");a.className="answer good";box.append(a);
+    await typeLine(a,"Top 5 TL.",my);
+    if(my!==gen)return;
+    const n=document.createElement("div");n.className="small";n.textContent="Daha yavaş, daha çok token, ama doğru.";box.append(n);
+  });
+})();
+
+/* ---------- 7. Efor ---------- */
+(function(){
+  const L=["low","medium","high","xhigh","max"];
+  const think=[1,2.4,5,9,16],time=[3,7,15,30,60],easy=[95,96,97,97,97],mid=[70,80,86,88,89],hard=[36,50,62,67,69];
+  const say=[
+    "<b>low:</b> Kısa düşünür, az araç çağırır, çabuk biter. Basit işler ve yardımcı alt görevler için ideal.",
+    "<b>medium:</b> Dengeli. Günlük işlerin çoğu için yeterli ve ekonomik.",
+    "<b>high:</b> Ciddi işler için güvenli varsayılan. Kalite ile maliyet arasında çoğu zaman en iyi nokta.",
+    "<b>xhigh:</b> Uzun kodlama ve ajan işlerinde işe yarayabilir. Kazanç düzensiz; ölçerek kullan.",
+    "<b>max:</b> Zaman ve maliyet önemsizse. Kazanç genelde küçük, fatura büyük."
+  ];
+  const r=$("#ef-range"),chart=$("#ef-chart");
+  const X0=40,X1=340,Y0=180,Y1=14;
+  const xs=i=>X0+i*(X1-X0)/4,ys=v=>Y0-((v-30)/70)*(Y0-Y1);
+  let s='';
+  [40,60,80,100].forEach(v=>{s+=`<line class="gl" x1="${X0}" x2="${X1}" y1="${ys(v)}" y2="${ys(v)}"/><text x="6" y="${ys(v)+4}">%${v}</text>`;});
+  s+=`<line class="ax" x1="${X0}" x2="${X1}" y1="${Y0}" y2="${Y0}"/>`;
+  L.forEach((l,i)=>{s+=`<text x="${xs(i)}" y="${Y0+18}" text-anchor="middle">${l}</text>`;});
+  [["c-easy",easy],["c-mid",mid],["c-hard",hard]].forEach(([c,arr])=>{s+=`<polyline class="${c}" points="${arr.map((v,i)=>xs(i)+","+ys(v)).join(" ")}"/>`;});
+  s+=`<line class="mark" id="ef-mark" x1="${xs(2)}" x2="${xs(2)}" y1="${Y1}" y2="${Y0}"/>`;
+  s+=`<circle id="ef-d1" r="5" fill="var(--teal)"/><circle id="ef-d2" r="5" fill="var(--amber)"/><circle id="ef-d3" r="5" fill="var(--rose)"/>`;
+  chart.innerHTML=s;
+  function set(i){
+    $$("#ef-levels span").forEach((sp,j)=>sp.classList.toggle("on",j===i));
+    $("#ef-think").style.width=(think[i]/16*100)+"%";$("#ef-think-v").textContent="×"+String(think[i]).replace(".",",");
+    $("#ef-time").style.width=(time[i]/60*100)+"%";$("#ef-time-v").textContent=time[i]<60?"~"+time[i]+" sn":"~1 dk+";
+    $("#ef-cost").style.width=(think[i]/16*100)+"%";$("#ef-cost-v").textContent="×"+String(think[i]).replace(".",",");
+    const m=$("#ef-mark");m.setAttribute("x1",xs(i));m.setAttribute("x2",xs(i));
+    [["#ef-d1",easy],["#ef-d2",mid],["#ef-d3",hard]].forEach(([id,a])=>{const c=$(id);c.setAttribute("cx",xs(i));c.setAttribute("cy",ys(a[i]));});
+    $("#ef-say").innerHTML=say[i]+` <span class="small">Zor görevde başarı: %${hard[i]}, kolayda: %${easy[i]}.</span>`;
+  }
+  r.addEventListener("input",()=>set(+r.value));
+  set(2);
+})();
+
+/* ---------- 8. Araçlar ---------- */
+(function(){
+  const msgs=$$("#transcript .msg"),nodes=$$("#cycle .n"),edges=$$("#cycle .e"),dot=$("#cyc-dot"),bench=$("#transcript");
+  const plan=[{n:0,e:0},{n:1,e:1},{n:2,e:2},{n:1,e:3}];
+  let gen=0,played=false;
+  async function play(){
+    const my=++gen;
+    msgs.forEach(m=>m.classList.remove("on","cur"));
+    for(let i=0;i<plan.length;i++){
+      if(my!==gen)return;
+      const p=plan[i];
+      msgs.forEach((m,j)=>m.classList.toggle("cur",j===i));
+      msgs[i].classList.add("on");
+      nodes.forEach((n,j)=>n.classList.toggle("on",j===p.n));
+      edges.forEach((e,j)=>e.classList.toggle("on",j===p.e));
+      const path=edges[p.e];
+      if(!RM&&path.getTotalLength){
+        const len=path.getTotalLength();const t0=performance.now();
+        await new Promise(res=>{function f(t){if(my!==gen)return res();const k=Math.min(1,(t-t0)/900);const pt=path.getPointAtLength(len*k);dot.setAttribute("cx",pt.x);dot.setAttribute("cy",pt.y);k<1?requestAnimationFrame(f):res();}requestAnimationFrame(f);});
+      }
+      await sleep(1100);
+    }
+    if(my===gen){msgs.forEach(m=>m.classList.remove("cur"));}
+  }
+  $("#tool-play").addEventListener("click",play);
+  watch(bench,()=>{if(!played){played=true;play();}},null,0.35);
+})();
+
+/* ---------- 9. Modeller ---------- */
+(function(){
+  const bars=$$("#ladder .pbar");
+  bars.forEach(b=>b.style.width=b.dataset.w+"%");
+  watch($("#ladder"),()=>{
+    if(RM)return;
+    bars.forEach(b=>{b.style.transition="none";b.style.width="0";});
+    requestAnimationFrame(()=>requestAnimationFrame(()=>bars.forEach((b,i)=>{b.style.transition="";setTimeout(()=>b.style.width=b.dataset.w+"%",i*120);})));
+  },null,0.4);
+  const tasks=[
+    {s:96,f:97,v:"Fark neredeyse yok. Sonnet (hatta Haiku) bu iş için fazlasıyla yeterli; Fable seçmek 4 kat fiyat demek."},
+    {s:88,f:92,v:"Küçük bir fark var. Sonnet çoğu zaman işi çözer; takıldığı yerde Fable’a geçmek mantıklı."},
+    {s:55,f:78,v:"Fark burada açılıyor. Saatler süren, çok dosyalı işlerde güçlü model daha az takılır ve işi bitirme olasılığı belirgin biçimde yüksektir."},
+    {s:44,f:71,v:"En büyük fark burada. Çok adımlı, zor akıl yürütmede Fable’ın fazladan maliyeti genelde kendini amorti eder."}
+  ];
+  const btns=$$("#task-btns button");
+  function set(i){
+    btns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+    const t=tasks[i];
+    $("#vs-s").style.width=t.s+"%";$("#vs-sv").textContent="%"+t.s;
+    $("#vs-f").style.width=t.f+"%";$("#vs-fv").textContent="%"+t.f;
+    $("#verdict").textContent=t.v;
+  }
+  btns.forEach((b,i)=>b.addEventListener("click",()=>set(i)));
+  set(0);
+})();
+
+/* ---------- 10. Yolculuk ---------- */
+(function(){
+  const prompt="bana yapay zekanın nasıl çalıştığını nasıl eğitildiğini nasıl tool eklendiğini modelin içindeki eforların nasıl etki ettiğini ne kadar değiştirdiğini neye fark yarattığını ve mesela Fable ile Sonnet arası fark gerçekten ne kadar bunları herkesin anlayacağı dilden anlatacak şekilde göz yormayacak tarzda aşırı hoş şık animasyonlarla beraber bir website hazırla websitenin içinde animasyonlar olsun notlarla ve görsellerle anlat görsellerde kendin çizmen gerekiyorsa çizebilirsin , kendi düşünen modeller nasıl düşünüyor eğitimleri nasıl yapılıyor mesela sen bu yazıya bu promptu aldığında nasıl işlemlerden geçirip cevap üretiyorsun";
+  $("#j-tok").textContent=tokenize(prompt).length.toLocaleString("tr-TR");
+  const steps=$$("#journey .jstep");
+  let gen=0,played=false;
+  async function play(){
+    const my=++gen;
+    steps.forEach(s=>s.classList.remove("on"));
+    for(const s of steps){await sleep(650);if(my!==gen)return;s.classList.add("on");}
+  }
+  if(RM)steps.forEach(s=>s.classList.add("on"));
+  else{steps.forEach(s=>s.classList.add("on"));}
+  watch($("#journey"),()=>{if(!played&&!RM){played=true;play();}},null,0.15);
+  $("#j-play").addEventListener("click",play);
+})();
+
+})();
+</script>
+</body>
+</html>
