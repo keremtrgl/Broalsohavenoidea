@@ -9,7 +9,7 @@ index.html            Ana sayfa: 5 kısım, 21 bölüm
 sozluk.html           Alt sayfa: aranabilir sözlük (50 terim)
 kaynaklar.html        Alt sayfa: kaynaklar; kesin / temsilî / hesaplanan bilgilerin ayrımı
 assets/css/site.css   Bütün sayfaların ortak stili (açık ve koyu tema)
-assets/js/ornekler.js Örnek verileri: model karşılaştırmaları, araç senaryoları,
+assets/js/ornekler.js Örnek verileri: model karşılaştırmaları, efor örnekleri, araç senaryoları,
                       hakem oyunu, Anayasal YZ ve pekiştirme görevleri
 assets/js/site.js     Ana sayfadaki deneylerin mantığı
 assets/js/sozluk.js   Sözlük sayfasındaki arama

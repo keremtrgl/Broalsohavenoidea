@@ -67,6 +67,79 @@ window.ORNEKLER = {
     }
   ],
 
+  /* ---------- Bölüm 16: aynı iş, beş efor seviyesi ----------
+     Her görevde 5 seviye: low, medium, high, xhigh, max.
+     sonuc: "ok" (doğru), "mid" (kısmen), "no" (yanlış). token: düşünme miktarı.
+     Örnekler bu sayfa için yazıldı; gerçek model çıktısı değildir. */
+  efor: [
+    {
+      ad: "Kolay: cümle düzeltme",
+      istek: "Bu cümleyi daha kibar yaz: “Raporu yarına kadar gönder.”",
+      karar: "Cevap high’dan sonra hiç değişmedi; low’daki cevap da gayet kullanılabilir. Max’ta model 40 kat fazla düşündü ama sonuç aynı. Kolay işte yüksek efor boşa fatura demek.",
+      seviyeler: [
+        { token: 15, sonuc: "ok", dusunce: "(Neredeyse hiç düşünmedi.) Kibar bir rica cümlesi yeterli.",
+          cevap: "Raporu yarına kadar gönderebilir misiniz? Teşekkürler.",
+          meta: [["Düşünme", "~15 token"], ["Süre", "~1 sn"], ["Sonuç", "✓ kullanılabilir"]] },
+        { token: 40, sonuc: "ok", dusunce: "Emir kipini rica kipine çevireyim, sona bir teşekkür ekleyeyim.",
+          cevap: "Raporu yarına kadar gönderebilir misiniz? Şimdiden teşekkür ederim.",
+          meta: [["Düşünme", "~40 token"], ["Süre", "~2 sn"], ["Sonuç", "✓ kullanılabilir"]] },
+        { token: 110, sonuc: "ok", dusunce: "Kime yazıldığı belli değil; resmî ama sıcak bir ton seçeyim. “Yarına kadar” biraz sert duruyor, “yarın gün sonuna kadar” hem daha net hem daha yumuşak.",
+          cevap: "Raporu yarın gün sonuna kadar gönderebilirseniz çok sevinirim. Teşekkür ederim.",
+          meta: [["Düşünme", "~110 token"], ["Süre", "~3 sn"], ["Sonuç", "✓ çok iyi"]] },
+        { token: 260, sonuc: "ok", dusunce: "Üç ton düşündüm: resmî, samimi, nötr. Bağlam olmadığı için nötr-resmî en güvenlisi. Bir gerekçe eklemek (“toplantıdan önce bakabilmem için”) iyi olabilirdi ama kullanıcı istemedi, eklemiyorum.",
+          cevap: "Raporu yarın gün sonuna kadar gönderebilirseniz çok sevinirim. Teşekkür ederim.",
+          meta: [["Düşünme", "~260 token"], ["Süre", "~6 sn"], ["Sonuç", "✓ high ile aynı"]] },
+        { token: 600, sonuc: "ok", dusunce: "Beş farklı tonu ve üç farklı uzunluğu karşılaştırdım; iş yazışmalarındaki tipik kalıpları gözden geçirdim. Sonuçta yine kısa, nötr-resmî hâli en uygun.",
+          cevap: "Raporu yarın gün sonuna kadar gönderebilirseniz çok sevinirim. Teşekkür ederim.",
+          meta: [["Düşünme", "~600 token"], ["Süre", "~12 sn"], ["Sonuç", "✓ high ile aynı"]] }
+      ]
+    },
+    {
+      ad: "Orta: hız tuzağı",
+      istek: "Bir araç 120 km'lik yolu gidişte saatte 60 km, dönüşte saatte 40 km hızla alıyor. Gidiş-dönüşteki ortalama hızı kaç?",
+      karar: "Fark low ile medium arasında açılıyor: low ilk sezgiye güvenip yanıldı. medium’dan sonrası aynı doğru cevabı biraz daha özenle anlatıyor. Bu tür sorular için medium ya da high yeterli.",
+      seviyeler: [
+        { token: 25, sonuc: "no", dusunce: "Hızların ortalaması: (60 + 40) / 2 = 50.",
+          cevap: "Ortalama hız 50 km/sa.",
+          meta: [["Düşünme", "~25 token"], ["Süre", "~1 sn"], ["Sonuç", "✗ tuzağa düştü"]] },
+        { token: 90, sonuc: "ok", dusunce: "Ortalama hız = toplam yol / toplam süre. Gidiş 120 / 60 = 2 sa, dönüş 120 / 40 = 3 sa. Toplam 240 km, 5 sa → 48.",
+          cevap: "Ortalama hız 48 km/sa. Hızların ortalaması alınmaz: toplam yol 240 km, toplam süre 5 saat.",
+          meta: [["Düşünme", "~90 token"], ["Süre", "~3 sn"], ["Sonuç", "✓ doğru"]] },
+        { token: 160, sonuc: "ok", dusunce: "İlk aklıma 50 geldi ama iki yön eşit sürmüyor; dönüş daha uzun. Toplam 240 km / (2 + 3) sa = 48. Kontrol: harmonik ortalama 2·60·40 / 100 = 48 ✓",
+          cevap: "Ortalama hız 48 km/sa. Toplam yol 240 km, toplam süre 2 + 3 = 5 saat. Kontrol: iki hızın harmonik ortalaması da 48.",
+          meta: [["Düşünme", "~160 token"], ["Süre", "~5 sn"], ["Sonuç", "✓ doğru, kontrollü"]] },
+        { token: 280, sonuc: "ok", dusunce: "high’daki hesap ve kontrol. Ek olarak: eşit mesafelerde ortalama hız her zaman harmonik ortalamadır; bunu bir cümleyle söylemek kullanıcıya genel bir kural kazandırır.",
+          cevap: "48 km/sa. Eşit mesafelerde ortalama hız, hızların aritmetik değil harmonik ortalamasıdır: 2·60·40 / (60 + 40) = 48.",
+          meta: [["Düşünme", "~280 token"], ["Süre", "~8 sn"], ["Sonuç", "✓ doğru + genel kural"]] },
+        { token: 520, sonuc: "ok", dusunce: "Sonucu üç farklı yolla (süre hesabı, harmonik ortalama, örnek mesafeyle sayısal deneme) doğruladım; birim hatası olup olmadığını kontrol ettim.",
+          cevap: "48 km/sa. Eşit mesafelerde ortalama hız, hızların aritmetik değil harmonik ortalamasıdır: 2·60·40 / (60 + 40) = 48.",
+          meta: [["Düşünme", "~520 token"], ["Süre", "~15 sn"], ["Sonuç", "✓ xhigh ile aynı"]] }
+      ]
+    },
+    {
+      ad: "Zor: ara sıra çöken test",
+      istek: "Kod tabanındaki bir test, her 10 çalıştırmadan yaklaşık birinde başarısız oluyor. Sebebini bul ve düzelt.",
+      karar: "Burada efor gerçekten fark yaratıyor: low belirtiyi gizledi, medium doğru yere baktı ama kırılgan bir çözümde kaldı, high asıl sebebi buldu. xhigh benzer bir hatayı daha yakaladı. max ise xhigh’ın iki katından uzun sürdü ama sonucu değiştirmedi.",
+      seviyeler: [
+        { token: 300, sonuc: "no", dusunce: "Test dosyasını okudum. Ara sıra çöken testler genelde zamanlamadan kaynaklanır.",
+          cevap: "Teste 3 kez yeniden deneme ekledim; artık geçiyor.",
+          meta: [["Araç çağrısı", "3"], ["Düşünme", "~300 token"], ["Süre", "~20 sn"], ["Sonuç", "✗ belirtiyi gizledi, sebep duruyor"]] },
+        { token: 1500, sonuc: "mid", dusunce: "Testi 20 kez çalıştırdım, 2’sinde düştü. Hata mesajı önbellekteki bir değerin beklenenden farklı olduğunu söylüyor. Önbelleğe yazan kodu okudum; iki yazma çok yakın zamanda oluyor.",
+          cevap: "Önbelleğe yazmadan önce kısa bir bekleme ekledim; 20 çalıştırmada hata görmedim.",
+          meta: [["Araç çağrısı", "9"], ["Düşünme", "~1.500 token"], ["Süre", "~1 dk"], ["Sonuç", "~ doğru yere baktı, çözüm kırılgan"]] },
+        { token: 6000, sonuc: "ok", dusunce: "İki eşzamanlı görev aynı önbellek anahtarına yazıyor; hangisinin en son yazacağı şansa bağlı. Bu bir yarış durumu. Bekleme eklemek hatayı sadece seyrekleştirir. Doğru çözüm: yazmayı bir kilitle sıraya sokmak.",
+          cevap: "Sebep bir yarış durumu: iki görev aynı anahtara aynı anda yazıyor. Yazma işlemini bir kilitle korudum ve testi 200 kez çalıştırdım; hiç düşmedi.",
+          meta: [["Araç çağrısı", "24"], ["Düşünme", "~6.000 token"], ["Süre", "~4 dk"], ["Sonuç", "✓ kök neden düzeldi"]] },
+        { token: 11000, sonuc: "ok", dusunce: "high’daki teşhis ve çözüm. Ardından aynı desen başka yerde var mı diye kod tabanını taradım: oturum yöneticisinde de aynı kalıp var.",
+          cevap: "Sebep bir yarış durumuydu; yazmayı kilitle korudum, 200 çalıştırmada hata yok. Aynı kalıbı oturum yöneticisinde de bulup düzelttim ve bu yarışı yakalayan yeni bir test ekledim.",
+          meta: [["Araç çağrısı", "41"], ["Düşünme", "~11.000 token"], ["Süre", "~7 dk"], ["Sonuç", "✓ + benzer hata + yeni test"]] },
+        { token: 25000, sonuc: "ok", dusunce: "Yarış durumunun yanında üç alternatif açıklamayı da (saat farkı, rastgele tohum, ağ gecikmesi) ayrı ayrı deneyip eledim. Düzeltmeyi 1.000 çalıştırmayla doğruladım.",
+          cevap: "Sebep bir yarış durumuydu; yazmayı kilitle korudum ve aynı kalıbı oturum yöneticisinde de düzelttim, yeni bir test ekledim. Diğer üç olası sebebi de deneyip eledim; 1.000 çalıştırmada hata yok.",
+          meta: [["Araç çağrısı", "70"], ["Düşünme", "~25.000 token"], ["Süre", "~15 dk"], ["Sonuç", "✓ xhigh ile aynı sonuç"]] }
+      ]
+    }
+  ],
+
   /* ---------- Bölüm 17: araç senaryoları ----------
      n: döngüdeki düğüm (0 kullanıcı, 1 model, 2 araç), e: çizgi (0..3) */
   araclar: [

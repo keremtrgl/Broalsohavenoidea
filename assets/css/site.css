@@ -673,3 +673,24 @@ footer .wrap{display:grid;gap:10px;max-width:780px;margin-left:auto;margin-right
 .refs li{padding-left:4px}
 .refs b{display:block;font-weight:600}
 .refs span{font-size:.86rem;color:var(--muted)}
+
+/* Bölüm 16: efor örnekleri */
+.efx-strip{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.efc{display:grid;gap:6px;justify-items:center;padding:8px 4px;border:1.5px solid var(--line);border-radius:10px;background:var(--surface-2);cursor:pointer;color:var(--ink);font:inherit;transition:border-color .2s,background .2s}
+.efc:hover{border-color:var(--teal)}
+.efc.on{border-color:var(--teal);background:var(--teal-soft)}
+.efc-l{font:600 .76rem var(--mono)}
+.efc-b{display:flex;align-items:flex-end;justify-content:center;width:100%;height:56px}
+.efc-b i{display:block;width:44%;max-width:30px;min-height:3px;border-radius:4px 4px 2px 2px;background:var(--amber);transition:height .5s cubic-bezier(.2,.8,.2,1)}
+.efc-r{font:700 1rem var(--mono)}
+.efc-r.ok{color:var(--teal)} .efc-r.no{color:var(--rose)} .efc-r.mid{color:var(--amber)}
+.efx-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+@media (max-width:720px){.efx-pair{grid-template-columns:minmax(0,1fr)}}
+.efx-think,.efx-ans{border-radius:12px;padding:12px 14px;display:grid;gap:8px;align-content:start;min-width:0}
+.efx-think{border:1.5px dashed var(--amber);background:color-mix(in srgb,var(--amber) 6%,var(--surface))}
+.efx-ans{border:1.5px solid var(--line);background:var(--surface-2);overflow:hidden}
+.efx-think > b,.efx-ans > b{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.efx-think p{font-family:var(--mono);font-size:.84rem;line-height:1.6;color:var(--muted);animation:pop .35s ease}
+.efx-ans p{font-size:.98rem;line-height:1.6;animation:pop .35s ease}
+.efx-ans .vs-meta{margin:0 -14px -12px}
+.vs-meta dd.mid{color:var(--amber)}

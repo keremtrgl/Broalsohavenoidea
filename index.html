@@ -896,6 +896,22 @@
         <div class="know"><b>Çoğu kişi bilmez</b>Varsayılan efor her modelde aynı değil: Opus 5.5 ve Haiku 5.5’te “medium”, Sonnet 5.5’te “high”. Anthropic’in Fable 5.2 için önerisi “high ile başla; xhigh’ı sadece ölçülebilir bir kazanç gördüğün yerde kullan, max’ı çok nadir kullan”. Yeni modellerde efor, bir konuşmanın ortasında mesaj mesaj bile değiştirilebiliyor.</div>
       </div>
     </div>
+
+    <div class="bench" id="efx-bench" style="margin-top:36px">
+      <div class="bench-title"><h3>Aynı iş, beş efor seviyesi: örnek çıktılar</h3><span class="tag">temsilî örnekler</span></div>
+      <div class="row" id="efx-tasks"></div>
+      <div class="vs-req"><b>İstek</b><pre id="efx-req"></pre></div>
+      <div>
+        <div class="small" style="margin-bottom:6px">Bir seviye seç (yukarıdaki kaydırıcıyla da bağlı). Çubuk boyu, o seviyedeki düşünme miktarı:</div>
+        <div class="efx-strip" id="efx-strip"></div>
+      </div>
+      <div class="efx-pair">
+        <div class="efx-think"><b>Düşünme özeti · <span id="efx-lvl">high</span></b><p id="efx-think"></p></div>
+        <div class="efx-ans"><b>Cevap</b><p id="efx-ans"></p><dl class="vs-meta" id="efx-meta"></dl></div>
+      </div>
+      <p class="verdict" id="efx-verdict"></p>
+      <p class="disclaim">Örnekler bu sayfa için yazıldı; düşünme metinleri, süreler ve token sayıları temsilî. Claude ham düşünme metnini göstermez; burada gördüğün, istenirse gösterilen özet biçimine benzer.</p>
+    </div>
   </div>
 </section>
 
