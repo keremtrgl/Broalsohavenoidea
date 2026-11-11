@@ -31,7 +31,7 @@
       <span class="sep"></span>
       <a href="#modeller">Fable vs Sonnet</a><a href="#yolculuk">Bu mesaj</a><a href="#sozluk">Sözlük</a>
       <span class="sep"></span>
-      <a class="out" href="sozluk.html">Sözlük sayfası ↗</a><a class="out" href="kaynaklar.html">Kaynaklar ↗</a>
+      <a class="out" href="sozluk.html">Sözlük sayfası ↗</a><a class="out" href="kaynaklar.html">Kaynaklar ↗</a><a class="out" href="test.html">Kendini test et ↗</a>
     </nav>
   </div>
 </header>
@@ -179,28 +179,76 @@
     </div>
     <div class="grid2">
       <div class="prose">
-        <p>Anlamca yakın kelimeler haritada birbirine yakın durur: kedi ile köpek komşudur, Ankara ile İstanbul aynı mahalledir. Kimse bu haritayı elle çizmedi. Eğitimin başında her kelimenin adresi rastgeledir; model tahmin oyununu oynarken benzer yerlerde geçen kelimeleri yavaş yavaş yan yana taşır.</p>
-        <p>Haritadaki <strong>yönler</strong> de anlam taşır. Ünlü örnek: “kral” konumundan “erkek” yönünü çıkarıp “kadın” yönünü eklersen “kraliçe”ye çok yakın bir noktaya varırsın. Sağdaki turuncu oklar bunu gösteriyor.</p>
-        <p>Bir kelimeye dokun; o kelimenin sayı listesinden küçük bir kesit göreceksin.</p>
-        <div class="note">Gerçek haritada <b>2 değil, binlerce boyut</b> var. Biz onu ekrana sığsın diye kâğıda düşmüş bir gölge gibi çizdik.</div>
+        <h3>Gömme adım adım</h3>
+        <ol>
+          <li><strong>Token’dan numaraya:</strong> Bölüm 2’de metin parçalara bölündü, her parça bir numara oldu. “kedi” diyelim ki 48.213 numaralı token.</li>
+          <li><strong>Numaradan satıra:</strong> Modelin içinde dev bir tablo var: sözlükteki her token için bir satır. 48.213. satıra gidilir ve o satırdaki sayılar alınır. Bu bir hesap değil, bir <em>bakma</em> işlemidir; sözlükte kelime aramak gibi.</li>
+          <li><strong>Satır = adres:</strong> O satırdaki binlerce sayı, kelimenin anlam haritasındaki adresidir. Bu listeye kelimenin <em>gömmesi</em> (embedding) denir.</li>
+          <li><strong>Tablo da öğrenilir:</strong> Eğitimin başında tablodaki bütün sayılar rastgeledir. Her eğitim adımında, tahmin hatasını azaltacak yönde bu sayılar da biraz itilir. Benzer yerlerde geçen kelimeler zamanla birbirine yaklaşır.</li>
+        </ol>
+        <div class="know"><b>Çoğu kişi bilmez</b>Bu tablo devasa: sözlükte 100.000 token ve her biri için 8.000 sayı olsa, sadece bu tabloda 800 milyon sayı olur (rakamlar temsilî). Yine de modelin toplam parametrelerinin küçük bir kısmıdır. Asıl “düşünme” işi sonraki katmanlarda yapılır.</div>
       </div>
-      <div class="bench">
-        <div class="bench-title"><h3>Anlam haritası (2 boyuta indirilmiş)</h3><span class="tag">dokun</span></div>
-        <div class="map-wrap">
-        <svg class="map" id="map" viewBox="0 0 520 390" role="img" aria-label="Kelimelerin anlam haritası: hayvanlar, şehirler, meyveler, duygular ve insanlar kümeleri">
-          <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--amber)"/></marker></defs>
-          <ellipse class="cluster" cx="110" cy="92" rx="95" ry="66"/><text class="clabel" x="38" y="38">hayvanlar</text>
-          <ellipse class="cluster" cx="400" cy="88" rx="104" ry="64"/><text class="clabel" x="330" y="36">şehirler</text>
-          <ellipse class="cluster" cx="105" cy="296" rx="88" ry="60"/><text class="clabel" x="40" y="248">meyveler</text>
-          <ellipse class="cluster" cx="262" cy="200" rx="70" ry="46"/><text class="clabel" x="210" y="166">duygular</text>
-          <ellipse class="cluster" cx="402" cy="300" rx="104" ry="72"/><text class="clabel" x="330" y="240">insanlar</text>
-          <g id="pts"></g>
-          <path class="arrow" d="M350 352 L 444 352"/>
-          <path class="arrow" d="M354 284 L 448 284"/>
-          <text class="arrow-t" x="372" y="372">aynı yön!</text>
-        </svg>
+      <div class="bench" id="emb-bench">
+        <div class="bench-title"><h3>Deney: gömme tablosunda bir satır bul</h3><span class="tag">bir kelime seç</span></div>
+        <div class="row" id="emb-words"></div>
+        <div class="emb-flow">
+          <div class="emb-step"><b>1 · token</b><span id="emb-tok">kedi</span></div>
+          <div class="emb-arr" aria-hidden="true">→</div>
+          <div class="emb-step"><b>2 · numara</b><span id="emb-id" class="mono">48.213</span></div>
+          <div class="emb-arr" aria-hidden="true">→</div>
+          <div class="emb-step"><b>3 · tablodaki satır</b><span>satırı oku</span></div>
         </div>
-        <div class="vec" id="vec">Bir kelimeye dokun →</div>
+        <div class="emb-table-wrap"><div class="emb-table" id="emb-table" role="img" aria-label="Gömme tablosu: her satır bir token, her sütun bir sayı"></div></div>
+        <div><div class="small" style="margin-bottom:6px">4 · çıkan gömme (ilk 12 sayı; gerçekte binlercesi var):</div><div class="emb-vec" id="emb-vec"></div></div>
+        <p class="disclaim">Sayılar temsilî. Renk: turuncu artı, mor eksi; koyuluk büyüklük.</p>
+      </div>
+    </div>
+
+    <div class="bench" id="bigmap-bench" style="margin-top:36px">
+      <div class="bench-title"><h3>Büyük anlam haritası</h3><span class="tag">78 kelime · 11 küme · 2 boyuta indirilmiş</span></div>
+      <p class="map-lede">Anlamca yakın kelimeler haritada birbirine yakın durur: kedi ile köpek komşudur, Ankara ile Paris aynı mahalledir. Kimse bu haritayı elle çizmedi; tablo eğitimle şekillendi. Haritadaki <strong>yönler</strong> de anlam taşır: “kral”dan “erkek” yönünü çıkarıp “kadın” yönünü eklersen “kraliçe”ye varırsın. Gerçek haritada 2 değil binlerce boyut var; burada ekrana sığsın diye kâğıda düşmüş bir gölgesini görüyorsun.</p>
+      <div class="map-tools">
+        <div class="map-search"><label class="small" for="map-q">Kelime ara</label><input type="search" id="map-q" placeholder="ör. kedi, Paris, mutlu…" autocomplete="off"></div>
+        <div class="row" id="map-ana"></div>
+        <div class="row"><button class="btn sm" id="map-train">Eğitimi oynat</button><button class="btn sm" id="map-reset">Temizle</button></div>
+      </div>
+      <div class="bigmap-wrap"><svg class="bigmap" id="bigmap" viewBox="0 0 1000 620" role="img" aria-label="Anlam haritası: hayvanlar, taşıtlar, sayılar, renkler, duygular, meyveler, yemekler, meslekler, ülkeler ve başkentler, fiiller ve insanlar kümeleri">
+        <defs><marker id="ahm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="var(--amber)"/></marker></defs>
+        <g id="bm-clusters"></g><g id="bm-lines"></g><g id="bm-arrows"></g><g id="bm-pts"></g>
+        <text id="bm-phase" x="500" y="610" text-anchor="middle" class="bm-phase"></text>
+      </svg></div>
+      <div class="map-info" id="map-info">Bir kelimeye dokun: en yakın komşuları çizgiyle gösterilir. Bir benzetme düğmesine bas: yönlerin de anlam taşıdığını gör. “Eğitimi oynat” ile kelimelerin rastgele başlayıp yerlerine nasıl yerleştiğini izle.</div>
+      <p class="disclaim">Konumlar temsilî; gerçek gömmeler binlerce boyutlu ve iki boyuta indirilince bilgi kaybolur. Benzerlik yüzdeleri haritadaki uzaklıktan hesaplanıyor.</p>
+    </div>
+
+    <div class="grid2">
+      <div class="bench">
+        <div class="bench-title"><h3>Deney: iki kelime ne kadar benzer?</h3><span class="tag">kosinüs benzerliği</span></div>
+        <div class="row cos-pick"><label class="small" for="cos-a">Birinci</label><select id="cos-a"></select><label class="small" for="cos-b">İkinci</label><select id="cos-b"></select></div>
+        <svg class="cos-svg" id="cos-svg" viewBox="0 0 320 190" role="img" aria-label="İki kelimenin vektörleri ve aralarındaki açı"></svg>
+        <div class="cos-out"><b id="cos-v">%0</b><span id="cos-say"></span></div>
+        <p class="disclaim">Vektörler 12 boyutlu temsilî gömmeler; açı bu 12 boyutta hesaplanıp düzleme çizildi.</p>
+      </div>
+      <div class="prose">
+        <h3>Benzerlik bir açıdır</h3>
+        <p>Model iki kelimenin ne kadar benzediğini uzaklıktan çok <strong>yön</strong> ile ölçer. Her gömme, haritanın merkezinden çıkan bir ok gibidir. İki ok aynı yöne bakıyorsa kelimeler benzer, dik açıdaysa ilgisiz, zıt yöndeyse karşıt sayılır.</p>
+        <p>Bu ölçünün adı <em>kosinüs benzerliği</em>: açı 0° ise 1 (aynı), 90° ise 0 (ilgisiz). Arama motorları, “buna benzer belgeleri bul” özellikleri ve yapay zekâya belge okutan sistemler (RAG) tam olarak bu hesabı kullanır.</p>
+        <div class="note teal">Dene: <b>kedi–köpek</b> yüksek, <b>kedi–otobüs</b> düşük çıkar. <b>mutlu–üzgün</b> ise sanıldığından yüksektir: ikisi de duygu kelimesi ve benzer cümlelerde geçer. Gömme “zıt anlam”ı değil, “benzer bağlamda geçme”yi yakalar.</div>
+      </div>
+    </div>
+
+    <div class="grid2">
+      <div class="prose">
+        <h3>Aynı kelime, farklı anlam</h3>
+        <p>Gömme tablosunda “yüz” kelimesinin <strong>tek bir satırı</strong> var. Yani “Sınavdan yüz aldım” ile “Yüzümü yıkadım” cümlelerinde, ilk adımda ikisi de aynı vektörle başlar.</p>
+        <p>Farkı sonraki katmanlar yaratır: dikkat mekanizması (Bölüm 4) çevredeki kelimelere bakar ve vektörü yavaş yavaş doğru anlama doğru iter. Birkaç katman sonra “yüz” artık ya bir sayının, ya bir vücut parçasının, ya da bir hareketin yanında durur.</p>
+        <div class="know"><b>Çoğu kişi bilmez</b>Eski yöntemler (2013’teki word2vec gibi) her kelimeye tek ve sabit bir vektör veriyordu; “yüz”ün üç anlamı birbirine karışıyordu. Bugünkü modellerde kelimenin son anlamı bağlama göre hesaplanır. Bu yüzden onlara <em>bağlamsal gömme</em> deniyor.</div>
+      </div>
+      <div class="bench" id="ctx-bench">
+        <div class="bench-title"><h3>Deney: “yüz” kelimesi katmanlarda nereye gidiyor?</h3><span class="tag">canlandırma</span></div>
+        <div class="row" id="ctx-btns"></div>
+        <svg class="ctx-svg" id="ctx-svg" viewBox="0 0 420 260" role="img" aria-label="Yüz kelimesinin vektörünün katmanlar boyunca farklı anlam bölgelerine gidişi"></svg>
+        <p class="small" id="ctx-say"></p>
       </div>
     </div>
 
@@ -443,6 +491,15 @@
       </div>
     </div>
 
+    <div class="bench" id="pt-bench" style="margin-top:36px">
+      <div class="bench-title"><h3>Bir cümle, birçok ders: ön eğitim neyi öğretir?</h3><span class="tag">temsilî olasılıklar</span></div>
+      <p class="small">Ön eğitimde model hep aynı oyunu oynar: sıradaki kelimeyi tahmin et. Ama hangi cümlenin geldiğine göre öğrendiği şey değişir. Bir cümle türü seç; modelin eğitimin başında, ortasında ve sonunda ne tahmin ettiğine bak.</p>
+      <div class="row" id="pt-btns"></div>
+      <pre class="pt-cumle" id="pt-cumle"></pre>
+      <div class="pt-cols" id="pt-cols"></div>
+      <p class="verdict" id="pt-ders"></p>
+    </div>
+
     <div class="grid2" style="margin-top:28px">
       <div class="prose">
         <details class="deep"><summary><div><span>Daha derine</span>Öğrenme oranı takvimi ve kayıp sıçramaları</div></summary><div class="in">
@@ -558,6 +615,19 @@
         <p>Matematik, kod, bulmacalar: cevabı otomatik kontrol edilebilen binlerce görev. Model aynı probleme çok sayıda deneme yapar; testleri geçen denemeler ödüllendirilir. Düşünen modellerin akıl yürütmesi, araç kullanan ajanların becerisi büyük ölçüde burada pişer.</p>
         <div class="ex">Ajan eğitimi için modele gerçek bir terminal, tarayıcı ya da kod deposu içeren kum havuzu ortamları verilir.</div>
       </div>
+    </div>
+
+    <div class="bench" id="sft-bench" style="margin-top:28px">
+      <div class="bench-title"><h3>İnce ayardan önce ve sonra: aynı istek, iki model</h3><span class="tag">6 örnek</span></div>
+      <p class="small">İnce ayar verisi binlerce “istek → ideal cevap” örneğinden oluşur. Solda, sadece ön eğitimden geçmiş temel modelin aynı metni nasıl devam ettirebileceği; sağda ince ayar verisindeki ideal asistan cevabı.</p>
+      <div class="row" id="sft-btns"></div>
+      <div class="vs-req"><b>İstek</b><pre id="sft-istek"></pre></div>
+      <div class="vs-pair">
+        <div class="vs-card sft-base"><div class="vs-head"><span>Temel model</span><span class="tag">sadece ön eğitim</span></div><pre class="vs-out" id="sft-temel"></pre></div>
+        <div class="vs-card s"><div class="vs-head"><span>Asistan</span><span class="tag">ince ayar verisi</span></div><pre class="vs-out" id="sft-asistan"></pre></div>
+      </div>
+      <p class="verdict" id="sft-ders"></p>
+      <p class="disclaim">Temel model metinleri, bu tür modellerin tipik davranışını göstermek için yazıldı.</p>
     </div>
 
     <div class="grid2" style="margin-top:28px">
@@ -963,7 +1033,7 @@
   }
 }</pre>
         <p class="small">Modelin aracı ne zaman kullanacağını belirleyen en önemli şey <strong>description</strong> alanı. Model aracın kodunu hiç görmez; sadece bu tarifi okur. Kötü yazılmış bir tarif, yanlış zamanda çağrılan ya da hiç çağrılmayan bir araç demek.</p>
-        <div class="note teal">Aşağıdaki atölyede 15 senaryo var, kolaydan zora sıralı: basit bir çağrıdan kimya, fizik, iktisat, finans ve istatistik hesaplarına; araç aramadan MCP’ye, onay isteyen eylemlerden kod ajanına, istem enjeksiyonundan bilgisayar kullanımına kadar.</div>
+        <div class="note teal">Aşağıdaki atölyede 18 senaryo var, kolaydan zora sıralı: basit bir çağrıdan kimya, fizik, iktisat, finans ve istatistik hesaplarına; araç aramadan MCP’ye, kod ajanından istem enjeksiyonuna. En sondaki üç “uzman” senaryo en karmaşık kurgular: alt ajanlar, araçları koddan çağırmak ve bağlamı dolduran saatlerce süren görevler. Zor senaryolarda sağda “perde arkası” notları var.</div>
       </div>
     </div>
 
@@ -1211,20 +1281,22 @@
     </div>
 
     <div class="bench" id="vs-bench" style="margin-top:36px">
-      <div class="bench-title"><h3>Aynı iş, iki model: örnek çıktılar</h3><span class="tag">temsilî örnekler</span></div>
+      <div class="bench-title"><h3>Aynı iş, iki model: örnek çıktılar</h3><span class="tag" id="vs-tag">temsilî örnekler</span></div>
+      <div class="vs-src" id="vs-src"></div>
       <div class="task-btns" id="task-btns"></div>
       <div class="vs-req"><b>İstek</b><pre id="vs-req"></pre></div>
       <div class="vs-pair">
-        <div class="vs-card s"><div class="vs-head"><span>Sonnet 5.5</span><span class="tag">$2 / $10</span></div><pre class="vs-out" id="vs-s-out"></pre><div class="vs-test" id="vs-s-test"></div><dl class="vs-meta" id="vs-s-meta"></dl></div>
-        <div class="vs-card f"><div class="vs-head"><span>Fable 5.2</span><span class="tag">$8 / $40</span></div><pre class="vs-out" id="vs-f-out"></pre><div class="vs-test" id="vs-f-test"></div><dl class="vs-meta" id="vs-f-meta"></dl></div>
+        <div class="vs-card s"><div class="vs-head"><span>Sonnet 5.5</span><span class="tag">$2 / $10</span></div><pre class="vs-out" id="vs-s-out"></pre><details class="vs-think" id="vs-s-think" hidden><summary>Düşünme özeti</summary><p></p></details><div class="vs-test" id="vs-s-test"></div><dl class="vs-meta" id="vs-s-meta"></dl></div>
+        <div class="vs-card f"><div class="vs-head"><span>Fable 5.2</span><span class="tag">$8 / $40</span></div><pre class="vs-out" id="vs-f-out"></pre><details class="vs-think" id="vs-f-think" hidden><summary>Düşünme özeti</summary><p></p></details><div class="vs-test" id="vs-f-test"></div><dl class="vs-meta" id="vs-f-meta"></dl></div>
       </div>
-      <div class="vs">
-        <div class="small">Bu tür işlerde başarı oranı (temsilî):</div>
+      <div class="vs" id="vs-meters">
+        <div class="small" id="vs-rate-lab">Bu tür işlerde başarı oranı (temsilî):</div>
         <div class="meter"><span>Sonnet 5.5</span><span class="bar"><i id="vs-s" style="background:var(--teal)"></i></span><span class="v" id="vs-sv"></span></div>
         <div class="meter"><span>Fable 5.2</span><span class="bar"><i id="vs-f" style="background:var(--amber)"></i></span><span class="v" id="vs-fv"></span></div>
       </div>
       <p class="verdict" id="verdict"></p>
-      <p class="disclaim">Örnek cevaplar bu sayfa için yazıldı, gerçek model çıktıları değil; süreler, maliyetler ve başarı oranları da temsilî. Gerçekte iki model de bazen doğru, bazen yanlış yapar; zor işlerde güçlü modelin doğru yapma oranı daha yüksektir. Kendi işinde ikisini birkaç gerçek örnekle denemek en doğru cevabı verir.</p>
+      <p class="disclaim" id="vs-disc">Örnek cevaplar bu sayfa için yazıldı, gerçek model çıktıları değil; süreler, maliyetler ve başarı oranları da temsilî. Gerçekte iki model de bazen doğru, bazen yanlış yapar; zor işlerde güçlü modelin doğru yapma oranı daha yüksektir. Kendi işinde ikisini birkaç gerçek örnekle denemek en doğru cevabı verir.</p>
+      <div class="table-wrap" id="vs-sum-wrap" hidden><table class="compare vs-sum" id="vs-sum"></table></div>
     </div>
 
     <div class="grid2">
@@ -1310,6 +1382,7 @@
         <p>Sayfa boyunca geçen 50 terimin kısa tanımları ayrı bir sayfada, aranabilir şekilde duruyor. Bu sayfadaki bilgilerin nereden geldiğini, hangilerinin kesin hangilerinin temsilî olduğunu da ayrı bir sayfada topladım.</p>
         <div class="sub-links">
           <a class="sub-link" href="sozluk.html"><b>Cep sözlüğü →</b><span>50 terim, arama kutusuyla. Token’dan süperpozisyona.</span></a>
+          <a class="sub-link" href="test.html"><b>Kendini test et →</b><span>15 soruluk kısa test; her cevapta açıklama ve ilgili bölüme bağlantı.</span></a>
           <a class="sub-link" href="kaynaklar.html"><b>Kaynaklar →</b><span>Atıf yapılan araştırmalar ve hangi rakamın kesin, hangisinin temsilî olduğu.</span></a>
         </div>
       </div>
@@ -1333,6 +1406,7 @@
 </footer>
 
 <script src="assets/js/ornekler.js"></script>
+<script src="assets/js/gercek-sonuclar.js"></script>
 <script src="assets/js/site.js"></script>
 </body>
 </html>

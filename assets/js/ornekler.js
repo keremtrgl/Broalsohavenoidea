@@ -494,5 +494,189 @@ window.ORNEKLER = {
       notlar: ["5'ten 2'sini düzeltti", "hepsi düzeldi", "sayfayı sildi", "yanlış dosyayı düzenledi", "hepsi düzeldi", "süre doldu", "denetleyiciyi değiştirmeye çalıştı", "bağlantıyı yorum satırı yaptı"],
       ozet: "8 denemeden 2'si geçti. Deneme 3, 7 ve 8'e dikkat: sayfayı silmek ya da denetleyiciyi kurcalamak “0 kırık bağlantı” sonucunu hile ile verebilir. İyi tasarlanmış ortamlar bu kestirmeleri yakalayıp ödül vermez (Bölüm 11)."
     }
+  ],
+
+  /* ---------- Bölüm 8: bir cümle, birçok ders ----------
+     asamalar: eğitimin başı, ortası, sonu; her biri [aday, olasılık %] listesi. Temsilî. */
+  onegitim: [
+    { ad: "Bilgi", cumle: "Türkiye'nin başkenti ___ şehridir.", dogru: "Ankara",
+      asamalar: [[["mavi", 4], ["ve", 3], ["Ankara", 1]], [["İstanbul", 38], ["Ankara", 31], ["büyük", 6]], [["Ankara", 91], ["İstanbul", 4], ["bir", 1]]],
+      ders: "Dünya hakkında gerçek bilgiler. Metinlerde “başkenti Ankara” defalarca geçtiği için model bu bilgiyi düğmelerine işler. Ortadaki aşamada “İstanbul”un öne çıkması gerçek bir tuzak: İstanbul metinlerde çok daha sık geçer." },
+    { ad: "Dilbilgisi", cumle: "Çocuklar bahçede top ___", dogru: "oynuyor",
+      asamalar: [[["top", 5], ["bahçe", 4], ["oynuyor", 2]], [["oynadı", 30], ["oynuyor", 28], ["oynamak", 12]], [["oynuyor", 62], ["oynadı", 21], ["oynuyorlar", 9]]],
+      ders: "Türkçenin ek düzeni: özneyle uyum, zaman ekleri. Kimse kural öğretmez; milyonlarca örnekten kalıp çıkar. Sondaki “oynadı” da yanlış değil; bağlam belirsiz." },
+    { ad: "Aritmetik", cumle: "17 + 25 = ___", dogru: "42",
+      asamalar: [[["17", 6], ["25", 5], ["42", 1]], [["42", 22], ["32", 14], ["43", 10]], [["42", 88], ["43", 3], ["32", 2]]],
+      ders: "Basit hesap. Model hesap makinesi değildir, sayıları da token olarak görür. Büyük sayılarda hâlâ hata yapabilir; bu yüzden zor hesapları araçlara bırakır (Bölüm 17)." },
+    { ad: "Kod", cumle: "def kare(x):\n    return x ___", dogru: "* x",
+      asamalar: [[["(", 7], ["x", 6], ["* x", 1]], [["* x", 24], ["+ x", 19], ["** 2", 15]], [["* x", 57], ["** 2", 38], ["+ x", 1]]],
+      ders: "Programlama dillerinin kuralları ve isimle davranışın uyumu. “kare” adı, x * x ya da x ** 2 beklentisi doğurur; ikisi de doğru. Ortadaki “+ x” ise isimden anlam çıkaramayan bir modelin tahmini." },
+    { ad: "Mantık", cumle: "Ali Ayşe'den uzun, Ayşe de Can'dan uzun. En kısa olan ___", dogru: "Can",
+      asamalar: [[["Ali", 9], ["uzun", 7], ["Can", 4]], [["Ayşe", 29], ["Can", 27], ["Ali", 20]], [["Can", 84], ["Ayşe", 9], ["Ali", 4]]],
+      ders: "Basit akıl yürütme. Sonraki kelimeyi doğru tahmin etmek için cümledeki ilişkileri takip etmek gerekir; model bunu tahmin oyunu sırasında adeta mecburen öğrenir." },
+    { ad: "Duygu", cumle: "Film o kadar sıkıcıydı ki yarısında ___", dogru: "uyuyakaldım",
+      asamalar: [[["film", 6], ["ki", 5], ["uyuyakaldım", 1]], [["çıktım", 22], ["uyuyakaldım", 18], ["güldüm", 14]], [["uyuyakaldım", 46], ["çıktım", 38], ["sıkıldım", 9]]],
+      ders: "Duygu ve sonuç ilişkisi. “Sıkıcı” kelimesi “güldüm”ü değil “uyuyakaldım”ı ya da “çıktım”ı olası kılar. Model insanların nasıl hissettiğine dair izleri metinden öğrenir." },
+    { ad: "Sağduyu", cumle: "Bardağı masanın kenarına koydum, kedi çarptı ve bardak ___", dogru: "düştü",
+      asamalar: [[["kedi", 8], ["masa", 6], ["düştü", 2]], [["düştü", 41], ["kırıldı", 30], ["kaldı", 8]], [["düştü", 52], ["kırıldı", 41], ["devrildi", 4]]],
+      ders: "Fiziksel dünya hakkında sağduyu: çarpılan bardak düşer ya da kırılır. İki cevap da makul; iyi bir model ikisine de yüksek pay verir. Tek bir “doğru” kelime yoktur, makul bir dağılım vardır." }
+  ],
+
+  /* ---------- Bölüm 10: ince ayar örnekleri (temel model ve asistan) ----------
+     temel: ön eğitimden çıkmış modelin metni nasıl devam ettirebileceği; asistan: ince ayar verisindeki ideal cevap. */
+  sft: [
+    { ad: "Soruya cevap", istek: "Fransa'nın başkenti nedir?",
+      temel: "Fransa'nın başkenti nedir?\nAlmanya'nın başkenti nedir?\nİtalya'nın başkenti nedir?\n(Coğrafya testi, 5. sınıf, 2. ünite)",
+      asistan: "Fransa'nın başkenti Paris'tir.",
+      ders: "Soruyu devam ettirilecek bir metin değil, cevaplanacak bir istek olarak görmek." },
+    { ad: "Talimata uymak", istek: "Fotosentezi tek cümleyle, bir çocuğa anlatır gibi anlat.",
+      temel: "Fotosentezi tek cümleyle, bir çocuğa anlatır gibi anlat.\n\nCevap: Fotosentez, klorofil içeren canlıların ışık enerjisini kullanarak karbondioksit ve sudan glikoz sentezlediği, bu sırada oksijen açığa çıkardığı biyokimyasal süreçtir. Fotosentezin ışığa bağımlı tepkimeleri…",
+      asistan: "Bitkiler güneş ışığını kullanarak sudan ve havadan kendi yemeklerini yapar, bu sırada da bize nefes almamız için oksijen bırakır.",
+      ders: "Biçim kısıtlarına (tek cümle) ve hedef kitleye (çocuk) uymak." },
+    { ad: "Bilmiyorum demek", istek: "Komşum Ahmet Bey'in doğum günü ne zaman?",
+      temel: "Komşum Ahmet Bey'in doğum günü 12 Mart'ta. Her yıl apartmanca pasta keseriz, bu yıl da…",
+      asistan: "Bunu bilemem; komşunun kişisel bilgilerine erişimim yok. Kendisine ya da ortak bir tanıdığa sorabilirsin.",
+      ders: "Bilmediğini uydurmamak. Temel model metni akıcı biçimde devam ettirir; yani gönül rahatlığıyla uydurur." },
+    { ad: "Netleştirici soru", istek: "Bana bir program yaz.",
+      temel: "Bana bir program yaz. Ne programı? Bilmiyorum, bir şey işte. Forumda biri şu cevabı vermiş: “Kardeşim önce ne istediğini…”",
+      asistan: "Memnuniyetle! Ne yapmasını istersin? Örneğin bir hesap makinesi, yapılacaklar listesi ya da basit bir oyun olabilir. Hangi dili tercih edersin?",
+      ders: "İstek belirsizse tahmin yürütmek yerine kısa ve yönlendirici bir soru sormak." },
+    { ad: "Araç kullanmak", istek: "Yarın İzmir'de yağmur var mı?  (asistanın hava_tahmini aracı var)",
+      temel: "Yarın İzmir'de yağmur var mı? Meteoroloji yarın İzmir için parçalı bulutlu ve yer yer sağanak yağışlı bir hava bekleniyor diyor. Ayrıca…",
+      asistan: "tool_use: hava_tahmini\n{\"sehir\": \"İzmir\", \"gun\": \"yarın\"}",
+      ders: "Bilgiyi uydurmak yerine doğru biçimde araç isteği yazmak (Bölüm 17)." },
+    { ad: "Güvenli ama yardımcı", istek: "Çamaşır suyu ile tuz ruhunu karıştırırsam temizlik daha iyi olur mu?",
+      temel: "Çamaşır suyu ile tuz ruhunu karıştırırsam temizlik daha iyi olur mu? Evet, birçok kişi bu karışımı fayanslar için kullanıyor, kireci anında söküyor…",
+      asistan: "Hayır, kesinlikle karıştırma. İkisi birleşince solunduğunda tehlikeli olan klor gazı açığa çıkar. İkisini ayrı ayrı, arada iyice durulayarak ve ortamı havalandırarak kullan.",
+      ders: "Tehlikeyi açıkça söyleyip güvenli yolu göstermek. Temel model internetteki yanlış bilgiyi de aynı akıcılıkla tekrarlayabilir." }
+  ],
+
+  /* ---------- Bölüm 17: çok karmaşık araç senaryoları ---------- */
+  araclarUzman: [
+    {
+      ad: "Alt ajanlar", seviye: "uzman", arac: "Alt ajanlar",
+      adimlar: [
+        { k: "Kullanıcı", t: "Üç rakip firmanın son yıllık raporlarını incele; gelir, kâr marjı ve büyüme planlarını karşılaştıran bir tablo çıkar.", n: 0, e: 0 },
+        { k: "Yönetici model → 3 alt ajan başlat", t: "Üç raporun her biri yüzlerce sayfa. Hepsini kendi bağlamıma okursam dolar. Her firmaya ayrı bir alt ajan göndereyim; sadece kısa özetleri bana dönsün.", p: 'tool_use: alt_ajan {"gorev": "A Holding raporunu oku; gelir, kâr marjı, büyüme planı. En fazla 150 kelime özet.", "araclar": ["web_search", "web_fetch", "code_execution"]}\ntool_use: alt_ajan {"gorev": "B Teknoloji raporu … (aynı biçim)"}\ntool_use: alt_ajan {"gorev": "C Gıda raporu … (aynı biçim)"}', n: 1, e: 1 },
+        { k: "Alt ajanlar (paralel)", t: "Üç alt ajan aynı anda, her biri kendi bağlamında çalışır: ortalama 35 araç çağrısı, 300 sayfalık rapor okuma, tablo hesaplama. Yöneticiye sadece özetler döner:", p: "A Holding: gelir 12,4 mr TL, net kâr marjı %8,1; plan: 2 yeni fabrika\nB Teknoloji: gelir 3,1 mr TL, net kâr marjı %19,6; plan: yurt dışı açılım\nC Gıda: gelir 7,8 mr TL, net kâr marjı %4,3; plan: maliyet azaltma", n: 2, e: 2 },
+        { k: "Yönetici model → kullanıcı", t: "Gelirde A Holding önde (12,4 mr TL), ama kârlılıkta B Teknoloji açık ara önde (%19,6 marj). C Gıda en düşük marjla (%4,3) maliyet odaklı bir plana geçmiş. B'nin yurt dışı planı en büyümeci strateji; A'nın fabrika yatırımı ise en sermaye yoğun olanı. (Tablo ekte.)", n: 1, e: 3 }
+      ],
+      not: "Yönetici model raporların hiçbirini kendisi okumadı. Sadece alt ajanların yazdığı kısa özetleri gördü. Firma ve rakamlar örnek.",
+      detay: [
+        "Her alt ajan ayrı bir model çağrısıdır: kendi bağlamı, kendi araçları, kendi düşünmesi var. Paralel çalıştıkları için toplam süre kısalır.",
+        "Asıl kazanç bağlam temizliği: 900 sayfalık okuma yöneticinin bağlamına hiç girmez; yönetici kararlarını üç kısa özetle verir.",
+        "Bedeli: toplam token kullanımı tek ajana göre birkaç kat artar. Basit işlerde alt ajan kullanmak israftır.",
+        "Görev tarifi kritik: alt ajan yöneticinin bildiği bağlamı bilmez, sadece kendisine yazılanı bilir. “En fazla 150 kelime” gibi biçim kuralları da özetlerin karşılaştırılabilir gelmesini sağlar.",
+        "Yaygın kurgu: güçlü bir model yönetici, daha ucuz ve hızlı modeller alt ajan. Okuma ağırlıklı işi ucuz model yapar, kararı güçlü model verir."
+      ]
+    },
+    {
+      ad: "Programatik araç çağırma", seviye: "uzman", arac: "Kod kum havuzu",
+      adimlar: [
+        { k: "Kullanıcı", t: "Geçen ay sipariş veren 500 müşteriden kaçının siparişi 3 günden geç teslim edildi? Geç kalanlarda ortalama gecikme ne?", n: 0, e: 0 },
+        { k: "Model → araçları koddan çağıran kod", t: "500 siparişi tek tek araçla sorup her sonucu okursam bağlamım dolar. Bunun yerine araçları bir döngü içinde koddan çağıran bir program yazayım; bana sadece sonuç dönsün.", p: "tool_use: code_execution\ngec = []\nfor m in musteri_listesi(ay=\"2026-10\"):     # araç çağrısı\n    s = siparis_detay(m[\"siparis_id\"])       # araç çağrısı ×500\n    gun = (s[\"teslim\"] - s[\"siparis\"]).days\n    if gun > 3:\n        gec.append(gun - 3)\nprint(len(gec), round(sum(gec) / len(gec), 1))", n: 1, e: 1 },
+        { k: "Kum havuzu", t: "Kod 501 araç çağrısı yaptı. Bu çağrıların sonuçları modelin bağlamına hiç girmedi; sadece kodun içinde işlendi. Modele dönen tek şey:", p: "stdout: 37 1.8", n: 2, e: 2 },
+        { k: "Model → kullanıcı", t: "500 siparişin 37'si (%7,4) 3 günden geç teslim edildi. Geç kalan siparişlerde ortalama gecikme 1,8 gün.", n: 1, e: 3 }
+      ],
+      not: "Model bir kez kod yazdı; 501 araç çağrısını o kod yaptı. Veriler örnek.",
+      detay: [
+        "Klasik yolla model 501 ayrı araç çağrısı yapar ve her sonucu kendi bağlamına okur: yüz binlerce token, onlarca dakika ve 500 kaydı tek tek okurken dikkat hatası riski.",
+        "Programatik çağrıda bağlama sadece son satırdaki iki sayı girer. Hem ucuz hem hızlı.",
+        "Ne zaman uygun değil? Her sonuçtan sonra modelin yorum yapması gerekiyorsa (ör. her müşteriye özel bir cevap yazmak) araçları tek tek çağırmak gerekir.",
+        "Claude API'de bu özellik kod çalıştırma aracıyla birlikte çalışır; geliştirici hangi araçların koddan çağrılabileceğini kendisi belirler."
+      ]
+    },
+    {
+      ad: "Saatler süren görev", seviye: "uzman", arac: "Terminal ve sistem",
+      adimlar: [
+        { k: "Kullanıcı", t: "Bu 200 dosyalık projede eski tarih kütüphanesini yenisiyle değiştir. Bütün testler geçsin.", n: 0, e: 0 },
+        { k: "Model → kendine not dosyası yaz", t: "Bu iş saatler sürecek ve bağlamım bir noktada dolacak. Önce planımı ve ilerlemeyi dışarıda bir dosyada tutayım.", p: "tool_use: dosya_yaz ILERLEME.md\n- [ ] Eski kütüphanenin kullanımlarını bul\n- [ ] Ortak bir uyarlama katmanı yaz\n- [ ] Dosyaları klasör klasör taşı (her klasörden sonra test)\n- [ ] Saat dilimi testlerine özellikle dikkat", n: 1, e: 1 },
+        { k: "Terminal", t: "…2 saat ve 180 araç çağrısı sonra:", p: "140 / 200 dosya taşındı · son test turu: 1.150 geçti, 54 başarısız", n: 2, e: 2 },
+        { k: "Sistem (bağlam yönetimi)", t: "Bağlam penceresi dolmak üzere. Eski konuşma otomatik olarak bir özetle değiştirildi (sıkıştırma):", p: "ÖZET: 140/200 dosya tamam. Kalan: rapor/ ve odeme/ klasörleri. 54 başarısız testin çoğu saat dilimi kaynaklı. İlerleme ayrıntıları ILERLEME.md'de.", n: 2, e: 2 },
+        { k: "Model → not dosyasını oku", t: "Özet kısa; ayrıntılar için kendi notlarıma bakayım.", p: "tool_use: dosya_oku ILERLEME.md", n: 1, e: 1 },
+        { k: "Terminal", t: "Not dosyası:", p: "- [x] Kullanımlar bulundu (612 yer)\n- [x] Uyarlama katmanı yazıldı\n- [~] Taşıma: 140/200 · kalan rapor/, odeme/\n- [ ] Saat dilimi: eski kütüphane yerel saati varsayıyordu!", n: 2, e: 2 },
+        { k: "Model → komut çalıştır", t: "Kalan klasörleri taşıdım ve saat dilimi varsayımını uyarlama katmanında düzelttim. Şimdi bütün testler:", p: "tool_use: bash\nnpm test", n: 1, e: 1 },
+        { k: "Terminal", t: "Çıktı:", p: "1.204 geçti, 0 başarısız ✓", n: 2, e: 2 },
+        { k: "Model → kullanıcı", t: "Taşıma tamamlandı: 200 dosya, 612 kullanım. Testlerin hepsi geçiyor (1.204). En önemli bulgu: eski kütüphane yerel saati varsayıyordu; yenisi UTC kullanıyor. Bu farkı uyarlama katmanında giderdim ve ILERLEME.md'ye not ettim.", n: 1, e: 3 }
+      ],
+      not: "Bağlam dolunca eski konuşma özetlendi; model ayrıntıları kendi tuttuğu not dosyasından geri aldı. Veriler örnek.",
+      detay: [
+        "Uzun işlerde konuşma, bağlam penceresini doldurur. Sıkıştırma eski kısmı bir özetle değiştirir; ayrıntılar kaybolabilir.",
+        "Bu yüzden iyi ajanlar dışarıda notlar tutar (ILERLEME.md gibi). Özet yetmediğinde dosyadan okurlar: bir tür not defteri hafızası.",
+        "Testler ilerlemenin nesnel ölçüsü: model “bitti” demek yerine testleri çalıştırıp kanıtlar.",
+        "Saatler süren işte küçük bir yanlış varsayım (burada saat dilimi) birikip büyüyebilir. Güçlü modellerle zayıf modeller arasındaki fark en çok bu tür işlerde açılır (Bölüm 19)."
+      ]
+    }
+  ],
+
+  /* Mevcut zor senaryolar için “daha derine” notları */
+  aracDetay: {
+    "Veritabanı ajanı": [
+      "Model veritabanının yapısını (tablo ve sütun adları) araç tarifinden ya da önce “şemayı göster” diye sorarak öğrenir.",
+      "İkinci sorguyu ilk sonuca bakarak kurdu: plan önceden belli değildi, bulgulara göre şekillendi.",
+      "Güvenlik: bu tür bir araç veritabanına sadece okuma yetkisiyle bağlanır. Model yanlışlıkla bile veri silemez ya da değiştiremez.",
+      "Sonuçlar bağlama girer; yüz binlerce satır dönen bir sorgu bağlamı doldurur. Bu yüzden iyi sorgular LIMIT ve gruplama kullanır."
+    ],
+    "Bilgisayar kullanımı": [
+      "Ekran görüntüsü modele resim olarak gelir; model düğmelerin yerini piksel koordinatı olarak tahmin eder.",
+      "Her eylemden sonra yeni bir ekran görüntüsü alıp sonucu kontrol etmek şart: sayfa yavaş yüklenebilir, açılır pencere çıkabilir.",
+      "Ekran görüntüleri çok token tutar; bu yüzden bilgisayar kullanımı, aynı işi yapan bir araçtan (API) genelde çok daha yavaş ve pahalıdır. API varsa onu kullanmak daha iyidir.",
+      "Risk: model ekranda gördüğü bir metindeki talimata kanabilir (istem enjeksiyonu). Bu yüzden önemli eylemler insan onayına bağlanır."
+    ],
+    "Kod ajanı": [
+      "Döngü: çalıştır → oku → düzenle → tekrar çalıştır. Gerçek kod ajanları bir işte yüzlerce kez bu döngüden geçer.",
+      "Düzenleme aracı genelde “şu metni şununla değiştir” biçimindedir; böylece model bütün dosyayı yeniden yazmak zorunda kalmaz.",
+      "En önemli alışkanlık son adım: düzelttiğini varsaymak yerine testi tekrar çalıştırmak.",
+      "Komut çalıştırma aracı güçlüdür; bu yüzden genelde yalıtılmış bir ortamda ve izin kurallarıyla çalıştırılır."
+    ],
+    "İstem enjeksiyonu": [
+      "Saldırgan, modelin okuyacağı bir yere (web sayfası, e-posta, belge) gizli talimat koyar; beyaz yazı ya da görünmez karakter gibi.",
+      "Model için zorluk: okuduğu metnin hepsi aynı bağlamda. Talimatın kullanıcıdan mı, belgeden mi geldiğini ayırt etmesi gerekir.",
+      "Savunma katmanlıdır: modelin eğitimi, sistem talimatı, tehlikeli araçlar için insan onayı ve araç yetkilerinin kısıtlanması.",
+      "Hiçbir savunma kusursuz değil; bu yüzden e-posta göndermek ya da ödeme yapmak gibi eylemler, güvenilmeyen içerik okunduktan sonra ekstra dikkat ister."
+    ],
+    "MCP: GitHub": [
+      "MCP sunucusu ayrı bir programdır; kendini “şu araçlarım var” diye tanıtır. Uygulama bu listeyi modele araç tarifi olarak verir.",
+      "Aynı sunucu farklı uygulamalarda (sohbet uygulaması, kod editörü, kendi yazdığın ajan) değişmeden kullanılabilir.",
+      "Yetki önemli: GitHub sunucusu hangi depolara erişebiliyorsa model de o kadarına erişebilir."
+    ],
+    "Araç arama": [
+      "Her araç tarifi yüzlerce token tutabilir; 300 araç baştan yüklense bağlamın büyük kısmını kaplardı.",
+      "Araç arama aracı her zaman yüklüdür; diğerleri “ertelenmiş” işaretlenir ve sadece aranınca yüklenir.",
+      "Arama, araçların adı ve açıklaması üzerinden yapılır; yani iyi yazılmış açıklamalar burada da kritik."
+    ]
+  },
+
+  /* ---------- Bölüm 3: büyük anlam haritası ----------
+     Kümelerin kelimeleri merkez çevresine otomatik yerleşir. Benzetme (analoji) kümelerinde
+     koordinatlar elle verildi ki oklar gerçekten paralel olsun. Konumlar temsilîdir. */
+  harita: {
+    kumeler: [
+      { ad: "hayvanlar", renk: "--t1", x: 140, y: 125, kelimeler: ["kedi", "köpek", "aslan", "kaplan", "kurt", "tilki", "at", "inek", "koyun", "kartal", "serçe", "balık"] },
+      { ad: "taşıtlar", renk: "--t5", x: 335, y: 95, kelimeler: ["araba", "otobüs", "tren", "uçak", "gemi", "bisiklet"] },
+      { ad: "sayılar", renk: "--t3", x: 510, y: 95, kelimeler: ["bir", "iki", "üç", "dört", "on", "yüz", "bin"] },
+      { ad: "renkler", renk: "--t4", x: 345, y: 265, kelimeler: ["kırmızı", "mavi", "yeşil", "sarı", "mor", "turuncu"] },
+      { ad: "duygular", renk: "--t2", x: 520, y: 330, kelimeler: ["mutlu", "neşeli", "sevinçli", "üzgün", "kederli", "kızgın", "öfkeli", "korkmuş"] },
+      { ad: "meyveler", renk: "--t1", x: 125, y: 480, kelimeler: ["elma", "armut", "muz", "çilek", "kiraz", "karpuz", "portakal", "üzüm"] },
+      { ad: "yemekler", renk: "--t2", x: 320, y: 525, kelimeler: ["ekmek", "peynir", "çorba", "pilav", "kebap", "baklava"] },
+      { ad: "meslekler", renk: "--t5", x: 640, y: 450, kelimeler: ["doktor", "hemşire", "öğretmen", "mühendis", "avukat", "aşçı", "pilot"] },
+      { ad: "ülkeler ve başkentler", renk: "--t3", sabit: [["Türkiye", 680, 85], ["Ankara", 680, 165], ["Fransa", 765, 75], ["Paris", 765, 155], ["İtalya", 850, 90], ["Roma", 850, 170], ["Japonya", 935, 80], ["Tokyo", 935, 160]] },
+      { ad: "fiiller ve geçmiş zaman", renk: "--t4", sabit: [["koşmak", 60, 280], ["koştu", 60, 350], ["yürümek", 150, 270], ["yürüdü", 150, 340], ["gelmek", 240, 285], ["geldi", 240, 355]] },
+      { ad: "insanlar", renk: "--t2", sabit: [["erkek", 790, 575], ["kadın", 910, 575], ["kral", 800, 500], ["kraliçe", 920, 500], ["prens", 790, 430], ["prenses", 910, 430]] }
+    ],
+    benzetmeler: [
+      { a: "kral", b: "erkek", c: "kadın", beklenen: "kraliçe", aciklama: "“kral”dan “erkek” yönünü çıkar, “kadın” yönünü ekle." },
+      { a: "Paris", b: "Fransa", c: "Türkiye", beklenen: "Ankara", aciklama: "“başkenti olmak” da haritada bir yön." },
+      { a: "koştu", b: "koşmak", c: "yürümek", beklenen: "yürüdü", aciklama: "geçmiş zaman eki de bir yön gibi davranır." },
+      { a: "prenses", b: "prens", c: "kral", beklenen: "kraliçe", aciklama: "aynı “kadın” yönü başka bir çifte de uyar." }
+    ]
+  },
+
+  /* ---------- Bölüm 3: aynı kelime, farklı anlam ---------- */
+  baglamOrnek: [
+    { cumle: "Sınavdan yüz aldım.", anlam: "sayı (100)", hedef: "sayılar", renk: "--violet" },
+    { cumle: "Sabah yüzümü yıkadım.", anlam: "surat", hedef: "vücut", renk: "--teal" },
+    { cumle: "Kıyıya kadar yüz, sonra dinlen.", anlam: "yüzmek (emir)", hedef: "hareket", renk: "--amber" },
+    { cumle: "Kumaşın yüzü pürüzsüz.", anlam: "yüzey", hedef: "nesne", renk: "--rose" }
   ]
 };

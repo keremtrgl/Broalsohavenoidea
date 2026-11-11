@@ -179,32 +179,176 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
   reset();
 })();
 
-/* ---------- 3. Anlam haritası ---------- */
-(function(){
-  const pts=[
-    ["kedi",70,80,"hay"],["köpek",120,70,"hay"],["aslan",80,118,"hay"],["kaplan",140,112,"hay"],
-    ["Ankara",345,70,"şeh"],["İstanbul",420,60,"şeh"],["Paris",370,112,"şeh"],["Tokyo",450,106,"şeh"],
-    ["elma",70,285,"mey"],["armut",130,276,"mey"],["muz",95,325,"mey"],
-    ["mutlu",235,192,"duy"],["neşeli",285,210,"duy"],["üzgün",255,228,"duy"],
-    ["erkek",348,338,"ins"],["kadın",448,338,"ins"],["kral",352,270,"ins"],["kraliçe",452,270,"ins"]
-  ];
-  const baseVec={hay:[.71,-.32,.15,.58,-.11,.04,.39,-.66],"şeh":[-.48,.62,.27,-.15,.71,-.33,.08,.12],mey:[.22,.55,-.71,.09,-.18,.64,-.41,.3],duy:[-.12,-.6,.44,-.38,.25,.51,.67,-.2],ins:[.35,.18,.52,-.61,-.44,-.07,.26,.73]};
-  const g=$("#pts"),vec=$("#vec");
-  pts.forEach(([w,x,y,c],i)=>{
-    const wrap=document.createElementNS(NS,"g");wrap.setAttribute("class","float");wrap.style.animationDelay=(-i*0.7)+"s";
-    const el=document.createElementNS(NS,"g");el.setAttribute("class","pt");el.setAttribute("tabindex","0");el.setAttribute("role","button");el.setAttribute("aria-label",w);
-    const ci=document.createElementNS(NS,"circle");ci.setAttribute("cx",x);ci.setAttribute("cy",y);ci.setAttribute("r",5.5);
-    const tx=document.createElementNS(NS,"text");tx.setAttribute("x",x+9);tx.setAttribute("y",y+5);tx.textContent=w;
-    el.append(ci,tx);wrap.append(el);g.append(wrap);
-    const pick=()=>{
-      $$(".pt",g).forEach(p=>p.classList.remove("sel"));el.classList.add("sel");
-      const h=hashId(w);
-      const v=baseVec[c].map((b,k)=>b+(((h>>(k*3))&15)/15-.5)*.24);
-      vec.innerHTML=`<b>${esc(w)}</b> = [ ${v.map(n=>(n>=0?" ":"")+dec(n,2)).join(",  ")}, … <span class="small">+ birkaç bin sayı daha</span> ]`;
-    };
-    el.addEventListener("click",pick);
-    el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();pick();}});
+/* ---------- 3. Gömme: ortak kelime listesi ve vektörler ---------- */
+const HARITA=(function(){
+  const H=D.harita;if(!H)return null;
+  const words=[];
+  H.kumeler.forEach((k,ki)=>{
+    if(k.sabit)k.sabit.forEach(([w,x,y])=>words.push({w,x,y,k:ki}));
+    else k.kelimeler.forEach((w,i)=>{const r=24*Math.sqrt(i+.6),a=i*2.39996+ki;words.push({w,x:k.x+Math.cos(a)*r*1.25,y:k.y+Math.sin(a)*r*.9,k:ki});});
   });
+  /* 12 boyutlu temsilî gömme: kümenin ana yönü + anlamca yakın kümelerle ortak bir yön + kelimeye özgü küçük sapma.
+     Ortak yönler: canlılar (hayvanlar, meslekler, insanlar) ve yiyecekler (meyveler, yemekler). */
+  const DIM=12;
+  const ortak={"hayvanlar":11,"meslekler":11,"insanlar":11,"meyveler":6,"yemekler":5};
+  function rng(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+  function vec(o){
+    const r=rng(hashId(o.w)+1),v=new Array(DIM).fill(0),ad=H.kumeler[o.k].ad;
+    v[o.k%DIM]=1;if(ortak[ad]!=null)v[ortak[ad]]+=.4;
+    for(let d=0;d<DIM;d++)v[d]+=(r()-.5)*.3;
+    return v;
+  }
+  words.forEach(o=>o.v=vec(o));
+  const byW=Object.fromEntries(words.map(o=>[o.w,o]));
+  const cos=(a,b)=>{let s=0,na=0,nb=0;for(let i=0;i<a.length;i++){s+=a[i]*b[i];na+=a[i]*a[i];nb+=b[i]*b[i];}return s/Math.sqrt(na*nb);};
+  return {H,words,byW,cos};
+})();
+/* Renk: artı değerler turuncu, eksi değerler mor */
+function cellColor(v){const p=Math.round(Math.min(1,Math.abs(v))*85);return `color-mix(in srgb, var(${v>=0?"--amber":"--violet"}) ${p}%, var(--surface-2))`;}
+
+/* ---------- 3a. Gömme tablosu ---------- */
+(function(){
+  if(!HARITA)return;
+  const words=["kedi","köpek","otobüs","mutlu","Ankara","kral"].filter(w=>HARITA.byW[w]);
+  const row=$("#emb-words"),table=$("#emb-table"),vecEl=$("#emb-vec");
+  row.innerHTML=words.map((w,i)=>`<button class="btn sm" aria-pressed="${i===0}">${esc(w)}</button>`).join("");
+  const btns=$$("button",row);let gen=0;
+  function fakeRow(id){const v=[];let h=id*2654435761>>>0;for(let i=0;i<12;i++){h=Math.imul(h^(h>>>15),2246822519)>>>0;v.push((h%2000)/1000-1);}return v;}
+  async function show(i,instant){
+    const my=++gen,w=words[i],o=HARITA.byW[w],id=hashId(w);
+    btns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+    $("#emb-tok").textContent=w;$("#emb-id").textContent=fmtInt(id);
+    const ids=[-3,-2,-1,0,1,2,3].map(d=>id+d);
+    table.innerHTML=ids.map(n=>{const v=n===id?o.v.slice(0,12):fakeRow(n);return `<div class="emb-row" data-hit="${n===id}"><span class="emb-rid mono">#${fmtInt(n)}</span>${v.map(x=>`<i style="background:${cellColor(x)}"></i>`).join("")}</div>`;}).join("")+'<div class="emb-more small">… toplam ~100.000 satır</div>';
+    vecEl.innerHTML="";
+    const rows=$$(".emb-row",table);
+    if(!instant&&!RM){for(let k=0;k<=3;k++){rows.forEach(r=>r.classList.remove("scan"));rows[k].classList.add("scan");await sleep(170);if(my!==gen)return;}rows.forEach(r=>r.classList.remove("scan"));}
+    rows[3].classList.add("hit");
+    vecEl.innerHTML=o.v.slice(0,12).map(x=>`<span style="background:${cellColor(x)}">${(x>=0?"+":"")+dec(x,2)}</span>`).join("")+'<span class="emb-dots">… +7.988</span>';
+  }
+  btns.forEach((b,i)=>b.addEventListener("click",()=>show(i)));
+  show(0,true);
+})();
+
+/* ---------- 3b. Büyük anlam haritası ---------- */
+(function(){
+  if(!HARITA)return;
+  const {H,words,byW}=HARITA;
+  const svg=$("#bigmap"),gC=$("#bm-clusters"),gL=$("#bm-lines"),gA=$("#bm-arrows"),gP=$("#bm-pts"),info=$("#map-info"),phase=$("#bm-phase");
+  const sim=(a,b)=>Math.round(100*Math.exp(-Math.hypot(a.x-b.x,a.y-b.y)/160));
+  /* kümeler */
+  gC.innerHTML=H.kumeler.map((k,ki)=>{
+    const ps=words.filter(o=>o.k===ki);
+    const x0=Math.min(...ps.map(p=>p.x)),x1=Math.max(...ps.map(p=>p.x)),y0=Math.min(...ps.map(p=>p.y)),y1=Math.max(...ps.map(p=>p.y));
+    const cx=(x0+x1)/2,cy=(y0+y1)/2,rx=(x1-x0)/2+46,ry=(y1-y0)/2+30;
+    return `<g class="bm-cl"><ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${rx.toFixed(1)}" ry="${ry.toFixed(1)}" style="fill:var(${k.renk})"/><text class="bm-cl-t" x="${cx.toFixed(1)}" y="${(cy-ry+14).toFixed(1)}" text-anchor="middle">${esc(k.ad)}</text></g>`;
+  }).join("");
+  /* noktalar */
+  gP.innerHTML=words.map((o,i)=>`<g class="bm-pt" data-i="${i}" tabindex="0" role="button" aria-label="${esc(o.w)}" transform="translate(${o.x.toFixed(1)},${o.y.toFixed(1)})"><circle r="4.5"/><text x="7" y="4">${esc(o.w)}</text></g>`).join("");
+  const nodes=$$(".bm-pt",gP);
+  const place=(i,x,y)=>nodes[i].setAttribute("transform",`translate(${x.toFixed(1)},${y.toFixed(1)})`);
+  function clear(){gL.innerHTML="";gA.innerHTML="";nodes.forEach(n=>n.classList.remove("sel","nb","an"));}
+  function select(o){
+    clear();
+    const i=words.indexOf(o);nodes[i].classList.add("sel");
+    const nb=words.filter(x=>x!==o).map(x=>[x,sim(o,x)]).sort((a,b)=>b[1]-a[1]).slice(0,4);
+    gL.innerHTML=nb.map(([x,s])=>`<line x1="${o.x}" y1="${o.y}" x2="${x.x}" y2="${x.y}" style="stroke-width:${(s/30).toFixed(1)}"/>`).join("");
+    nb.forEach(([x])=>nodes[words.indexOf(x)].classList.add("nb"));
+    const far=words.filter(x=>x.k!==o.k).map(x=>[x,sim(o,x)]).sort((a,b)=>a[1]-b[1])[0];
+    info.innerHTML=`<b>${esc(o.w)}</b> · küme: ${esc(H.kumeler[o.k].ad)}<br>En yakın komşular: ${nb.map(([x,s])=>`${esc(x.w)} <span class="mono">%${s}</span>`).join(" · ")}<br><span class="small">En uzaklardan biri: ${esc(far[0].w)} (%${far[1]})</span>`;
+  }
+  nodes.forEach((n,i)=>{n.addEventListener("click",()=>select(words[i]));n.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();select(words[i]);}});});
+  /* arama */
+  const norm=s=>s.toLocaleLowerCase("tr").normalize("NFD").replace(/[̀-ͯ]/g,"").replace(/ı/g,"i");
+  $("#map-q").addEventListener("input",e=>{
+    const q=norm(e.target.value.trim());if(!q){clear();return;}
+    const hit=words.find(o=>norm(o.w)===q)||words.find(o=>norm(o.w).startsWith(q));
+    if(hit)select(hit);else{clear();info.textContent="Bu kelime haritada yok. Haritada 78 kelime var; ör. kedi, Paris, mutlu, doktor.";}
+  });
+  /* benzetmeler */
+  const ana=$("#map-ana");
+  ana.innerHTML=H.benzetmeler.map((b,i)=>`<button class="btn sm" data-i="${i}">${esc(b.a)} − ${esc(b.b)} + ${esc(b.c)}</button>`).join("");
+  const arrow=(p,q,cls)=>`<line class="${cls}" x1="${p.x}" y1="${p.y}" x2="${q.x}" y2="${q.y}" marker-end="url(#ahm)"/>`;
+  $$("button",ana).forEach(btn=>btn.addEventListener("click",()=>{
+    const b=H.benzetmeler[+btn.dataset.i];const A=byW[b.a],B=byW[b.b],C=byW[b.c];
+    clear();
+    const t={x:A.x-B.x+C.x,y:A.y-B.y+C.y};
+    const best=words.filter(o=>![A,B,C].includes(o)).map(o=>[o,Math.hypot(o.x-t.x,o.y-t.y)]).sort((a,b)=>a[1]-b[1])[0][0];
+    gA.innerHTML=arrow(B,A,"bm-ar")+arrow(C,t,"bm-ar d")+`<circle class="bm-target" cx="${t.x}" cy="${t.y}" r="10"/>`;
+    [A,B,C].forEach(o=>nodes[words.indexOf(o)].classList.add("an"));nodes[words.indexOf(best)].classList.add("sel");
+    info.innerHTML=`<b>${esc(b.a)} − ${esc(b.b)} + ${esc(b.c)} ≈ ${esc(best.w)}</b> ${best.w===b.beklenen?"✓":""}<br>${esc(b.aciklama)} Düz ok “${esc(b.b)} → ${esc(b.a)}” yönü; kesikli ok aynı yönün “${esc(b.c)}”dan başlatılmış hâli. Ucuna en yakın kelime: <b>${esc(best.w)}</b>.`;
+  }));
+  /* eğitim animasyonu: rastgele adreslerden yerlerine */
+  let animGen=0;
+  $("#map-train").addEventListener("click",()=>{
+    const my=++animGen;clear();svg.classList.add("training");
+    const start=words.map(()=>({x:60+Math.random()*880,y:40+Math.random()*540}));
+    words.forEach((o,i)=>place(i,start[i].x,start[i].y));
+    phase.textContent="Eğitimin başı: her kelimenin adresi rastgele";
+    if(RM){words.forEach((o,i)=>place(i,o.x,o.y));svg.classList.remove("training");phase.textContent="";return;}
+    const t0=performance.now()+900,D_=3200;
+    function f(t){
+      if(my!==animGen)return;
+      const k=Math.max(0,Math.min(1,(t-t0)/D_)),e=k<.5?4*k*k*k:1-Math.pow(-2*k+2,3)/2;
+      words.forEach((o,i)=>place(i,start[i].x+(o.x-start[i].x)*e,start[i].y+(o.y-start[i].y)*e));
+      if(k>0&&k<1)phase.textContent="Eğitim sürüyor: benzer bağlamlarda geçen kelimeler birbirine itiliyor…";
+      if(k<1)requestAnimationFrame(f);else{svg.classList.remove("training");phase.textContent="Eğitimin sonu: benzer kelimeler yan yana";setTimeout(()=>{if(my===animGen)phase.textContent="";},2500);}
+    }
+    requestAnimationFrame(f);
+  });
+  $("#map-reset").addEventListener("click",()=>{animGen++;svg.classList.remove("training");words.forEach((o,i)=>place(i,o.x,o.y));phase.textContent="";clear();$("#map-q").value="";info.textContent="Bir kelimeye dokun: en yakın komşuları çizgiyle gösterilir.";});
+})();
+
+/* ---------- 3c. Kosinüs benzerliği ---------- */
+(function(){
+  if(!HARITA)return;
+  const {words,byW,cos,H}=HARITA;
+  const a=$("#cos-a"),b=$("#cos-b"),svg=$("#cos-svg"),out=$("#cos-v"),say=$("#cos-say");
+  const opts=H.kumeler.map((k,ki)=>`<optgroup label="${esc(k.ad)}">${words.filter(o=>o.k===ki).map(o=>`<option>${esc(o.w)}</option>`).join("")}</optgroup>`).join("");
+  a.innerHTML=opts;b.innerHTML=opts;a.value="kedi";b.value="köpek";
+  function draw(){
+    const c=Math.max(-1,Math.min(1,cos(byW[a.value].v,byW[b.value].v))),th=Math.acos(c);
+    const O={x:150,y:170},L=125,a0=-12*Math.PI/180,a1=a0-th;
+    const P=ang=>({x:O.x+Math.cos(ang)*L,y:O.y+Math.sin(ang)*L});
+    const p=P(a0),q=P(a1),r=38,large=th>Math.PI?1:0;
+    const s=P(a0),arc0={x:O.x+Math.cos(a0)*r,y:O.y+Math.sin(a0)*r},arc1={x:O.x+Math.cos(a1)*r,y:O.y+Math.sin(a1)*r};
+    svg.innerHTML=`<line class="cos-ax" x1="10" y1="${O.y}" x2="310" y2="${O.y}"/>
+      <path class="cos-arc" d="M${arc0.x.toFixed(1)} ${arc0.y.toFixed(1)} A ${r} ${r} 0 ${large} 0 ${arc1.x.toFixed(1)} ${arc1.y.toFixed(1)}"/>
+      <line class="cos-v1" x1="${O.x}" y1="${O.y}" x2="${p.x.toFixed(1)}" y2="${p.y.toFixed(1)}"/><circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="4" class="cos-d1"/>
+      <line class="cos-v2" x1="${O.x}" y1="${O.y}" x2="${q.x.toFixed(1)}" y2="${q.y.toFixed(1)}"/><circle cx="${q.x.toFixed(1)}" cy="${q.y.toFixed(1)}" r="4" class="cos-d2"/>
+      <text x="${(p.x+6).toFixed(1)}" y="${(p.y+4).toFixed(1)}" class="cos-t1">${esc(a.value)}</text>
+      <text x="${(q.x+(q.x<O.x?-6:6)).toFixed(1)}" y="${(q.y-4).toFixed(1)}" text-anchor="${q.x<O.x?"end":"start"}" class="cos-t2">${esc(b.value)}</text>
+      <text x="${(O.x+r+6).toFixed(1)}" y="${(O.y-r/2).toFixed(1)}" class="cos-ang">${Math.round(th*180/Math.PI)}°</text>`;
+    out.textContent="%"+Math.round(Math.max(0,c)*100);
+    say.textContent=a.value===b.value?"Aynı kelime: açı 0°, benzerlik tam.":c>.7?"Çok benzer: oklar neredeyse aynı yöne bakıyor.":c>.4?"İlgili: aynı ya da yakın konulardan.":c>.15?"Zayıf ilgi.":"İlgisiz: oklar birbirine neredeyse dik.";
+  }
+  a.addEventListener("change",draw);b.addEventListener("change",draw);draw();
+})();
+
+/* ---------- 3d. Bağlamsal gömme: “yüz” ---------- */
+(function(){
+  const E=D.baglamOrnek||[];if(!E.length)return;
+  const svg=$("#ctx-svg"),row=$("#ctx-btns"),say=$("#ctx-say");
+  const S={x:40,y:130},X=[40,130,220,320];
+  const T=E.map((e,i)=>({x:370,y:35+i*(190/(E.length-1))}));
+  row.innerHTML=E.map((e,i)=>`<button class="btn sm" aria-pressed="${i===0}">${esc(e.cumle)}</button>`).join("");
+  const btns=$$("button",row);
+  const base=`<text class="ctx-lab" x="${S.x}" y="${S.y+26}" text-anchor="middle">giriş</text>`+
+    ["katman 1","katman 10","katman 30"].map((t,i)=>`<line class="ctx-tick" x1="${X[i+1]}" y1="10" x2="${X[i+1]}" y2="250"/><text class="ctx-lab" x="${X[i+1]}" y="252" text-anchor="middle">${t}</text>`).join("")+
+    E.map((e,i)=>`<circle class="ctx-zone" cx="${T[i].x}" cy="${T[i].y}" r="20" style="fill:var(${e.renk})"/><text class="ctx-zl" x="${T[i].x}" y="${T[i].y+4}" text-anchor="middle">${esc(e.hedef)}</text>`).join("")+
+    `<circle class="ctx-start" cx="${S.x}" cy="${S.y}" r="7"/><text class="ctx-w" x="${S.x}" y="${S.y-14}" text-anchor="middle">“yüz”</text>`;
+  function show(i,instant){
+    btns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+    const t=T[i],pts=[S,{x:X[1],y:S.y+(t.y-S.y)*.12},{x:X[2],y:S.y+(t.y-S.y)*.55},{x:X[3],y:S.y+(t.y-S.y)*.92},t];
+    let d=`M${pts[0].x} ${pts[0].y}`;for(let k=1;k<pts.length;k++){const p=pts[k-1],q=pts[k],mx=(p.x+q.x)/2;d+=` C ${mx} ${p.y}, ${mx} ${q.y}, ${q.x} ${q.y}`;}
+    const ghosts=T.map((g,j)=>j===i?"":(()=>{const gp=[S,{x:X[1],y:S.y+(g.y-S.y)*.12},{x:X[2],y:S.y+(g.y-S.y)*.55},{x:X[3],y:S.y+(g.y-S.y)*.92},g];let gd=`M${gp[0].x} ${gp[0].y}`;for(let k=1;k<gp.length;k++){const p=gp[k-1],q=gp[k],mx=(p.x+q.x)/2;gd+=` C ${mx} ${p.y}, ${mx} ${q.y}, ${q.x} ${q.y}`;}return `<path class="ctx-ghost" d="${gd}"/>`;})()).join("");
+    svg.innerHTML=ghosts+base+`<path class="ctx-path" id="ctx-path" d="${d}" style="stroke:var(${E[i].renk})"/>`+pts.slice(1,4).map(p=>`<circle class="ctx-dot" cx="${p.x}" cy="${p.y.toFixed(1)}" r="4" style="fill:var(${E[i].renk})"/>`).join("");
+    const path=$("#ctx-path");
+    if(!instant&&!RM&&path.getTotalLength){const L=path.getTotalLength();path.style.strokeDasharray=L;path.style.strokeDashoffset=L;path.getBoundingClientRect();path.style.transition="stroke-dashoffset 1.4s ease";path.style.strokeDashoffset="0";}
+    say.innerHTML=`<b>“${esc(E[i].cumle)}”</b> · anlam: ${esc(E[i].anlam)}. Hepsi aynı noktadan (tablodaki tek “yüz” satırından) başlıyor; ilk katmanlarda hâlâ birbirine yakınlar, cümledeki komşu kelimelere bakıldıkça ayrılıyorlar. Soluk çizgiler diğer anlamların yolu.`;
+  }
+  btns.forEach((b,i)=>b.addEventListener("click",()=>show(i)));
+  show(0,true);
 })();
 
 /* ---------- 3b. Konum saatleri ---------- */
@@ -445,6 +589,40 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
   window.addEventListener("resize",draw);
   draw();
   if(document.fonts&&document.fonts.ready)document.fonts.ready.then(draw);
+})();
+
+/* ---------- 8d. Bir cümle, birçok ders ---------- */
+(function(){
+  const P=D.onegitim||[];if(!P.length)return;
+  const row=$("#pt-btns"),cols=$("#pt-cols");
+  row.innerHTML=P.map((p,i)=>`<button class="btn sm" aria-pressed="${i===0}">${esc(p.ad)}</button>`).join("");
+  const btns=$$("button",row);
+  const names=["Eğitimin başı","Eğitimin ortası","Eğitimin sonu"];
+  function show(i){
+    const p=P[i];btns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+    $("#pt-cumle").textContent=p.cumle;
+    cols.innerHTML=p.asamalar.map((a,k)=>`<div class="pt-col"><b>${names[k]}</b>${a.map(([w,v])=>`<div class="pt-c${w===p.dogru?" ok":""}"><span class="pt-w">${esc(w)}</span><span class="cand-bar"><i style="width:${v}%"></i></span><span class="cand-p">%${v}</span></div>`).join("")}</div>`).join("");
+    $("#pt-ders").textContent="Öğrenilen: "+p.ders;
+  }
+  btns.forEach((b,i)=>b.addEventListener("click",()=>show(i)));
+  show(0);
+})();
+
+/* ---------- 10a. İnce ayar: temel model ve asistan ---------- */
+(function(){
+  const S=D.sft||[];if(!S.length)return;
+  const row=$("#sft-btns");
+  row.innerHTML=S.map((p,i)=>`<button class="btn sm" aria-pressed="${i===0}">${esc(p.ad)}</button>`).join("");
+  const btns=$$("button",row);
+  function show(i){
+    const p=S[i];btns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
+    $("#sft-istek").textContent=p.istek;
+    [["#sft-temel",p.temel],["#sft-asistan",p.asistan]].forEach(([id,t])=>{const el=$(id);el.textContent=t;el.style.animation="none";void el.offsetWidth;el.style.animation="";});
+    $("#sft-asistan").classList.toggle("code",/^tool_use/.test(p.asistan));
+    $("#sft-ders").textContent="Model bu örnekten şunu öğrenir: "+p.ders;
+  }
+  btns.forEach((b,i)=>b.addEventListener("click",()=>show(i)));
+  show(0);
 })();
 
 /* ---------- 9. Hesap makinesi ---------- */
@@ -797,8 +975,8 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
 
 /* ---------- 17. Araç atölyesi ---------- */
 (function(){
-  const sira={temel:0,hesap:1,orta:2,zor:3};
-  const scns=(D.araclar||[]).concat(D.araclarEk||[]).map((s,i)=>[s,i]).sort((a,b)=>(sira[a[0].seviye]-sira[b[0].seviye])||a[1]-b[1]).map(x=>x[0]);
+  const sira={temel:0,hesap:1,orta:2,zor:3,uzman:4};
+  const scns=(D.araclar||[]).concat(D.araclarEk||[],D.araclarUzman||[]).map((s,i)=>[s,i]).sort((a,b)=>(sira[a[0].seviye]-sira[b[0].seviye])||a[1]-b[1]).map(x=>x[0]);
   if(!scns.length)return;
   const tr=$("#transcript"),nodes=$$("#cycle .n"),edges=$$("#cycle .e"),dot=$("#cyc-dot"),bench=$("#tool-bench"),row=$("#scn-btns"),note=$("#scn-note"),toolLabel=$("#cyc-tool");
   row.innerHTML=scns.map((s,i)=>`<button class="btn sm" data-i="${i}" aria-pressed="${i===0}">${esc(s.ad)}<span class="lvl ${s.seviye}">${esc(s.seviye)}</span></button>`).join("");
@@ -809,7 +987,9 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
     btns.forEach((b,j)=>b.setAttribute("aria-pressed",String(j===i)));
     tr.innerHTML=s.adimlar.map(a=>`<div class="msg on"><span class="who">${esc(a.k)}</span>${esc(a.t)}${a.p?`<pre>${esc(a.p)}</pre>`:""}</div>`).join("");
     msgs=$$(".msg",tr);plan=s.adimlar.map(a=>({n:a.n,e:a.e}));
-    note.textContent=s.not;toolLabel.textContent=s.arac;
+    const det=s.detay||(D.aracDetay||{})[s.ad];
+    note.innerHTML="<p>"+esc(s.not)+"</p>"+(det?'<div class="scn-det"><b>Perde arkası</b><ul>'+det.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul></div>":"");
+    toolLabel.textContent=s.arac;
     nodes.forEach(n=>n.classList.remove("on"));edges.forEach(e=>e.classList.remove("on"));
   }
   btns.forEach((b,i)=>b.addEventListener("click",()=>{render(i);play();}));
@@ -939,12 +1119,42 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
     bars.forEach(b=>{b.style.transition="none";b.style.width="0";});
     requestAnimationFrame(()=>requestAnimationFrame(()=>bars.forEach((b,i)=>{b.style.transition="";setTimeout(()=>b.style.width=b.dataset.w+"%",i*120);})));
   },null,0.4);
-  const tasks=D.modeller||[];if(!tasks.length)return;
+  const G=window.GERCEK;
+  const usd=v=>"$"+(v<0.01?dec(v,4):dec(v,3));
+  /* Gerçek sonuç dosyası varsa onu, yoksa temsilî örnekleri kullan */
+  function fromReal(g){
+    const one=runs=>{
+      const ok=runs.filter(r=>!r.hata),n=ok.length,f=ok[0]||{metin:"(cevap alınamadı)",dusunce:""};
+      const avg=k=>n?ok.reduce((a,r)=>a+r[k],0)/n:0;
+      const dogru=ok.filter(r=>r.dogru).length;
+      const meta=[["Süre (ort.)","~"+dec(avg("sure"),1)+" sn"],["Çıktı token (ort.)",fmtInt(avg("cikti"))],["Maliyet (ort.)",usd(avg("maliyet"))]];
+      if(g.kontrol_adi)meta.push(["Doğruluk",(dogru===n?"✓ ":dogru===0?"✗ ":"~ ")+dogru+"/"+n+" deneme · "+(f.kontrol||"")]);
+      return {metin:f.metin,dusunce:f.dusunce,meta,oran:g.kontrol_adi&&n?Math.round(dogru/n*100):null,dogru,n,sure:avg("sure"),maliyet:avg("maliyet")};
+    };
+    const s=one(g.sonnet||[]),f=one(g.fable||[]);
+    let karar=`Fable bu görevde Sonnet’e göre ortalama ${dec(f.maliyet/(s.maliyet||1e-9),1)} kat pahalı ve ${dec(f.sure/(s.sure||1e-9),1)} kat ${f.sure>=s.sure?"yavaş":"hızlı"}.`;
+    karar+=g.kontrol_adi?` Doğruluk (${g.kontrol_adi}): Sonnet ${s.dogru}/${s.n}, Fable ${f.dogru}/${f.n}.`:" Bu görevin otomatik kontrolü yok; iki cevabı okuyup kendin karşılaştır.";
+    return {ad:g.ad,istek:g.istek,kod:g.kod,sonnet:s,fable:f,s:s.oran,f:f.oran,karar};
+  }
+  const tasks=G&&G.gorevler&&G.gorevler.length?G.gorevler.map(fromReal):(D.modeller||[]);
+  if(!tasks.length)return;
+  const src=$("#vs-src");
+  if(G&&G.gorevler){
+    $("#vs-tag").textContent="gerçek çıktılar · "+G.tarih;
+    src.innerHTML=`Bu cevaplar iki modele aynı görevler gerçekten sorularak alındı (${esc(G.tarih)}, efor: ${esc(G.effort)}, her görev ${G.tekrar} kez). Gösterilen metin ilk denemenin cevabı; süre, token ve maliyet tüm denemelerin ortalaması. Kod görevlerinde modelin yazdığı kod gerçekten çalıştırılıp testlerden geçirildi.`;
+    $("#vs-disc").textContent=`Ölçümler araclar/gercek_karsilastirma.py ile yapıldı; toplam API maliyeti yaklaşık $${dec(G.toplam_maliyet||0,2)}. Az sayıda deneme olduğu için doğruluk oranları kesin bir sıralama değil, bir fikir verir.`;
+    $("#vs-rate-lab").textContent=`Bu görevde doğruluk (gerçek, ${G.tekrar} deneme):`;
+    const rows=tasks.map(t=>{const c=o=>o.oran==null?"–":o.dogru+"/"+o.n;return `<tr><td>${esc(t.ad)}</td><td>${c(t.sonnet)} · ${dec(t.sonnet.sure,1)} sn · ${usd(t.sonnet.maliyet)}</td><td>${c(t.fable)} · ${dec(t.fable.sure,1)} sn · ${usd(t.fable.maliyet)}</td></tr>`;}).join("");
+    $("#vs-sum").innerHTML=`<thead><tr><th>Görev</th><th>Sonnet 5.5 · doğruluk · süre · maliyet</th><th>Fable 5.2 · doğruluk · süre · maliyet</th></tr></thead><tbody>${rows}</tbody>`;
+    $("#vs-sum-wrap").hidden=false;
+  } else {
+    src.innerHTML='Aşağıdaki cevaplar şimdilik <b>temsilî</b>. Gerçek sonuçları görmek için proje klasöründe <code>python3 araclar/gercek_karsilastirma.py</code> komutunu kendi Anthropic API anahtarınla çalıştır; betik iki modele 8 görevi sorar, ölçer ve bu bölümü otomatik olarak gerçek çıktılarla doldurur.';
+  }
   const row=$("#task-btns");
   row.innerHTML=tasks.map((t,i)=>`<button class="btn" data-t="${i}" aria-pressed="${i===0}">${esc(t.ad)}</button>`).join("");
   const btns=$$("button",row);
   function meta(el,rows){
-    el.innerHTML=rows.map(([k,v])=>{const c=/^✓/.test(v)?"ok":/^✗/.test(v)?"no":"";return `<dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd>`;}).join("");
+    el.innerHTML=rows.map(([k,v])=>{const c=/^✓/.test(v)?"ok":/^✗/.test(v)?"no":/^~ /.test(v)?"mid":"";return `<dt>${esc(k)}</dt><dd class="${c}">${esc(v)}</dd>`;}).join("");
   }
   function testBar(el,t){
     if(!t){el.innerHTML="";return;}
@@ -958,9 +1168,10 @@ function hashId(s){let x=2166136261;for(const c of s){x^=c.codePointAt(0);x=Math
       const out=$("#vs-"+k+"-out");out.textContent=o.metin;out.classList.toggle("code",!!t.kod);
       out.style.animation="none";void out.offsetWidth;out.style.animation="";
       testBar($("#vs-"+k+"-test"),o.test);meta($("#vs-"+k+"-meta"),o.meta);
+      const th=$("#vs-"+k+"-think");th.hidden=!o.dusunce;if(o.dusunce)$("p",th).textContent=o.dusunce;
     });
-    $("#vs-s").style.width=t.s+"%";$("#vs-sv").textContent="%"+t.s;
-    $("#vs-f").style.width=t.f+"%";$("#vs-fv").textContent="%"+t.f;
+    $("#vs-meters").hidden=t.s==null;
+    if(t.s!=null){$("#vs-s").style.width=t.s+"%";$("#vs-sv").textContent="%"+t.s;$("#vs-f").style.width=t.f+"%";$("#vs-fv").textContent="%"+t.f;}
     $("#verdict").textContent=t.karar;
   }
   btns.forEach((b,i)=>b.addEventListener("click",()=>set(i)));
