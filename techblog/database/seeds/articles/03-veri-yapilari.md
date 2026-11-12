@@ -303,6 +303,8 @@ Q: Heap veri yapısı ile bellekteki heap aynı şey mi?
 A: Hayır, yalnızca adları aynıdır. Veri yapısı olan heap bir öncelik ağacıdır; bellekteki heap ise programın çalışma anında dinamik olarak ayırdığı bellek bölgesidir.
 Q: Mülakatlar için hangi veri yapılarını bilmeliyim?
 A: Dizi, hash tablosu, bağlı liste, yığın, kuyruk, ikili arama ağacı, heap ve graf ile BFS/DFS gezinmeleri soruların büyük bölümünü karşılar. Her birinin Big-O değerlerini nedenleriyle bilmek ezberlemekten daha değerlidir.
+Q: Bağlı liste bugün hâlâ kullanılıyor mu?
+A: Evet, ama çoğu zaman başka yapıların parçası olarak. Hash tablolarındaki zincirler, LRU önbellekler, işletim sistemi çekirdeklerindeki süreç listeleri ve bellek ayırıcıların boş blok listeleri bağlı listedir. Genel amaçlı bir koleksiyon olarak ise dinamik dizi, önbellek dostu olduğu için çoğu senaryoda daha hızlıdır.
 Q: Ortalama durum ile en kötü durum arasındaki fark neden önemli?
 A: Ortalama durum tipik başarımı, en kötü durum ise güvenebileceğiniz sınırı gösterir. Gerçek zamanlı sistemlerde ya da kötü niyetli girdi alabilecek servislerde en kötü durum garantisi olan yapılar (örneğin dengeli ağaçlar) tercih edilir.
 :::
