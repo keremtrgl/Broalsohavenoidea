@@ -141,6 +141,26 @@ Türkiye'de 5G için frekans ihalesi Ekim 2025'te yapıldı ve ticari hizmetin 1
 
 6G için çalışmalar sürüyor. ITU, yeni neslin çerçevesini **IMT-2030** adıyla tanımladı; ticari şebekelerin 2030 dolaylarında gelmesi bekleniyor. Tartışılan başlıklar arasında terahertz altı frekanslar, uydu ile karasal şebekelerin bütünleşmesi ve şebekenin algılama (bir tür radar) için de kullanılması var. Henüz kesinleşmiş bir standart yoktur.
 
+## Şebekenin görünmeyen parçaları
+
+Nesiller çoğunlukla radyo teknolojisiyle anılır, ama bir mobil şebeke yalnızca antenlerden ibaret değildir.
+
+### SIM ve eSIM
+
+**SIM kart**, abone kimliğinizi ve şebekeyle aranızdaki gizli anahtarı taşıyan küçük bir çiptir. Telefon şebekeye bağlanırken bu anahtarla kendini kanıtlar; anahtar karttan hiç çıkmaz. **eSIM** aynı işlevi, telefonun içine lehimlenmiş bir çip ve uzaktan yüklenen bir operatör profiliyle görür. Fiziksel kart değiştirmeden operatör değiştirmeyi, yurt dışında yerel bir hat eklemeyi ve tek telefonda birden çok numara kullanmayı kolaylaştırır.
+
+### Çekirdek ağ ve taşıma
+
+Baz istasyonu, telefonunuzdan aldığı veriyi operatörün **çekirdek ağına** iletmek zorundadır. Baz istasyonu ile çekirdek arasındaki bu bağlantıya **taşıma hattı** (backhaul) denir ve çoğunlukla fiber optik kabloyla, fiberin ulaşmadığı yerlerde ise noktadan noktaya radyolinkle sağlanır. Bir baz istasyonu en yeni 5G donanımına sahip olsa bile, taşıma hattı darsa size sunabileceği hız sınırlı kalır. Hız testlerinde aynı operatörün farklı mahallelerde çok farklı sonuç vermesinin sık görülen nedenlerinden biri budur.
+
+### Küçük hücreler ve bina içi kapsama
+
+Yüksek frekanslar duvarlardan zor geçtiği için operatörler, büyük kulelerin yanında **küçük hücreler** de kurar: sokak lambalarına, bina cephelerine ve alışveriş merkezlerinin tavanlarına yerleştirilen, kısa menzilli ve düşük güçlü baz istasyonları. Kalabalık bir meydanda ya da metro istasyonunda bağlantının çalışmasını sağlayan çoğu zaman bunlardır. Ev ve iş yerlerinde ise **Wi-Fi üzerinden arama** (VoWiFi) özelliği, zayıf mobil sinyali Wi-Fi bağlantısıyla tamamlar.
+
+### Nesnelerin interneti için dar bant
+
+Her cihazın gigabitlere ihtiyacı yoktur. Bir su sayacı günde birkaç bayt gönderir, ama pilinin on yıl dayanması gerekir. Bu tür cihazlar için 4G ailesine **NB-IoT** ve **LTE-M** adlı dar bantlı, düşük güçlü kipler eklenmiştir; çok az veri taşır, ama bodrum katlarına kadar ulaşan bir kapsama ve çok uzun pil ömrü sunarlar. 5G'nin yoğun makine iletişimi hedefi de bu çizginin devamıdır.
+
 ## Hız karşılaştırması
 
 :::chart

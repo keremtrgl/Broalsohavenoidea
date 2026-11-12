@@ -3,7 +3,7 @@ title: Every AI Model Explained: Yapay Zekâ Model Türleri ve Nasıl Çalışt�
 slug: every-ai-model-explained
 category: yapay-zeka
 tags: yapay zekâ, llm, difüzyon, embedding, bağlam penceresi, açık kaynak
-description: Dil modelleri (GPT, Claude, Gemini, Llama, Mistral, DeepSeek), görsel, video, ses ve embedding modelleri; açık ve kapalı modeller, parametre ve bağlam penceresi kavramları.
+description: Dil modelleri (GPT, Claude, Gemini, Llama, Mistral, DeepSeek), görsel, video, ses ve embedding modelleri; açık ve kapalı modeller, parametre ve bağlam penceresi.
 excerpt: LLM nedir, difüzyon modeli nasıl resim üretir, embedding ne işe yarar? Dil, görsel, video, ses ve embedding modellerinin nasıl çalıştığını; açık ve kapalı model ayrımını, parametre ve bağlam penceresi kavramlarını sade bir dille anlatıyoruz.
 cover: /assets/covers/ai-models.svg
 cover_alt: Katmanlar hâlinde birbirine bağlı düğümlerden oluşan yapay sinir ağı çizimi
@@ -112,6 +112,16 @@ Dil modelleri doğruyu bildiği için değil, olası göründüğü için metin 
 ### Araç kullanımı ve ajanlar
 
 Bir dil modeli kendi başına yalnızca metin üretir. **Araç kullanımı** (function calling) ile model, “şu aramayı yap”, “şu kodu çalıştır”, “şu dosyayı oku” gibi yapılandırılmış istekler üretir; çevresindeki yazılım bu isteği yerine getirip sonucu modele geri verir. Bu döngüyü bir hedefe ulaşana kadar kendi kendine sürdüren sistemlere **ajan** (agent) denir. Kod yazıp test eden, hata alınca düzelten kodlama ajanları bunun en yaygın örneğidir.
+
+### Sistem yönergesi ve istem
+
+Bir dil modeline verilen girdiye **istem** (prompt) denir. Uygulamaların çoğu, kullanıcının yazdığı metnin önüne gizli bir **sistem yönergesi** ekler: modelin nasıl davranacağını, hangi üslupla konuşacağını ve neleri yapmaması gerektiğini anlatan talimatlar. Aynı model, farklı sistem yönergeleriyle bir müşteri temsilcisi, bir kod yardımcısı ya da bir çeviri aracı gibi davranabilir. Bu yüzden bir sohbet uygulamasında gördüğünüz davranış yalnızca modelin değil, onu saran yönergenin ve araçların da ürünüdür.
+
+İstemin nasıl yazıldığı sonucu ciddi biçimde etkiler. Açık bir görev tanımı, yeterli bağlam, istenen çıktının biçimi ve bir iki örnek vermek, çoğu zaman daha güçlü bir modele geçmekten daha büyük bir iyileşme sağlar.
+
+### Küçük ve büyük modeller
+
+Her sağlayıcı genellikle aynı kuşaktan birkaç boyutta model sunar: en yetenekli ama yavaş ve pahalı bir amiral gemisi, dengeli bir orta model ve çok hızlı, çok ucuz küçük bir model. Küçük modeller sınıflandırma, özetleme, veri çıkarma gibi yüksek hacimli ve görece basit işlerde çoğu zaman yeterlidir ve yanıtı çok daha çabuk verir. Büyük modeller ise çok adımlı akıl yürütme, karmaşık kod ve uzun görevlerde fark yaratır. İyi tasarlanmış sistemler çoğunlukla ikisini birlikte kullanır: kolay işler küçük modele, zor işler büyük modele yönlendirilir.
 
 ## Çok kipli modeller
 

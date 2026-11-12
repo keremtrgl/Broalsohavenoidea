@@ -3,7 +3,7 @@ title: Every Form of Government Explained: Yönetim Biçimlerinin Tamamı
 slug: every-form-of-government-explained
 category: genel-kultur
 tags: yönetim biçimleri, demokrasi, cumhuriyet, monarşi, federasyon, siyaset bilimi
-description: Demokrasi, cumhuriyet, monarşi, teokrasi, oligarşi, otokrasi, diktatörlük, totalitarizm, komünizm, sosyalizm, federasyon ve anarşi: tarafsız tanımlar ve gerçek örnekler.
+description: Demokrasi, cumhuriyet, monarşi, teokrasi, oligarşi, otokrasi, diktatörlük, totalitarizm, sosyalizm, federasyon ve anarşi: tarafsız tanımlar ve gerçek örnekler.
 excerpt: Demokrasi ile cumhuriyet aynı şey mi? Otoriter ile totaliter arasındaki fark ne? Monarşiden teokrasiye, federasyondan anarşiye bütün yönetim biçimlerini tarafsız ve akademik bir dille, gerçek örneklerle açıklıyoruz.
 cover: /assets/covers/forms-of-government.svg
 cover_alt: Sütunlu bir meclis binası, terazi ve oy sandığından oluşan çizim
