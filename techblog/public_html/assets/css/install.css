@@ -1,0 +1,33 @@
+/* Installer page. */
+*{box-sizing:border-box}
+body{margin:0;background:#f6f7f9;color:#0f151c;font:400 1rem/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:720px;margin:0 auto;padding:2rem 1.25rem 4rem}
+.brand{font:600 .8rem ui-monospace,Menlo,Consolas,monospace;letter-spacing:.08em;text-transform:uppercase;color:#0a7558;margin:0}
+h1{margin:.2rem 0 1rem;font-size:1.9rem;letter-spacing:-.02em}
+h2{font-size:1.15rem;margin:2rem 0 .5rem;padding-top:1rem;border-top:1px solid #dbe1e8}
+.field{display:grid;gap:.3rem;margin-bottom:.9rem}
+label{font-weight:650;font-size:.92rem}
+input{font:inherit;min-height:44px;padding:.5rem .75rem;border:1px solid #6b7686;border-radius:10px;background:#fff;color:inherit;width:100%}
+input:focus-visible,.btn:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #1d5fd1;outline-offset:2px}
+small,.hint{color:#465264;font-size:.86rem}
+.btn{display:inline-block;background:#0a7558;color:#fff;border:0;border-radius:10px;padding:.7rem 1.3rem;font:600 1rem system-ui,sans-serif;cursor:pointer;text-decoration:none;min-height:44px}
+.box{padding:1rem 1.2rem;border-radius:12px;border:1px solid}
+.box.ok{background:#e2f4ee;border-color:#0a7558}
+.box.err{background:#fdecef;border-color:#c4314b}
+.box ul{margin:.4rem 0 0;padding-left:1.2rem}
+.checks{list-style:none;padding:0;margin:.5rem 0;display:grid;gap:.3rem;font-size:.93rem}
+.checks span{display:inline-block;min-width:4.4rem;font:700 .72rem ui-monospace,Menlo,monospace;padding:.1rem .4rem;border-radius:6px;text-align:center;margin-right:.4rem}
+.checks .ok span{background:#e2f4ee;color:#07563f}.checks .bad span{background:#fdecef;color:#a11f36}.checks .warn span{background:#fff3d6;color:#7a5200}
+details{border:1px solid #dbe1e8;border-radius:12px;padding:.6rem 1rem;background:#fff}
+summary{cursor:pointer;font-weight:650;min-height:32px}
+code{font:500 .9em ui-monospace,Menlo,Consolas,monospace;background:#edf0f4;padding:.1em .35em;border-radius:5px}
+@media (prefers-color-scheme:dark){
+  body{background:#0a0f15;color:#e9eef4}
+  input,details{background:#111821;border-color:#3a4759}
+  h2{border-color:#253142}.brand{color:#3ddc97}
+  .btn{background:#3ddc97;color:#04241a}
+  small,.hint{color:#9eabba}
+  code{background:#18212c}
+  .box.ok{background:#10291f;border-color:#3ddc97}.box.err{background:#2a1218;border-color:#ff7a90}
+  .checks .ok span{background:#10291f;color:#7ff0c1}.checks .bad span{background:#2a1218;color:#ff9db0}.checks .warn span{background:#2b230c;color:#f5c84b}
+}
