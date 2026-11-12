@@ -219,6 +219,24 @@ Tablodaki değerler yalnızca piksel verisini kapsar (genişlik × yükseklik ×
 
 Çevrim içi videoda çözünürlük, hikâyenin yalnızca yarısıdır. Video sıkıştırılarak gönderilir ve kaliteyi asıl belirleyen **bit hızıdır**, yani saniye başına ayrılan veri miktarı. Düşük bit hızlı bir 4K video, yüksek bit hızlı bir 1080p videodan daha kötü görünebilir; hareketli sahnelerde bloklanma ve bulanıklık bunun işaretidir. YouTube'un yükleme için önerdiği değerler bir fikir verir: standart kare hızında 1080p için 8 Mbit/sn, 1440p için 16 Mbit/sn, 4K için 35–45 Mbit/sn.
 
+## Çözünürlüğün ötesi: ölçekleme, renk derinliği ve HDR
+
+Çözünürlük, görüntü kalitesinin tek bileşeni değildir. Aynı piksel sayısına sahip iki ekran birbirinden çok farklı görünebilir.
+
+### Arayüz ölçekleme
+
+Yüksek yoğunluklu bir ekranda her şey gerçek piksel boyutunda çizilseydi yazılar okunamayacak kadar küçük olurdu. İşletim sistemleri bu yüzden arayüzü **ölçekler**: 27 inçlik 4K bir monitörde yüzde 150 ölçekleme kullanıldığında, öğeler 1440p bir ekrandaki kadar yer kaplar ama çok daha fazla pikselle, yani daha keskin çizilir. Tam katlar (yüzde 200 gibi) en temiz sonucu verir; kesirli ölçeklerde bazı eski uygulamalar bulanık görünebilir. 4K bir ekranın size “daha çok çalışma alanı” mı yoksa “daha keskin görüntü” mü vereceğini seçtiğiniz ölçek belirler.
+
+### Oyunlarda akıllı büyütme
+
+Ekran kartları yüksek çözünürlüğün yükünü hafifletmek için görüntüyü daha düşük çözünürlükte üretip yapay zekâ ya da gelişmiş süzgeçlerle büyütür. NVIDIA DLSS, AMD FSR ve Intel XeSS bu işi yapar. Örneğin “4K kalite kipi” çoğu zaman oyunu 1440p'de üretip 4K'ya büyütür. Sonuç gerçek 4K'ya çok yakın görünürken kare hızı belirgin biçimde artar. Bu yüzden bugün bir oyunun “4K'da kaç kare verdiği” sorusunun yanıtı, büyütmenin açık olup olmadığına bağlıdır.
+
+### Renk derinliği ve HDR
+
+**Renk derinliği**, her alt pikselin kaç farklı parlaklık düzeyi gösterebildiğidir. 8 bit ekranlar renk kanalı başına 256 düzey, toplamda yaklaşık 16,7 milyon renk gösterir. 10 bit ekranlar kanal başına 1024 düzeyle bir milyardan fazla renge ulaşır ve gökyüzü gibi yumuşak geçişlerdeki bantlanmayı giderir.
+
+**HDR** (yüksek dinamik aralık), çözünürlükten bağımsız bir özelliktir: ekranın aynı anda çok parlak ve çok karanlık bölgeleri gösterebilmesidir. İyi bir HDR ekran, güneş yansımasını göz kamaştırıcı, gölgeyi ise ayrıntılı gösterir. Pek çok izleyici için 1080p'den 4K'ya geçişten çok, iyi uygulanmış HDR daha büyük bir fark yaratır. Ancak etiket tek başına yeterli değildir; gerçek etki için yüksek tepe parlaklığı ve bölgesel karartma ya da OLED panel gerekir.
+
 ## Hangisini seçmeliyim?
 
 | Kullanım | Makul seçim | Neden |

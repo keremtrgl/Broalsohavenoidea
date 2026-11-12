@@ -3,7 +3,7 @@ title: Every Intel CPU Explained: Pentium'dan Core Ultra'ya Intel İşlemci Rehb
 slug: every-intel-cpu-explained
 category: donanim
 tags: intel, işlemci, core i5, core ultra, xeon, benchmark
-description: Pentium, Celeron, Core i3/i5/i7/i9, Core Ultra ve Xeon aileleri; nesil adlandırması, K, F, H, U, T ekleri, çekirdek ve iş parçacığı, P ve E çekirdekler; kıyaslama grafikleriyle.
+description: Pentium, Celeron, Core i3/i5/i7/i9, Core Ultra ve Xeon: nesil adlandırması, K, F, H, U, T son ekleri, P ve E çekirdekler ve kıyaslama grafikleri.
 excerpt: “Core i7-14700K” adındaki her rakam ve harf ne anlama geliyor? Pentium, Celeron, Core i3/i5/i7/i9, Core Ultra ve Xeon ailelerini, son ekleri, P ve E çekirdekleri ve kıyaslama sonuçlarını tek yazıda açıklıyoruz.
 cover: /assets/covers/intel-cpus.svg
 cover_alt: Ortasında çekirdek ızgarası bulunan, kenarlarından bağlantı bacakları çıkan işlemci çizimi
