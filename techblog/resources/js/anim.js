@@ -1,6 +1,7 @@
 // SVG animation engine. Elements declare an animation in data-a; everything runs through the
 // Web Animations API using only transform and opacity. Animations start when the figure enters
-// the viewport, pause when it leaves, and never run under prefers-reduced-motion.
+// the viewport and pause when it leaves. Under prefers-reduced-motion nothing moves: each figure
+// is shown as one frozen frame (data-still on the <svg> picks the frame, default 0.96 of the cycle).
 import { $$, el, reducedMotion } from './util.js';
 
 const EASE = 'cubic-bezier(.45,.05,.3,1)';
@@ -82,9 +83,30 @@ function build(spec, cycle) {
   }
 }
 
+const CONTINUOUS = /^(pulse|wave|blink|spin|float)\b/;
+
+/** Reduced motion: no movement at all. Each figure is frozen on a single, complete frame instead. */
+function freeze(fig) {
+  const svg = fig.querySelector('svg');
+  const cycle = num(fig.dataset.dur || svg?.dataset.dur, 6);
+  const still = clamp(num(svg?.dataset.still, 0.96));
+  $$('[data-a]', fig).forEach((node) => {
+    if (CONTINUOUS.test(node.dataset.a.trim())) return;
+    const built = build(node.dataset.a, cycle);
+    if (!built) return;
+    const an = node.animate(built[0], { ...built[1], iterations: 1 });
+    an.pause();
+    an.currentTime = cycle * 1000 * still;
+  });
+}
+
 export function init() {
-  if (reducedMotion() || !('animate' in Element.prototype)) return; // static illustration stays as drawn
+  if (!('animate' in Element.prototype)) return; // very old browser: the illustration stays as drawn
   const figures = $$('.fx').filter((f) => f.querySelector('[data-a]'));
+  if (reducedMotion()) {
+    figures.forEach(freeze);
+    return;
+  }
   const state = new WeakMap();
 
   const start = (fig) => {

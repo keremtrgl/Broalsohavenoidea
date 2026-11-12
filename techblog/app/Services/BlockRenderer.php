@@ -421,6 +421,10 @@ final class BlockRenderer
         $name = (string)($s['source_name'] ?? 'Kaynak');
         $date = (string)($s['date'] ?? '');
         $out = '<span class="score">' . e($val) . '</span>';
+        $note = Sanitizer::text((string)($s['note'] ?? ''), 80);
+        if ($note !== '') {
+            $out .= ' <small class="score-note">(' . e($note) . ')</small>';
+        }
         if (($s['reported_by'] ?? '') === 'vendor') {
             $out .= ' <span class="tagx tagx-vendor">üretici beyanı</span>';
         }

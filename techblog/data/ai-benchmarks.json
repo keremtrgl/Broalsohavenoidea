@@ -1,0 +1,1530 @@
+{
+  "updated": "2026-11-12",
+  "benchmarks": [
+    {
+      "id": "aa_index",
+      "name": "Artificial Analysis Intelligence Index v5",
+      "category": "knowledge",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Akıl yürütme, bilgi, kodlama ve ajan görevlerini kapsayan bileşik endeks.",
+      "url": "https://artificialanalysis.ai/leaderboards/models"
+    },
+    {
+      "id": "lmarena_text",
+      "name": "LMArena Text (Elo)",
+      "category": "preference",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Kör ikili karşılaştırmalarda insan oylarından hesaplanan Elo puanı.",
+      "url": "https://arena.ai/leaderboard/chat/text"
+    },
+    {
+      "id": "lmarena_coding",
+      "name": "LMArena Coding (Elo)",
+      "category": "coding",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Kodlama istemlerinde kör insan oylaması.",
+      "url": "https://arena.ai/leaderboard/chat/text/coding"
+    },
+    {
+      "id": "lmarena_creative",
+      "name": "LMArena Creative Writing (Elo)",
+      "category": "preference",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Yaratıcı yazım istemlerinde kör insan oylaması.",
+      "url": "https://arena.ai/leaderboard/chat/text/creative-writing"
+    },
+    {
+      "id": "lmarena_search",
+      "name": "LMArena Search (Elo)",
+      "category": "agents",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Web araması yapabilen modellerin kaynaklı yanıtlarında kör insan oylaması.",
+      "url": "https://arena.ai/leaderboard/chat/search"
+    },
+    {
+      "id": "terminal_bench_4",
+      "name": "Terminal-Bench 4.0",
+      "category": "coding",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Korumalı bir terminalde gerçek komut satırı görevlerinin çözülme oranı.",
+      "url": "https://artificialanalysis.ai/evaluations/terminalbench-4-0"
+    },
+    {
+      "id": "swe_bench_verified",
+      "name": "SWE-bench Verified",
+      "category": "coding",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Gerçek GitHub hatalarının, insanlarca doğrulanmış 500 görevlik alt kümesinde çözülme oranı.",
+      "url": "https://www.swebench.com/"
+    },
+    {
+      "id": "arc_agi_2",
+      "name": "ARC-AGI-2",
+      "category": "knowledge",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Az örnekten soyut kural çıkarmayı ölçen görsel bulmacalar.",
+      "url": "https://arcprize.org/leaderboard"
+    },
+    {
+      "id": "arc_agi_3",
+      "name": "ARC-AGI-3",
+      "category": "knowledge",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Kuralları anlatılmayan etkileşimli oyun ortamlarında keşfederek öğrenme.",
+      "url": "https://arcprize.org/leaderboard"
+    },
+    {
+      "id": "frontiermath",
+      "name": "FrontierMath (Kademe 1–3)",
+      "category": "math",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Uzman matematikçilerin yazdığı, yayımlanmamış özgün problemler.",
+      "url": "https://epoch.ai/benchmarks/frontiermath"
+    },
+    {
+      "id": "hle",
+      "name": "Humanity's Last Exam",
+      "category": "knowledge",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Yüzlerce uzmanın hazırladığı, kapalı uçlu, çok zor akademik sorular.",
+      "url": "https://labs.scale.com/leaderboard/humanitys_last_exam"
+    },
+    {
+      "id": "mmmu_pro",
+      "name": "MMMU-Pro",
+      "category": "multimodal",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Görsel içeren üniversite düzeyi çoktan seçmeli sorular (güçleştirilmiş sürüm).",
+      "url": "https://artificialanalysis.ai/evaluations/mmmu-pro"
+    },
+    {
+      "id": "aa_lcr",
+      "name": "AA-LCR (uzun bağlam)",
+      "category": "context",
+      "unit": "%",
+      "higher_is_better": true,
+      "description": "Yaklaşık 100 bin belirteçlik belge kümelerinde birden çok belgeyi birleştiren sorular.",
+      "url": "https://artificialanalysis.ai/evaluations/artificial-analysis-long-context-reasoning"
+    },
+    {
+      "id": "aa_time",
+      "name": "Görev başına süre (AA)",
+      "category": "speed",
+      "unit": "dk",
+      "higher_is_better": false,
+      "description": "Intelligence Index görevlerinde görev başına ortalama süre; düşük olan iyidir.",
+      "url": "https://artificialanalysis.ai/leaderboards/models"
+    },
+    {
+      "id": "aa_t2i",
+      "name": "AA Text-to-Image Arena (Elo)",
+      "category": "generation",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Metinden görsel üretiminde kör insan oylaması.",
+      "url": "https://artificialanalysis.ai/image/leaderboard/text-to-image"
+    },
+    {
+      "id": "aa_t2v",
+      "name": "AA Text-to-Video Arena (Elo)",
+      "category": "generation",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Metinden sesli video üretiminde kör insan oylaması.",
+      "url": "https://artificialanalysis.ai/video/leaderboard/text-to-video"
+    },
+    {
+      "id": "aa_tts",
+      "name": "AA Speech Arena (Elo)",
+      "category": "generation",
+      "unit": "",
+      "higher_is_better": true,
+      "description": "Metinden konuşma seslendirmelerinde kör insan oylaması.",
+      "url": "https://artificialanalysis.ai/text-to-speech/leaderboard"
+    }
+  ],
+  "scores": [
+    {
+      "model": "claude-fable-5-2",
+      "benchmark": "aa_index",
+      "value": 65,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "aa_index",
+      "value": 60,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "aa_index",
+      "value": 59,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "aa_index",
+      "value": 57,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "aa_index",
+      "value": 55,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "aa_index",
+      "value": 55,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-terra",
+      "benchmark": "aa_index",
+      "value": 51,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "aa_index",
+      "value": 50,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "kimi-k3-1-pro",
+      "benchmark": "aa_index",
+      "value": 46,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "aa_index",
+      "value": 44,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "deepseek-v4-1-flash",
+      "benchmark": "aa_index",
+      "value": 33,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1017, max"
+    },
+    {
+      "model": "glm-5-3",
+      "benchmark": "aa_index",
+      "value": 32,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "claude-fable-5-2",
+      "benchmark": "aa_time",
+      "value": 47.5,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "aa_time",
+      "value": 25.7,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "aa_time",
+      "value": 25.0,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "aa_time",
+      "value": 24.7,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "aa_time",
+      "value": 21.9,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "aa_time",
+      "value": 32.6,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-terra",
+      "benchmark": "aa_time",
+      "value": 14.0,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "aa_time",
+      "value": 30.0,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "kimi-k3-1-pro",
+      "benchmark": "aa_time",
+      "value": 37.9,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "aa_time",
+      "value": 14.2,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/leaderboards/models",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "lmarena_text",
+      "value": 1526,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "lmarena_text",
+      "value": 1522,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "lmarena_text",
+      "value": 1511,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "lmarena_text",
+      "value": 1506,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "lmarena_text",
+      "value": 1498,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "qwen-3-8-max",
+      "benchmark": "lmarena_text",
+      "value": 1484,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "kimi-k3-1-pro",
+      "benchmark": "lmarena_text",
+      "value": 1483,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "glm-5-3",
+      "benchmark": "lmarena_text",
+      "value": 1483,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "lmarena_text",
+      "value": 1482,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "lmarena_coding",
+      "value": 1567,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "lmarena_coding",
+      "value": 1553,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "lmarena_coding",
+      "value": 1548,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "lmarena_coding",
+      "value": 1546,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "lmarena_coding",
+      "value": 1545,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "lmarena_coding",
+      "value": 1540,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "lmarena_coding",
+      "value": 1531,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_coding",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "lmarena_creative",
+      "value": 1525,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_creative",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "lmarena_creative",
+      "value": 1518,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_creative",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "lmarena_creative",
+      "value": 1515,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_creative",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "lmarena_creative",
+      "value": 1492,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_creative",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "lmarena_creative",
+      "value": 1489,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_creative",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "qwen-3-8-max",
+      "benchmark": "lmarena_creative",
+      "value": 1472,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_text_creative",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "lmarena_search",
+      "value": 1249,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_search",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "lmarena_search",
+      "value": 1245,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_search",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "qwen-3-8-max",
+      "benchmark": "lmarena_search",
+      "value": 1227,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_search",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "lmarena_search",
+      "value": 1213,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_search",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "medium"
+    },
+    {
+      "model": "gpt-6-luna",
+      "benchmark": "lmarena_search",
+      "value": 1211,
+      "source_name": "LMArena (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/lmarena_search",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "kimi-k3-1-pro",
+      "benchmark": "terminal_bench_4",
+      "value": 67.2,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "terminal_bench_4",
+      "value": 65.2,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "terminal_bench_4",
+      "value": 63.6,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "claude-fable-5-2",
+      "benchmark": "terminal_bench_4",
+      "value": 61.6,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "xhigh"
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "terminal_bench_4",
+      "value": 59.6,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "terminal_bench_4",
+      "value": 59.6,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "xhigh"
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "terminal_bench_4",
+      "value": 57.1,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "terminal_bench_4",
+      "value": 56.1,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-terra",
+      "benchmark": "terminal_bench_4",
+      "value": 55.6,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "terminal_bench_4",
+      "value": 52.0,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_terminalbench_40",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "glm-5-3",
+      "benchmark": "swe_bench_verified",
+      "value": 95.4,
+      "source_name": "Vals AI (mini-SWE-agent)",
+      "source_url": "https://www.vals.ai/benchmarks/swebench",
+      "date": "2026-09-01",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "qwen-3-8-27b",
+      "benchmark": "swe_bench_verified",
+      "value": 86.0,
+      "source_name": "Vals AI (mini-SWE-agent)",
+      "source_url": "https://www.vals.ai/benchmarks/swebench",
+      "date": "2026-09-01",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "qwen-3-8-max",
+      "benchmark": "swe_bench_verified",
+      "value": 85.6,
+      "source_name": "Vals AI (mini-SWE-agent)",
+      "source_url": "https://www.vals.ai/benchmarks/swebench",
+      "date": "2026-09-01",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "swe_bench_verified",
+      "value": 80.0,
+      "source_name": "Vals AI (mini-SWE-agent)",
+      "source_url": "https://www.vals.ai/benchmarks/swebench",
+      "date": "2026-09-01",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "arc_agi_2",
+      "value": 95.0,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "arc_agi_2",
+      "value": 94.2,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "arc_agi_2",
+      "value": 94.2,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-fable-5-2",
+      "benchmark": "arc_agi_2",
+      "value": 93.8,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "arc_agi_2",
+      "value": 93.3,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "arc_agi_2",
+      "value": 91.3,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "arc_agi_2",
+      "value": 89.2,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "arc_agi_2",
+      "value": 83.9,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "deepseek-v4-1-flash",
+      "benchmark": "arc_agi_2",
+      "value": 78.1,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1017"
+    },
+    {
+      "model": "grok-4-7",
+      "benchmark": "arc_agi_2",
+      "value": 61.4,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-haiku-5-5",
+      "benchmark": "arc_agi_2",
+      "value": 61.3,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-luna",
+      "benchmark": "arc_agi_2",
+      "value": 59.3,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-spark-open",
+      "benchmark": "arc_agi_2",
+      "value": 57.5,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "qwen-3-8-27b",
+      "benchmark": "arc_agi_2",
+      "value": 42.4,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-fable-5-2",
+      "benchmark": "arc_agi_3",
+      "value": 81.2,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "arc_agi_3",
+      "value": 65.1,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "arc_agi_3",
+      "value": 62.7,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "arc_agi_3",
+      "value": 52.7,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "arc_agi_3",
+      "value": 49.8,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "arc_agi_3",
+      "value": 24.3,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "arc_agi_3",
+      "value": 10.4,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "grok-4-7",
+      "benchmark": "arc_agi_3",
+      "value": 1.8,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-haiku-5-5",
+      "benchmark": "arc_agi_3",
+      "value": 0.5,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "deepseek-v4-1-flash",
+      "benchmark": "arc_agi_3",
+      "value": 0.2,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1017"
+    },
+    {
+      "model": "gpt-6-luna",
+      "benchmark": "arc_agi_3",
+      "value": 0.2,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "muse-spark-open",
+      "benchmark": "arc_agi_3",
+      "value": 0.1,
+      "source_name": "ARC Prize",
+      "source_url": "https://arcprize.org/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-fable-5-2",
+      "benchmark": "frontiermath",
+      "value": 95.1,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "frontiermath",
+      "value": 93.7,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "frontiermath",
+      "value": 93.7,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "frontiermath",
+      "value": 91.2,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-terra",
+      "benchmark": "frontiermath",
+      "value": 90.9,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "frontiermath",
+      "value": 90.5,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "frontiermath",
+      "value": 88.8,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-4-argon",
+      "benchmark": "frontiermath",
+      "value": 86.0,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "muse-wonder",
+      "benchmark": "frontiermath",
+      "value": 82.1,
+      "source_name": "Epoch AI (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/frontiermath_t1_3",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "hle",
+      "value": 54.8,
+      "source_name": "Scale AI / CAIS (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/hle",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-sonnet-5-5",
+      "benchmark": "hle",
+      "value": 46.1,
+      "source_name": "Scale AI / CAIS (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/hle",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "xhigh"
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "hle",
+      "value": 44.5,
+      "source_name": "Scale AI / CAIS (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/hle",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-haiku-5-5",
+      "benchmark": "hle",
+      "value": 30.1,
+      "source_name": "Scale AI / CAIS (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/hle",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "gemini-4-carbon",
+      "benchmark": "mmmu_pro",
+      "value": 89.3,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_mmmu_pro",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "medium"
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "mmmu_pro",
+      "value": 87.7,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_mmmu_pro",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-astra",
+      "benchmark": "mmmu_pro",
+      "value": 86.9,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_mmmu_pro",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "mmmu_pro",
+      "value": 86.0,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_mmmu_pro",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gemini-3-8-flash",
+      "benchmark": "mmmu_pro",
+      "value": 85.6,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_mmmu_pro",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "high"
+    },
+    {
+      "model": "gpt-6-1-terra",
+      "benchmark": "mmmu_pro",
+      "value": 84.7,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_mmmu_pro",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "kimi-k3-1-pro",
+      "benchmark": "aa_lcr",
+      "value": 86.3,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_lcr",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "claude-opus-5-5",
+      "benchmark": "aa_lcr",
+      "value": 84.7,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_lcr",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "deepseek-v4-1-flash",
+      "benchmark": "aa_lcr",
+      "value": 84.0,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_lcr",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max"
+    },
+    {
+      "model": "gpt-6-1-sol",
+      "benchmark": "aa_lcr",
+      "value": 84.0,
+      "source_name": "Artificial Analysis (BenchLeader üzerinden)",
+      "source_url": "https://www.benchleader.com/benchmarks/aa_lcr",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "low"
+    },
+    {
+      "model": "gpt-image-2-6-sunburst",
+      "benchmark": "aa_t2i",
+      "value": 1262,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "max; 1.000 görsel ≈ 210,72 $"
+    },
+    {
+      "model": "nano-banana-2-1",
+      "benchmark": "aa_t2i",
+      "value": 1177,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 33,60 $"
+    },
+    {
+      "model": "mai-image-2-6",
+      "benchmark": "aa_t2i",
+      "value": 1170,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 38,91 $"
+    },
+    {
+      "model": "grok-imagine-image-2",
+      "benchmark": "aa_t2i",
+      "value": 1167,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 60 $"
+    },
+    {
+      "model": "seedream-5-5",
+      "benchmark": "aa_t2i",
+      "value": 1135,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 20 $"
+    },
+    {
+      "model": "muse-image",
+      "benchmark": "aa_t2i",
+      "value": 1128,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 10 $"
+    },
+    {
+      "model": "flux-3-image",
+      "benchmark": "aa_t2i",
+      "value": 1115,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 48 $"
+    },
+    {
+      "model": "qwen-image-3-pro",
+      "benchmark": "aa_t2i",
+      "value": 1096,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1.000 görsel ≈ 40 $"
+    },
+    {
+      "model": "h3-image",
+      "benchmark": "aa_t2i",
+      "value": 1067,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/image/leaderboard/text-to-image",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "wan-3",
+      "benchmark": "aa_t2v",
+      "value": 1175,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 12 $"
+    },
+    {
+      "model": "utopai-x",
+      "benchmark": "aa_t2v",
+      "value": 1170,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": ""
+    },
+    {
+      "model": "minimax-h3",
+      "benchmark": "aa_t2v",
+      "value": 1161,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 4,80 $"
+    },
+    {
+      "model": "seedance-2-5",
+      "benchmark": "aa_t2v",
+      "value": 1155,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 34,12 $"
+    },
+    {
+      "model": "gemini-omni-flash-1-2",
+      "benchmark": "aa_t2v",
+      "value": 1154,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 6,26 $"
+    },
+    {
+      "model": "flux-3-max",
+      "benchmark": "aa_t2v",
+      "value": 1153,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 8,70 $"
+    },
+    {
+      "model": "heygen-video-1",
+      "benchmark": "aa_t2v",
+      "value": 1152,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 2,40 $"
+    },
+    {
+      "model": "grok-imagine-video-1-5",
+      "benchmark": "aa_t2v",
+      "value": 1057,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/video/leaderboard/text-to-video",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "dakikası ≈ 15 $"
+    },
+    {
+      "model": "eleven-v4",
+      "benchmark": "aa_tts",
+      "value": 1338,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 80 $"
+    },
+    {
+      "model": "eleven-v4-turbo",
+      "benchmark": "aa_tts",
+      "value": 1337,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 40 $"
+    },
+    {
+      "model": "qwen-audio-3-1-tts",
+      "benchmark": "aa_tts",
+      "value": 1297,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 19,31 $"
+    },
+    {
+      "model": "sonic-3-6",
+      "benchmark": "aa_tts",
+      "value": 1296,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 49 $"
+    },
+    {
+      "model": "simba-3-5",
+      "benchmark": "aa_tts",
+      "value": 1293,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 6,58 $"
+    },
+    {
+      "model": "gemini-3-8-flash-tts",
+      "benchmark": "aa_tts",
+      "value": 1283,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 16,49 $"
+    },
+    {
+      "model": "fish-audio-drama-3",
+      "benchmark": "aa_tts",
+      "value": 1274,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 15 $"
+    },
+    {
+      "model": "voxtral-3-tts",
+      "benchmark": "aa_tts",
+      "value": 1213,
+      "source_name": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai/text-to-speech/leaderboard",
+      "date": "2026-11-12",
+      "reported_by": "independent",
+      "note": "1M karakter ≈ 13 $"
+    }
+  ]
+}
