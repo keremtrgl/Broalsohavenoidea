@@ -146,6 +146,7 @@ figcaption{font-size:.87rem;color:var(--mut);margin-top:.75rem;line-height:1.5}
 .ai-block .table-wrap{max-height:80vh}
 .score{font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
 .score-src{display:block;font-size:.76rem;color:var(--mut);font-weight:400;line-height:1.4;margin-top:.15rem}
+.score-note{color:var(--mut);font-size:.76rem;white-space:nowrap}
 .na{color:var(--mut)}
 .na-block{color:var(--mut);padding:1rem;border:1px dashed var(--line);border-radius:10px;font-size:.95rem}
 .tagx{display:inline-block;font:600 .7rem/1.5 var(--font);padding:.05rem .45rem;border-radius:999px;border:1px solid var(--line);color:var(--mut);white-space:nowrap}

@@ -116,8 +116,12 @@ ErrorDocument 503 /500.html
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
 
     # Content-Security-Policy: PHP sends a precise, per-page policy (hash-based, with the Firebase
-    # and analytics origins only where they are needed). This fallback covers static files.
-    Header setifempty Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    # and analytics origins only where they are needed). Static files get this strict fallback.
+    # It is limited to static extensions on purpose: two CSP headers on a PHP page would be
+    # intersected by the browser and block the page's own hashed inline blocks.
+    <FilesMatch "(?i)\.(html?|svg|xml|txt|css|js|mjs|json|map)$">
+        Header set Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+    </FilesMatch>
 
     Header unset X-Powered-By
     Header always unset X-Powered-By
@@ -156,6 +160,10 @@ ErrorDocument 503 /500.html
     ExpiresByType image/webp "access plus 30 days"
     ExpiresByType image/avif "access plus 30 days"
     ExpiresByType image/x-icon "access plus 30 days"
+    # PHP responses set their own Cache-Control (no-store for forms and the panel, 5 minutes for cached pages).
+    <FilesMatch "\.php$">
+        ExpiresActive Off
+    </FilesMatch>
 </IfModule>
 <IfModule mod_headers.c>
     <If "%{REQUEST_URI} =~ m#^/(assets/(js|css|fonts)|uploads)/#">
