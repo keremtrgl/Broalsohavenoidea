@@ -1,0 +1,41 @@
+# =====================================================================
+#  uploads/ — user-supplied files. Nothing in this folder may ever run.
+# =====================================================================
+Options -Indexes -ExecCGI
+
+# 1. Every file is served as a plain static file: no PHP, CGI or SSI handler.
+SetHandler default-handler
+<IfModule mod_mime.c>
+    RemoveHandler .php .php3 .php4 .php5 .php7 .php8 .phtml .pht .phar .phps .cgi .pl .py .rb .sh .asp .aspx .jsp .shtml
+    RemoveType .php .php3 .php4 .php5 .php7 .php8 .phtml .pht .phar .phps
+</IfModule>
+<IfModule mod_php.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php7.c>
+    php_flag engine off
+</IfModule>
+<IfModule mod_php8.c>
+    php_flag engine off
+</IfModule>
+
+# 2. Only image files are reachable at all; everything else is refused.
+<IfModule mod_authz_core.c>
+    Require all denied
+    <FilesMatch "(?i)^[a-z0-9_\-]+\.(jpe?g|png|webp|avif|svg)$">
+        Require all granted
+    </FilesMatch>
+</IfModule>
+
+# 3. An uploaded SVG opened directly in the browser must not be able to run script or load anything.
+<IfModule mod_headers.c>
+    Header set Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox"
+    Header set X-Content-Type-Options "nosniff"
+    Header set Cross-Origin-Resource-Policy "same-origin"
+</IfModule>
+
+# 4. Nested .htaccess files cannot re-enable anything.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule (?i)\.(php\d?|phtml|pht|phar|phps|cgi|pl|py|rb|sh|asp|aspx|jsp|shtml|html?|js|htaccess)$ - [F,L]
+</IfModule>

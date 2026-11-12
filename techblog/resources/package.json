@@ -1,0 +1,26 @@
+{
+  "name": "techblog-frontend",
+  "version": "1.0.0",
+  "description": "Front-end sources and build tooling (development only)",
+  "scripts": {
+    "build": "node build.mjs",
+    "fonts": "bash build-fonts.sh"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "@editorjs/code": "2.9.4",
+    "@editorjs/editorjs": "2.31.7",
+    "@editorjs/header": "2.8.9",
+    "@editorjs/list": "2.0.9",
+    "@editorjs/quote": "2.7.6",
+    "@editorjs/table": "2.4.6",
+    "chart.js": "4.6.1",
+    "esbuild": "0.28.2",
+    "firebase": "13.3.0",
+    "highlight.js": "11.12.0",
+    "inter-ui": "4.1.1",
+    "jetbrains-mono": "1.0.6"
+  },
+  "private": true,
+  "type": "module"
+}

@@ -1,0 +1,9 @@
+# Private application folder. In the default layout it sits outside the web root;
+# this file blocks all web access if the folder ever ends up inside it.
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+<IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+</IfModule>

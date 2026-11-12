@@ -1,0 +1,21 @@
+{
+    "name": "techblog/app",
+    "description": "cPanel uyumlu teknoloji blogu",
+    "type": "project",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.2",
+        "ext-pdo": "*",
+        "ext-mbstring": "*",
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ezyang/htmlpurifier": "^4.17",
+        "firebase/php-jwt": "^6.10",
+        "enshrined/svg-sanitize": "^0.20"
+    },
+    "autoload": {
+        "psr-4": { "App\\": "app/" },
+        "files": ["app/helpers.php"]
+    },
+    "config": { "optimize-autoloader": true, "sort-packages": true, "platform": {"php": "8.2.0"} }
+}

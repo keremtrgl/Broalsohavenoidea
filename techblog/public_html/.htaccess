@@ -1,0 +1,177 @@
+# =====================================================================
+#  TechBlog — web root configuration (Apache 2.4, cPanel compatible)
+#  Every module-specific rule sits inside <IfModule>, so a missing
+#  module can never cause a 500 error.
+# =====================================================================
+
+# ---- 1. Basics ------------------------------------------------------
+# No directory listings, no content negotiation guessing (/about -> about.html).
+Options -Indexes -MultiViews
+DirectoryIndex index.php
+AddDefaultCharset UTF-8
+ServerSignature Off
+FileETag None
+
+# Custom error pages (static files, so they work even if PHP is down).
+ErrorDocument 403 /404.html
+ErrorDocument 404 /404.html
+ErrorDocument 500 /500.html
+ErrorDocument 503 /500.html
+
+<IfModule mod_mime.c>
+    AddType image/avif .avif
+    AddType image/webp .webp
+    AddType font/woff2 .woff2
+    AddType image/svg+xml .svg
+    AddType application/manifest+json .webmanifest
+    AddCharset UTF-8 .css .js .svg .json .xml .txt
+</IfModule>
+
+# ---- 2. Rewrites ----------------------------------------------------
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # ----- CONFIGURATION (edit the two values below) -----------------
+    # TB_HTTPS : "on"  = force HTTPS (recommended once SSL is active)
+    #            "off" = do not redirect (only for a site without SSL)
+    # TB_CANON : "non-www" = redirect www.example.com -> example.com
+    #            "www"     = redirect example.com -> www.example.com
+    #            "off"     = no host redirect (use for sub-domains)
+    RewriteRule ^ - [E=TB_HTTPS:on,E=TB_CANON:non-www]
+    # ------------------------------------------------------------------
+
+    # Let's Encrypt / AutoSSL validation must stay reachable over plain HTTP.
+    RewriteRule ^\.well-known/ - [L]
+
+    # 2a. Force HTTPS (also understands proxies such as Cloudflare). Local testing is exempt.
+    RewriteCond %{ENV:TB_HTTPS} =on
+    RewriteCond %{HTTPS} !=on
+    RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+    RewriteCond %{HTTP_HOST} !^(localhost|127\.0\.0\.1)(:\d+)?$ [NC]
+    RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # 2b. Canonical host: www -> non-www
+    RewriteCond %{ENV:TB_CANON} =non-www
+    RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+    RewriteRule ^ %{REQUEST_SCHEME}://%1%{REQUEST_URI} [R=301,L]
+
+    # 2c. Canonical host: non-www -> www (bare domains only, never IPs or localhost)
+    RewriteCond %{ENV:TB_CANON} =www
+    RewriteCond %{HTTP_HOST} !^www\. [NC]
+    RewriteCond %{HTTP_HOST} !^(localhost|\d+\.\d+\.\d+\.\d+)(:\d+)?$ [NC]
+    RewriteRule ^ %{REQUEST_SCHEME}://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+
+    # 2d. Hidden files and folders (.env, .git, .htaccess, .DS_Store ...) -> 403
+    RewriteRule (^|/)\. - [F,L]
+
+    # 2e. Private application folders. They live outside the web root in the default layout;
+    #     this rule protects them if a host forces everything into public_html (see README).
+    RewriteRule ^(app|config|database|storage|vendor|data|resources|private)(/|$) - [F,L,NC]
+
+    # 2f. Remove trailing slashes from clean URLs (/post/slug/ -> /post/slug)
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} ^(.+)/$
+    RewriteRule ^ %1 [R=301,L]
+
+    # 2g. Front controller: anything that is not an existing file or folder goes to index.php.
+    #     This provides the clean URLs /post/{slug}, /category/{slug}, /tag/{slug}, /search?q=
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# ---- 3. Sensitive files ---------------------------------------------
+# Deny by extension and by name, even if such a file is ever copied into the web root.
+<FilesMatch "(?i)(\.(env|ini|log|sql|sqlite|bak|backup|old|orig|save|swp|tmp|dist|sh|bash|md|yml|yaml|twig|tpl|inc|phar|gz|tgz|zip|tar|7z|rar)|~)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+<FilesMatch "(?i)^(composer\.(json|lock)|package(-lock)?\.json|tb-path\.php|phpunit\.xml|Makefile|LICENSE|README.*|CHANGELOG.*)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+</FilesMatch>
+
+# ---- 4. Security headers --------------------------------------------
+# PHP sends the same headers for dynamic pages. "unset" (success table) + "always set" guarantees
+# exactly one copy of each header on every response, including Apache's own error pages.
+<IfModule mod_headers.c>
+    Header unset X-Content-Type-Options
+    Header always set X-Content-Type-Options "nosniff"
+    Header unset X-Frame-Options
+    Header always set X-Frame-Options "DENY"
+    Header unset Referrer-Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header unset Permissions-Policy
+    Header always set Permissions-Policy "accelerometer=(), camera=(), geolocation=(), gyroscope=(), magnetometer=(), microphone=(), payment=(), usb=(), browsing-topics=()"
+    Header unset X-Permitted-Cross-Domain-Policies
+    Header always set X-Permitted-Cross-Domain-Policies "none"
+    Header unset Cross-Origin-Opener-Policy
+    Header always set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+
+    # HSTS only over HTTPS. Add "; preload" yourself once you are sure every sub-domain uses HTTPS.
+    Header unset Strict-Transport-Security
+    Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains" "expr=%{HTTPS} == 'on' || %{HTTP:X-Forwarded-Proto} == 'https'"
+
+    # Content-Security-Policy: PHP sends a precise, per-page policy (hash-based, with the Firebase
+    # and analytics origins only where they are needed). This fallback covers static files.
+    Header setifempty Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+
+    Header unset X-Powered-By
+    Header always unset X-Powered-By
+</IfModule>
+
+# ---- 5. Compression --------------------------------------------------
+<IfModule mod_brotli.c>
+    AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/css text/xml application/javascript text/javascript application/json application/ld+json application/xml application/rss+xml image/svg+xml application/manifest+json
+</IfModule>
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml application/javascript text/javascript application/json application/ld+json application/xml application/rss+xml image/svg+xml application/manifest+json
+</IfModule>
+<IfModule mod_headers.c>
+    <FilesMatch "\.(css|js|svg|json|xml|html)$">
+        Header append Vary "Accept-Encoding"
+    </FilesMatch>
+</IfModule>
+
+# ---- 6. Browser caching ----------------------------------------------
+# Built JS/CSS carry a content hash in the filename, fonts a version number and uploads a random
+# name, so they can be cached for a year. Other images: 30 days. HTML: short (PHP sets its own).
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresDefault "access plus 1 hour"
+    ExpiresByType text/html "access plus 5 minutes"
+    ExpiresByType application/xml "access plus 15 minutes"
+    ExpiresByType application/rss+xml "access plus 15 minutes"
+    ExpiresByType application/json "access plus 0 seconds"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/javascript "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 30 days"
+    ExpiresByType image/png "access plus 30 days"
+    ExpiresByType image/jpeg "access plus 30 days"
+    ExpiresByType image/webp "access plus 30 days"
+    ExpiresByType image/avif "access plus 30 days"
+    ExpiresByType image/x-icon "access plus 30 days"
+</IfModule>
+<IfModule mod_headers.c>
+    <If "%{REQUEST_URI} =~ m#^/(assets/(js|css|fonts)|uploads)/#">
+        Header set Cache-Control "public, max-age=31536000, immutable"
+    </If>
+    <If "%{REQUEST_URI} =~ m#^/assets/(img|covers)/#">
+        Header set Cache-Control "public, max-age=2592000"
+    </If>
+    <FilesMatch "^(404|500)\.html$">
+        Header set Cache-Control "no-store"
+    </FilesMatch>
+</IfModule>
+
+# ---- 7. PHP hardening (only applies when PHP runs as an Apache module) ----
+<IfModule mod_php.c>
+    php_flag display_errors Off
+    php_flag expose_php Off
+    php_flag session.use_strict_mode On
+</IfModule>

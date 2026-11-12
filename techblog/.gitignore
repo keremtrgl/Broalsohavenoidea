@@ -1,0 +1,17 @@
+# Secrets and runtime state (never commit)
+/.env
+/storage/installed.lock
+/storage/logs/*
+/storage/cache/pages/*
+/storage/cache/data/*
+/storage/cache/purifier/*
+/storage/sessions/*
+/storage/tmp/*
+/storage/backups/*
+!/storage/**/.gitkeep
+/public_html/uploads/*
+!/public_html/uploads/.htaccess
+/public_html/tb-path.php
+
+# Development tooling
+/resources/node_modules/
