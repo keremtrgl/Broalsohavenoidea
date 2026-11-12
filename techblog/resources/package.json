@@ -4,7 +4,8 @@
   "description": "Front-end sources and build tooling (development only)",
   "scripts": {
     "build": "node build.mjs",
-    "fonts": "bash build-fonts.sh"
+    "fonts": "bash build-fonts.sh",
+    "covers": "node build-covers.mjs"
   },
   "license": "ISC",
   "devDependencies": {

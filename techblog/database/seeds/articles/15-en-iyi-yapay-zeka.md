@@ -3,7 +3,7 @@ title: Best AI for Every Task: Hangi Yapay Zekâ Hangi İşte Daha İyi?
 slug: best-ai-for-every-task
 category: yapay-zeka
 tags: yapay zekâ, model karşılaştırma, gpt, claude, gemini, açık kaynak
-description: GPT, Claude, Gemini, Grok, Muse, Kimi, DeepSeek, Qwen ve diğerleri: kodlama, matematik, araştırma, yazım, görsel, video ve ses için veriye dayalı güncel model karşılaştırması.
+description: GPT, Claude, Gemini, Grok, Muse, Kimi, DeepSeek ve Qwen: kodlama, matematik, araştırma, yazım, görsel, video ve ses için veriye dayalı güncel karşılaştırma.
 excerpt: Kodlama için hangisi, uzun belgeler için hangisi, ücretsiz kullanım için hangisi? Güncel yapay zekâ modellerini kullanım alanlarına göre; bağımsız kıyaslama skorları, API fiyatları, etkileşimli grafikler ve “Hangi yapay zekâ bana uygun?” aracıyla karşılaştırıyoruz.
 cover: /assets/covers/best-ai.svg
 cover_alt: Farklı görev simgelerine bağlanan model kartları ve bir radar grafiğinden oluşan çizim
