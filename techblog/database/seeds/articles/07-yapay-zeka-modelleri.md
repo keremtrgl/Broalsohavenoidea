@@ -88,7 +88,7 @@ Seçimin ne kadar “cesur” yapılacağını **sıcaklık** (temperature) ayar
 <path d="M157 64v40" class="l-mut w2" fill="none"/><circle cx="157" cy="70" r="7" class="s-blue" data-a="move 0 30 .02 .14"/>
 <rect x="40" y="106" width="234" height="80" rx="14" class="s-soft l-acc w2"/><text x="157" y="140" text-anchor="middle" class="t-b">Dil modeli</text><text x="157" y="162" text-anchor="middle" class="t-s">milyarlarca parametre</text>
 <path d="M274 146h76" class="l-mut w2" fill="none"/><circle cx="280" cy="146" r="7" class="s-blue" data-a="move 64 0 .18 .3"/>
-<text x="360" y="110" class="t-s t-b">Sıradaki belirteç olasılıkları</text>
+<text x="690" y="110" text-anchor="end" class="t-s t-b">sıradaki belirteç olasılıkları</text>
 <text x="360" y="140" class="t-m">Ankara</text><rect x="440" y="126" width="240" height="18" rx="4" class="s-acc" data-o="l" data-a="grow x .32 .5"/><text x="690" y="140" class="t-s">%92</text>
 <text x="360" y="170" class="t-m">İstanbul</text><rect x="440" y="156" width="14" height="18" rx="4" class="s-mut" data-o="l" data-a="grow x .36 .5"/><text x="462" y="170" class="t-s">%5</text>
 <text x="360" y="200" class="t-m">bir</text><rect x="440" y="186" width="6" height="18" rx="3" class="s-mut" data-o="l" data-a="grow x .4 .5"/><text x="454" y="200" class="t-s">%2</text>
@@ -186,11 +186,11 @@ Bu özellik üç yaygın kullanımın temelidir:
 :::svg Embedding uzayı: anlamca yakın metinler birbirine yakın noktalara yerleşir. Bir sorgu geldiğinde en yakın komşuları getirilir.
 <svg viewBox="0 0 720 300" role="img" aria-label="İki boyutlu bir uzayda üç küme: hayvanlarla ilgili metinler, taşıtlarla ilgili metinler ve hukukla ilgili metinler. Yavru köpek beslenmesi sorgusu hayvan kümesinin içine düşer ve en yakın iki komşusuna bağlanır" data-dur="9">
 <rect x="20" y="16" width="680" height="268" rx="12" class="s-bg2 l-line w2"/>
-<g><circle cx="150" cy="96" r="9" class="s-acc"/><text x="166" y="100" class="t-s">köpek maması</text><circle cx="110" cy="150" r="9" class="s-acc"/><text x="126" y="154" class="t-s">kedi kumu</text><circle cx="200" cy="170" r="9" class="s-acc"/><text x="216" y="174" class="t-s">veteriner randevusu</text></g>
+<g><circle cx="150" cy="96" r="9" class="s-acc"/><text x="166" y="100" class="t-s">köpek maması</text><circle cx="60" cy="150" r="9" class="s-acc"/><text x="76" y="154" class="t-s">kedi kumu</text><circle cx="200" cy="170" r="9" class="s-acc"/><text x="216" y="174" class="t-s">veteriner randevusu</text></g>
 <g><circle cx="530" cy="80" r="9" class="s-blue"/><text x="546" y="84" class="t-s">lastik değişimi</text><circle cx="580" cy="130" r="9" class="s-blue"/><text x="596" y="134" class="t-s">motor yağı</text><circle cx="500" cy="140" r="9" class="s-blue"/><text x="440" y="164" class="t-s">araç muayenesi</text></g>
 <g><circle cx="420" cy="230" r="9" class="s-pur"/><text x="436" y="234" class="t-s">kira sözleşmesi</text><circle cx="360" cy="258" r="9" class="s-pur"/><text x="376" y="262" class="t-s">vekâletname</text></g>
-<g data-a="show .15"><circle cx="170" cy="130" r="11" class="s-acc2"/><circle cx="170" cy="130" r="26" class="s-none l-acc2 w2" data-a="wave 2.2"/><text x="60" y="220" class="t-s t-acc2 t-b">sorgu: "yavru köpek beslenmesi"</text><path d="M130 208l32-66" class="l-acc2 w1 dash" fill="none"/></g>
-<g data-a="show .5"><path d="M170 130 150 96M170 130l30 40" class="l-acc2 w3 rc" fill="none"/><text x="250" y="60" class="t-s t-b">en yakın komşular getirilir</text></g>
+<g data-a="show .15"><circle cx="190" cy="132" r="11" class="s-acc2"/><circle cx="190" cy="132" r="26" class="s-none l-acc2 w2" data-a="wave 2.2"/><text x="60" y="220" class="t-s t-acc2 t-b">sorgu: "yavru köpek beslenmesi"</text><path d="M150 208l34-64" class="l-acc2 w1 dash" fill="none"/></g>
+<g data-a="show .5"><path d="M190 132 150 96M190 132l10 38" class="l-acc2 w3 rc" fill="none"/><text x="250" y="60" class="t-s t-b">en yakın komşular getirilir</text></g>
 </svg>
 :::
 

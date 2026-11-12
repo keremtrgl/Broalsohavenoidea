@@ -9,7 +9,8 @@
     <div class="form">
       <form method="post" action="/admin/system/cache"><?= csrf_field() ?><button class="btn btn-ghost" type="submit">Önbelleği temizle</button> <span class="muted">Sayfa ve veri önbelleğini siler.</span></form>
       <form method="post" action="/admin/system/sitemap"><?= csrf_field() ?><button class="btn btn-ghost" type="submit">Site haritasını yeniden üret</button> <span class="muted"><a href="/sitemap.xml" target="_blank" rel="noopener">sitemap.xml</a></span></form>
-      <form method="post" action="/admin/system/backup" data-native><?= csrf_field() ?><button class="btn btn-ghost" type="submit">Veritabanı yedeğini indir</button> <span class="muted">Sıkıştırılmış SQL dosyası (.sql.gz).</span></form>
+      <form method="post" action="/admin/system/migrate"><?= csrf_field() ?><button class="btn btn-ghost" type="submit">Veritabanını güncelle</button> <span class="muted">Güncellemeyle gelen yeni migration dosyalarını uygular.</span></form>
+      <form method="post" action="/admin/system/backup"><?= csrf_field() ?><button class="btn btn-ghost" type="submit">Veritabanı yedeğini indir</button> <span class="muted">Sıkıştırılmış SQL dosyası (.sql.gz).</span></form>
     </div>
     <p class="muted">Yedek dosyası kullanıcı e-postaları gibi kişisel veriler içerir; güvenli bir yerde saklayın. <code>public_html/uploads</code> klasörünü ve <code>data/</code> klasörünü ayrıca yedekleyin.</p>
   </section>

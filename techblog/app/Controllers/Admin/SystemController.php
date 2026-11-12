@@ -6,6 +6,7 @@ namespace App\Controllers\Admin;
 use App\Core\Audit;
 use App\Core\Cache;
 use App\Core\Database as DB;
+use App\Core\Migrator;
 use App\Core\PageCache;
 use App\Core\Request;
 use App\Core\Response;
@@ -54,6 +55,14 @@ final class SystemController extends AdminBase
         Cache::forget('rss_xml');
         Audit::log('system.sitemap', 'system');
         return $this->done('Site haritası yeniden üretildi (' . substr_count($xml, '<url>') . ' adres).', '/admin/system');
+    }
+
+    /** Apply database migrations that an update added. */
+    public function migrate(array $p): Response
+    {
+        $applied = Migrator::migrate();
+        Audit::log('system.migrate', 'system', null, ['applied' => $applied]);
+        return $this->done($applied ? 'Uygulanan migration: ' . implode(', ', $applied) : 'Veritabanı güncel; uygulanacak migration yok.', '/admin/system');
     }
 
     public function backup(array $p): Response

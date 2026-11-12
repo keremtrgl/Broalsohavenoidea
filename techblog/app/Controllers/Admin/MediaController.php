@@ -35,6 +35,10 @@ final class MediaController extends AdminBase
 
     public function upload(array $p): Response
     {
+        // When the request body exceeds post_max_size PHP silently drops $_POST and $_FILES.
+        if (!$_POST && !$_FILES && (int)($_SERVER['CONTENT_LENGTH'] ?? 0) > 0) {
+            return Response::json(['ok' => false, 'error' => 'Dosya, sunucunun izin verdiği yükleme boyutunu aşıyor (PHP post_max_size: ' . ini_get('post_max_size') . ').'], 413);
+        }
         $alt = Sanitizer::text(Request::str('alt', 300));
         if (mb_strlen($alt) < 3) {
             return Response::json(['ok' => false, 'error' => 'Alternatif metin zorunludur (en az 3 karakter).'], 422);

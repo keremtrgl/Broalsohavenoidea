@@ -29,9 +29,11 @@ SetHandler default-handler
 
 # 3. An uploaded SVG opened directly in the browser must not be able to run script or load anything.
 <IfModule mod_headers.c>
-    Header set Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox"
-    Header set X-Content-Type-Options "nosniff"
-    Header set Cross-Origin-Resource-Policy "same-origin"
+    # Inside <FilesMatch> so these win over the generic static-file policy of the parent folder.
+    <FilesMatch ".">
+        Header set Content-Security-Policy "default-src 'none'; style-src 'unsafe-inline'; img-src data:; sandbox"
+        Header set Cross-Origin-Resource-Policy "same-origin"
+    </FilesMatch>
 </IfModule>
 
 # 4. Nested .htaccess files cannot re-enable anything.

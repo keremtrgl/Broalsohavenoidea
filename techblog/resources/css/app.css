@@ -128,7 +128,7 @@ figcaption{font-size:.87rem;color:var(--mut);margin-top:.75rem;line-height:1.5}
 .w1{stroke-width:1}.w2{stroke-width:2}.w3{stroke-width:3}.w4{stroke-width:4}.dash{stroke-dasharray:6 6}.rc{stroke-linecap:round;stroke-linejoin:round}
 .fx text,.hero-art text{font-family:var(--font);font-size:14px;fill:var(--fg)}
 .fx text.t-s,.hero-art text.t-s{font-size:12px;fill:var(--mut)}
-.fx text.t-b{font-weight:700}.fx text.t-l{font-size:18px;font-weight:800}
+.fx text.t-b{font-weight:700}.fx text.t-xl{font-size:40px;font-weight:600}.fx text.t-l{font-size:18px;font-weight:800}
 .fx text.t-m,.hero-art text.t-m{font-family:var(--mono);font-size:12.5px}
 .fx text.t-acc{fill:var(--acc)}.fx text.t-ink{fill:var(--acc-ink)}.fx text.t-blue{fill:var(--c-blue)}.fx text.t-red{fill:var(--c-red)}.fx text.t-acc2{fill:var(--acc2)}.fx text.t-w{fill:#fff}
 [data-a]{transform-box:fill-box;transform-origin:center}

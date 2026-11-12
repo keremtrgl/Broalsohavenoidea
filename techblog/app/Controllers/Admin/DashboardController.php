@@ -30,7 +30,7 @@ final class DashboardController extends AdminBase
                 'users' => (int)DB::val('SELECT COUNT(*) FROM users'),
                 'views30' => array_sum($values),
             ],
-            'chart' => ['type' => 'line', 'labels' => $labels, 'datasets' => [['label' => 'Günlük görüntülenme', 'data' => $values]], 'unit' => '', 'xTitle' => '', 'yTitle' => '', 'horizontal' => false, 'stacked' => false, 'log' => false],
+            'chart' => ['type' => 'line', 'labels' => $labels, 'datasets' => [['label' => 'Günlük görüntülenme', 'data' => $values]], 'unit' => '', 'xTitle' => '', 'yTitle' => '', 'horizontal' => false, 'stacked' => false, 'log' => false, 'min' => 0],
             'top' => DB::all('SELECT id, title, slug, views FROM posts ORDER BY views DESC, id ASC LIMIT 8'),
             'activity' => DB::all('SELECT a.*, u.name AS user_name FROM audit_log a LEFT JOIN users u ON u.id = a.user_id ORDER BY a.id DESC LIMIT 12'),
         ]);

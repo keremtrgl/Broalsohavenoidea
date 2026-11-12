@@ -177,7 +177,7 @@ Dikey eksen logaritmiktir, çünkü doğrusal bir ölçekte 5G'nin dışındaki 
 <rect x="150" y="80" width="260" height="30" rx="8" class="s-blue" data-o="l" data-a="grow x .02 .9"/>
 <rect x="150" y="134" width="550" height="30" rx="8" class="s-acc" data-o="l" data-a="grow x .02 .45"/>
 <rect x="150" y="188" width="550" height="30" rx="8" class="s-acc2" data-o="l" data-a="grow x .02 .1"/>
-<text x="712" y="208" text-anchor="end" class="t-s t-w t-b" data-a="show .1">tamamlandı </text><text x="692" y="154" text-anchor="end" class="t-s t-ink t-b" data-a="show .45">tamamlandı</text>
+<text x="690" y="208" text-anchor="end" class="t-s t-w t-b" data-a="show .1">tamamlandı</text><text x="690" y="154" text-anchor="end" class="t-s t-ink t-b" data-a="show .45">tamamlandı</text>
 </svg>
 :::
 
