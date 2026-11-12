@@ -3,7 +3,7 @@ title: Every AI Benchmark Explained: Yapay Zekâ Kıyaslamaları Neyi Ölçer?
 slug: every-ai-benchmark-explained
 category: yapay-zeka
 tags: yapay zekâ, benchmark, swe-bench, lmarena, arc-agi, kıyaslama
-description: MMLU, GPQA, HLE, ARC-AGI, FrontierMath, SWE-bench, Terminal-Bench, OSWorld, MMMU, LMArena ve diğerleri: her kıyaslama neyi ölçer, skor nasıl okunur, sınırları nelerdir?
+description: MMLU, GPQA, HLE, ARC-AGI, FrontierMath, SWE-bench, Terminal-Bench, OSWorld, MMMU ve LMArena: her kıyaslama neyi ölçer, skor nasıl okunur, sınırları neler?
 excerpt: “SWE-bench'te yüzde 97”, “LMArena'da 1526 Elo” ne anlama geliyor? Yapay zekâ kıyaslamalarının neyi ölçtüğünü, skorların nasıl okunacağını, veri sızıntısından üretici beyanına kadar sınırlarını ve doğru okuma için bir kontrol listesini sunuyoruz.
 cover: /assets/covers/ai-benchmarks.svg
 cover_alt: Bir cetvel, yükselen çubuk grafik ve onay işaretli bir sınav kâğıdından oluşan çizim
