@@ -65,7 +65,12 @@ final class Sanitizer
         if (!is_string($clean) || stripos($clean, '<svg') === false) {
             return '';
         }
-        return trim(preg_replace('/<!DOCTYPE[^>]*>/i', '', $clean) ?? '');
+        $clean = trim(preg_replace('/<!DOCTYPE[^>]*>/i', '', $clean) ?? '');
+        // The sanitizer writes non-ASCII characters as numeric entities; turn them back into readable UTF-8.
+        return preg_replace_callback('/&#x([0-9a-f]{2,6});/i', static function (array $m): string {
+            $cp = hexdec($m[1]);
+            return $cp > 127 ? mb_chr($cp, 'UTF-8') : $m[0];
+        }, $clean) ?? $clean;
     }
 
     /** Accept only local paths under /uploads or /assets. */

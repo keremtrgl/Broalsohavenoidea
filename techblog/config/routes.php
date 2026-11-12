@@ -96,6 +96,7 @@ return static function (Router $r): void {
     $r->add('GET', '/admin/system', [Admin\SystemController::class, 'index'], $ad);
     $r->add('POST', '/admin/system/cache', [Admin\SystemController::class, 'clearCache'], $ad);
     $r->add('POST', '/admin/system/sitemap', [Admin\SystemController::class, 'sitemap'], $ad);
+    $r->add('POST', '/admin/system/migrate', [Admin\SystemController::class, 'migrate'], $ad);
     $r->add('POST', '/admin/system/backup', [Admin\SystemController::class, 'backup'], $ad);
     $r->add('GET', '/admin/system/log', [Admin\SystemController::class, 'log'], $ad);
     $r->add('GET', '/admin/audit', [Admin\SystemController::class, 'audit'], $ad);

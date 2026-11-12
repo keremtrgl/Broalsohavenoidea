@@ -50,7 +50,7 @@ function build(canvas, cfg) {
     if (isPie) return { label: ds.label, data: ds.data, backgroundColor: ds.data.map((_, j) => colors[j % colors.length]), borderColor: surface, borderWidth: 2 };
     if (cfg.type === 'bar') return { label: ds.label, data: ds.data, backgroundColor: c, borderRadius: 4, borderSkipped: 'start', maxBarThickness: 28, borderColor: surface, borderWidth: cfg.stacked ? 1 : 0 };
     if (isScatter) return { label: ds.label, data: ds.data, backgroundColor: c, borderColor: surface, borderWidth: 2, pointRadius: 6, pointHoverRadius: 8 };
-    return { label: ds.label, data: ds.data, borderColor: c, backgroundColor: alpha(c, isRadar ? 0.12 : 0.1), borderWidth: 2, pointRadius: isRadar ? 3 : 4, pointHoverRadius: 6, pointBackgroundColor: c, pointBorderColor: surface, pointBorderWidth: 2, tension: 0.25, fill: isRadar, spanGaps: false };
+    return { label: ds.label, data: ds.data, borderColor: c, backgroundColor: alpha(c, isRadar ? 0.12 : 0.1), borderWidth: 2, pointRadius: isRadar ? 3 : 4, pointHoverRadius: 6, pointBackgroundColor: c, pointBorderColor: surface, pointBorderWidth: 2, tension: isRadar ? 0 : 0.25, fill: isRadar, spanGaps: false };
   });
 
   const axis = (title, isValue) => ({
@@ -60,7 +60,7 @@ function build(canvas, cfg) {
     border: { color: line },
     stacked: Boolean(cfg.stacked),
   });
-  const valueAxis = { ...axis(cfg.horizontal ? cfg.xTitle : cfg.yTitle, true), type: cfg.log ? 'logarithmic' : 'linear', beginAtZero: !cfg.log && cfg.type !== 'line' ? true : undefined };
+  const valueAxis = { ...axis(cfg.horizontal ? cfg.xTitle : cfg.yTitle, true), type: cfg.log ? 'logarithmic' : 'linear', beginAtZero: !cfg.log && cfg.type !== 'line' && cfg.min === undefined ? true : undefined, min: cfg.min };
   const catAxis = axis(cfg.horizontal ? cfg.yTitle : cfg.xTitle, false);
 
   let scales = {};
@@ -82,7 +82,7 @@ function build(canvas, cfg) {
       indexAxis: cfg.horizontal ? 'y' : 'x',
       animation: reducedMotion() ? false : { duration: 600 },
       interaction: { mode: cfg.type === 'line' ? 'index' : 'nearest', intersect: cfg.type !== 'line' },
-      layout: { padding: isScatter ? { right: 16, top: 12 } : 0 },
+      layout: { padding: isScatter ? { right: 16, top: 26 } : 0 },
       plugins: {
         legend: { display: multi || isPie, position: 'bottom', labels: { color: fg, font, usePointStyle: true, boxWidth: 8, boxHeight: 8 } },
         tooltip: {
@@ -123,7 +123,11 @@ function aiConfig(d, kind, benchId, note) {
     if (!rows.length) return null;
     const vendor = rows.some((r) => r.s.reported_by === 'vendor');
     note.textContent = vendor ? '* işaretli skorlar üretici beyanıdır; diğerleri bağımsız kaynaklardan alınmıştır.' : 'Tüm skorlar bağımsız kaynaklardan alınmıştır.';
-    return { type: 'bar', horizontal: true, labels: rows.map((r) => r.m.name + (r.s.reported_by === 'vendor' ? ' *' : '')), datasets: [{ label: bm.name, data: rows.map((r) => r.s.value) }], unit: bm.unit || '', xTitle: bm.name + (bm.unit ? ` (${bm.unit})` : ''), yTitle: '' };
+    // Elo ratings sit in a narrow band far from zero; a zero-based axis would make every bar look equal.
+    const lowest = Math.min(...rows.map((r) => r.s.value));
+    const min = !bm.unit && lowest > 500 ? Math.floor((lowest - 40) / 50) * 50 : undefined;
+    if (min !== undefined) note.textContent += ` Yatay eksen ${min} puandan başlar; çubuk uzunlukları oransal değildir, farklara bakın.`;
+    return { type: 'bar', horizontal: true, min, labels: rows.map((r) => r.m.name + (r.s.reported_by === 'vendor' ? ' *' : '')), datasets: [{ label: bm.name, data: rows.map((r) => r.s.value) }], unit: bm.unit || '', xTitle: bm.name + (bm.unit ? ` (${bm.unit})` : ''), yTitle: '' };
   }
   if (kind === 'scatter') {
     const pts = ranking(d, benchId).map((r) => ({ x: blended(r.m), y: r.s.value, label: r.m.name })).filter((p) => p.x !== null && p.x > 0);
