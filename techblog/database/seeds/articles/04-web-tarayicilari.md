@@ -134,6 +134,16 @@ Gizlilik karşılaştırmasını anlamak için üç kavram gerekir:
 </svg>
 :::
 
+### Eklentiler ve Manifest V3
+
+**Eklentiler** (uzantılar), tarayıcıya yeni yetenekler kazandıran küçük programlardır: reklam engelleyiciler, parola yöneticileri, çeviri araçları. Güçleri aynı zamanda riskleridir; “ziyaret ettiğiniz bütün sitelerdeki verileri okuma ve değiştirme” izni alan bir eklenti, bankacılık sayfanız dâhil her şeyi görebilir. Bu yüzden az sayıda, tanınmış ve güncel eklenti kullanmak en sağlıklı yaklaşımdır.
+
+Eklentilerin tarayıcıyla konuşma kurallarını **manifest** sürümü belirler. Google, Chromium'da eski **Manifest V2**'yi kaldırıp **Manifest V3**'e geçti. Yeni sürüm, eklentilerin ağ isteklerini kendi koduyla anlık olarak süzmesini kısıtlar; bunun yerine tarayıcıya önceden bir kural listesi verilir. Google bunu güvenlik ve başarım gerekçesiyle savunur; içerik engelleyici geliştiricileri ise en gelişmiş süzme yöntemlerinin artık uygulanamadığını belirtir. Sonuç olarak Chrome'da bazı güçlü engelleyicilerin yalnızca hafifletilmiş sürümleri çalışır. Firefox, Manifest V3'ü desteklemekle birlikte eski süzme arayüzünü de korumayı sürdürür; Brave ve Vivaldi ise engellemeyi eklentiye bırakmadan tarayıcının içine yerleştirmiştir.
+
+### Eşitleme ve hesaplar
+
+Tarayıcıların çoğu yer imlerinizi, parolalarınızı, geçmişinizi ve açık sekmelerinizi cihazlarınız arasında **eşitler**. Bu kolaylık, verilerinizin şirketin sunucularında tutulması demektir. Aradaki önemli fark şifrelemenin nasıl yapıldığıdır: Firefox ve Brave eşitlenen veriyi yalnızca sizin cihazlarınızın çözebileceği biçimde, uçtan uca şifreler. Chrome'da ise bu düzeyde koruma için ayarlardan ayrı bir eşitleme parolası belirlemeniz gerekir. Tarayıcı seçerken eşitlemenin hangi ekosistemle çalıştığına da bakın: Safari yalnızca Apple cihazları arasında, Chrome ve Edge ise hemen her platformda eşitleme yapar.
+
 ## Tarayıcılar tek tek
 
 ### Google Chrome
