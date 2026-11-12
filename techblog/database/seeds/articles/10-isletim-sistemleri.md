@@ -3,7 +3,7 @@ title: Every Operating System Explained: Windows'tan Linux'a, Android'den RTOS'a
 slug: every-operating-system-explained
 category: yazilim
 tags: işletim sistemi, windows, linux, macos, android, çekirdek
-description: Windows sürümleri, macOS, Linux dağıtımları, ChromeOS, Android, iOS/iPadOS, HarmonyOS, KaiOS, FreeBSD ve gerçek zamanlı sistemler; çekirdek mimarileri ve kullanım alanları.
+description: Windows, macOS, Linux dağıtımları, ChromeOS, Android, iOS, HarmonyOS, KaiOS, FreeBSD ve gerçek zamanlı sistemler: çekirdek mimarileri ve kullanım alanları.
 excerpt: İşletim sistemi tam olarak ne iş yapar, çekirdek nedir, Linux ile dağıtım arasındaki fark ne? Windows, macOS, Linux, ChromeOS, Android, iOS, HarmonyOS, KaiOS, FreeBSD ve gömülü sistemleri çekirdek mimarileri ve kullanım alanlarıyla anlatıyoruz.
 cover: /assets/covers/operating-systems.svg
 cover_alt: Üst üste dizilmiş uygulama, çekirdek ve donanım katmanlarını gösteren pencereli çizim

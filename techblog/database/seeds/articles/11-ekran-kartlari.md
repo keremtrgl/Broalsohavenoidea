@@ -3,7 +3,7 @@ title: Every GPU Explained: GT'den RTX 50'ye, Radeon'dan Veri Merkezi Kartların
 slug: every-gpu-explained
 category: donanim
 tags: ekran kartı, gpu, nvidia, rtx, radeon, intel arc
-description: NVIDIA GT, GTX, RTX 20/30/40/50, Quadro ve RTX PRO, veri merkezi kartları (T4, V100, A100, H100, H200, B200), AMD Radeon RX ve Instinct, Intel Arc; kıyaslama grafikleriyle.
+description: NVIDIA GT, GTX, RTX 20/30/40/50, Quadro ve RTX PRO, veri merkezi kartları (T4'ten B200'e), AMD Radeon ve Instinct, Intel Arc; kıyaslama grafikleriyle.
 excerpt: RTX 5070 Ti adındaki her parça ne anlama gelir? GTX ile RTX farkı nedir, H100 neden bir oyun kartı değildir? NVIDIA, AMD ve Intel'in bütün ekran kartı ailelerini kıyaslama grafikleriyle açıklıyoruz.
 cover: /assets/covers/gpus.svg
 cover_alt: İki fanlı bir ekran kartı ve yanında yükselen başarım çubukları çizimi

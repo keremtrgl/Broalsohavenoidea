@@ -3,7 +3,7 @@ title: Every Motherboard Form Factor Explained: ATX, Micro-ATX, Mini-ITX ve Diğ
 slug: every-motherboard-form-factor-explained
 category: donanim
 tags: anakart, atx, mini-itx, yonga seti, soket, pcie
-description: E-ATX, ATX, Micro-ATX, Mini-ITX, Mini-DTX, XL-ATX ve BTX anakart boyutları; boyut karşılaştırma görseli, yonga seti ve soket kavramları, yuvalar ve bağlantı noktaları.
+description: E-ATX, ATX, Micro-ATX, Mini-ITX, Mini-DTX, XL-ATX ve BTX anakart boyutları; boyut karşılaştırması, yonga seti ve soket kavramları, yuvalar ve portlar.
 excerpt: ATX, Micro-ATX ve Mini-ITX arasındaki fark yalnızca boyut mu? Anakart form faktörlerini gerçek ölçüleriyle karşılaştırıyor; yonga seti, soket, PCIe, M.2 ve arka paneldeki bağlantı noktalarını tek tek açıklıyoruz.
 cover: /assets/covers/motherboards.svg
 cover_alt: Üzerinde işlemci yuvası, bellek yuvaları ve genişleme yuvaları bulunan bir anakartın üstten çizimi
@@ -240,6 +240,12 @@ Sürümler geriye dönük uyumludur: PCIe 5.0 bir kart 3.0 bir yuvada, 3.0 hız�
 - **Ön panel bağlantıları:** Kasanın güç düğmesi, USB ve ses girişleri için.
 - **RGB bağlantıları:** 12 voltluk 4 iğneli ve 5 voltluk 3 iğneli (adreslenebilir) türler birbirine takılmamalıdır.
 - **BIOS / UEFI çipi ve pil:** Açılış yazılımını ve saat ile ayarları tutar.
+
+### BIOS ve UEFI
+
+Anakartın üzerindeki küçük bir bellek çipi, bilgisayar açıldığında çalışan ilk yazılımı tutar. Eskiden **BIOS** olarak anılan bu yazılımın yerini bugün **UEFI** almıştır; ama gündelik dilde hâlâ BIOS denir. Görevi donanımı tanımak, belleği ve işlemciyi başlatmak ve işletim sistemini yükleyecek diski bulmaktır. Fan eğrileri, bellek hız profilleri (Intel'de XMP, AMD'de EXPO), önyükleme sırası ve güvenli önyükleme gibi ayarlar buradan yapılır.
+
+Üreticiler yeni işlemcileri desteklemek ve hataları gidermek için güncellemeler yayımlar. Pek çok güncel kartta, işlemci takılı olmadan yalnızca bir USB bellekle güncelleme yapmayı sağlayan bir düğme bulunur; bu, kartın çıkışından sonra piyasaya sürülmüş bir işlemci aldığınızda hayat kurtarır. Güncelleme sırasında elektriğin kesilmesi kartı kullanılamaz hâle getirebildiği için, bazı kartlarda yedek ikinci bir çip de yer alır.
 
 ### Arka panel bağlantı noktaları
 
