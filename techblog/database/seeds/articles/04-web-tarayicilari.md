@@ -196,6 +196,7 @@ Samsung'un Galaxy telefon ve tabletlerine yüklü gelen bu tarayıcı Chromium t
 - **DuckDuckGo Browser:** İzleyici engellemeyi ve tek dokunuşla veri temizlemeyi öne çıkaran, mobilde ve masaüstünde sunulan bir tarayıcıdır.
 - **LibreWolf:** Firefox'un telemetrisi kapatılmış, gizlilik ayarları sıkılaştırılmış bir çatalıdır.
 - **Yandex Browser:** Chromium tabanlıdır; özellikle Rusya ve çevresinde yaygındır.
+- **Internet Explorer:** Bir dönem pazarın yüzde 90'ından fazlasına sahip olan Microsoft tarayıcısıdır. Kendi motoru Trident'i kullanırdı; desteği Haziran 2022'de sona erdi ve yerini Edge aldı.
 
 ## Pazar payları
 
@@ -261,6 +262,8 @@ Pratikte farkı belirleyen genellikle şunlardır:
 | Yerleşik araçlar (kenar çubuğu, vekil sunucu) | Opera | Ek kurulum gerektirmez |
 | Gerçek anonimlik | Tor Browser | Trafik üç aktarıcıdan geçer |
 | Galaxy telefon | Samsung Internet | Tek elle kullanıma uygun, içerik engelleyici desteği |
+
+Tarayıcı değiştirmek sanıldığından kolaydır: hepsi ilk açılışta yer imlerinizi, kayıtlı parolalarınızı ve geçmişinizi eski tarayıcınızdan içe aktarmayı önerir. Yeni bir tarayıcıyı birkaç gün ikinci tarayıcı olarak kullanıp alıştıktan sonra varsayılan yapmak, geçişi zahmetsiz kılar.
 
 Tek bir tarayıcıya bağlı kalmak zorunda da değilsiniz. Pek çok kişi iş hesapları için bir tarayıcı, kişisel gezinme için bir başkasını kullanarak hem düzeni hem gizliliği artırır.
 
